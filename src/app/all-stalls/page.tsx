@@ -5,11 +5,16 @@ import React from "react";
 
 export default function AnimatedPinDemo() {
   return (
-    <div className="py-20">
-      <h2 className="text-gray-800 text-2xl md:text-6xl font-bold text-center">
+    <div className="py-20 container">
+      <div className="py-6">
+        <a href="/" className="text-black">
+          Back to Home
+        </a>
+      </div>
+      <h2 className="text-gray-800 text-2xl md:text-6xl font-bold ">
         Welcome to Birat Expo 2024 Stall booking portal
       </h2>
-      <p className="text-gray-800 text-sm md:text-2xl  mt-6 text-center">
+      <p className="text-gray-800 text-sm md:text-2xl  mt-6 ">
         Click the buttons below to view our stall layout and book a stall
       </p>
       <div className="h-[40rem] w-full flex flex-wrap gap-16 items-center py-20 justify-center ">

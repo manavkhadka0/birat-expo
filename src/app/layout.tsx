@@ -25,7 +25,7 @@ export default function RootLayout({
               rel="noreferrer"
               className="bg-blue-500 text-white px-4 py-2 rounded-md z-50"
             >
-              Download Floor Plan
+              View Floor Plan
             </a>
             <a href="/all-stalls" className="px-4 py-2  text-white ">
               Book stalls

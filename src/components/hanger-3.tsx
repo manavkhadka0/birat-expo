@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 type HangerThreeProps = {
   reservedStalls: string[];
   bookedStalls: string[];
+  primeStalls: string[];
   notAvailableStalls: string[];
   onAvailableStallClick: (stallId: string) => void;
 };
@@ -12,6 +13,7 @@ type HangerThreeProps = {
 const Hanger3 = ({
   bookedStalls,
   reservedStalls,
+  primeStalls,
   notAvailableStalls,
   onAvailableStallClick,
 }: HangerThreeProps) => {
@@ -24,13 +26,15 @@ const Hanger3 = ({
     const updateStallColorAndCursor = (
       clipPathId: string,
       color: string,
-      cursor: string
+      cursor: string,
+      opacity: number = 1
     ) => {
       const stall = svg.querySelector(
         `g[clip-path="url(#${clipPathId})"] path`
       );
       if (stall) {
         stall.setAttribute("fill", color);
+        stall.setAttribute("fill-opacity", opacity.toString());
         const parentG = stall.closest("g[clip-path]");
         if (parentG) {
           (parentG as HTMLElement).style.cursor = cursor;
@@ -43,6 +47,9 @@ const Hanger3 = ({
     );
     bookedStalls.forEach((stall) =>
       updateStallColorAndCursor(stall, "#fb2e01", "not-allowed")
+    );
+    primeStalls.forEach((stall) =>
+      updateStallColorAndCursor(stall, "#FFB6C1", "pointer")
     );
     notAvailableStalls.forEach((stall) =>
       updateStallColorAndCursor(stall, "#fff", "normal")
@@ -62,19 +69,28 @@ const Hanger3 = ({
         !bookedStalls.includes(clipPathId) &&
         !notAvailableStalls.includes(clipPathId)
       ) {
-        stall.setAttribute("fill", "#6ec007");
+        const isAvailable = !primeStalls.includes(clipPathId);
+        const defaultColor = isAvailable ? "#6ec007" : "#FFB6C1";
+
+        updateStallColorAndCursor(clipPathId, defaultColor, "pointer");
+
         if (parentG) {
-          (parentG as HTMLElement).style.cursor = "pointer";
           (parentG as HTMLElement).onmouseover = () =>
-            updateStallColorAndCursor(clipPathId, "#00ff00", "pointer");
+            updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
           (parentG as HTMLElement).onmouseout = () =>
-            updateStallColorAndCursor(clipPathId, "#6ec007", "pointer");
+            updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 1);
           (parentG as HTMLElement).onclick = () =>
             onAvailableStallClick(clipPathId);
         }
       }
     });
-  }, [reservedStalls, bookedStalls, onAvailableStallClick, notAvailableStalls]);
+  }, [
+    reservedStalls,
+    bookedStalls,
+    primeStalls,
+    notAvailableStalls,
+    onAvailableStallClick,
+  ]);
 
   return (
     <svg
