@@ -1,11 +1,15 @@
 "use client";
 import Hanger2 from "@/components/hanger-2";
 import StallLegend from "@/components/stall-legend";
+import { useRouter } from "next/router";
 import React from "react";
 
-const page = () => {
+const Hanger2Page = () => {
+  const router = useRouter();
+
   const onAvailableStallClick = (stallId: string) => {
     console.log("Available stall clicked:", stallId);
+    router.push(`/book-stall/${stallId}`);
   };
   return (
     <main className=" py-20 container">
@@ -31,4 +35,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Hanger2Page;

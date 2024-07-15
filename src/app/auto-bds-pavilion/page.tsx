@@ -2,11 +2,15 @@
 import AutoBDSPavilion from "@/components/auto-bds-pavilion";
 import StallLegend from "@/components/stall-legend";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const AutoPage = () => {
+  const router = useRouter();
+
   const onAvailableStallClick = (stallId: string) => {
     console.log("Available stall clicked:", stallId);
+    router.push(`/book-stall/${stallId}`);
   };
   return (
     <main className="container  py-20">
@@ -30,4 +34,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default AutoPage;

@@ -1,11 +1,15 @@
 "use client";
 import Sponsors from "@/components/sponsors";
 import StallLegend from "@/components/stall-legend";
+import { useRouter } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const SponsorsPage = () => {
+  const router = useRouter();
+
   const onAvailableStallClick = (stallId: string) => {
     console.log("Available stall clicked:", stallId);
+    router.push(`/book-stall/${stallId}`);
   };
   return (
     <main className="container py-20">
@@ -30,4 +34,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SponsorsPage;

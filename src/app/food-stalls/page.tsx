@@ -4,11 +4,15 @@ import Food from "@/components/food";
 import Hanger3 from "@/components/hanger-3";
 import StallLegend from "@/components/stall-legend";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const FoodPage = () => {
+  const router = useRouter();
+
   const onAvailableStallClick = (stallId: string) => {
     console.log("Available stall clicked:", stallId);
+    router.push(`/book-stall/${stallId}`);
   };
   return (
     <main className="container ">
@@ -33,4 +37,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default FoodPage;
