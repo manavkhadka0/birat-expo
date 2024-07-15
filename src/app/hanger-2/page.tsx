@@ -1,7 +1,7 @@
 "use client";
 import Hanger2 from "@/components/hanger-2";
 import StallLegend from "@/components/stall-legend";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Hanger2Page = () => {
@@ -11,6 +11,7 @@ const Hanger2Page = () => {
     console.log("Available stall clicked:", stallId);
     router.push(`/book-stall/${stallId}`);
   };
+
   return (
     <main className=" py-20 container">
       <div className="py-6">
