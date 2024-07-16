@@ -22,13 +22,11 @@ export default function AnimatedPinDemo() {
           <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
             <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
               Auto / Business Development Service Pavilion
+              <div className="">
+                <span className="">A = Automobile </span>
+                <span className=" block">E = BDS</span>
+              </div>
             </h3>
-            <div className="text-base !m-0 !p-0 font-normal">
-              <span className="text-slate-500 ">
-                A pavilion for showcasing the latest in automotive technology
-                and innovation.
-              </span>
-            </div>
             <Image
               src="/1.svg"
               className="flex flex-1 w-full p-2 z-50 bg-red-50 rounded-md"

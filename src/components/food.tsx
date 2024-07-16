@@ -1,36 +1,31 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
-type SponsorPavilionProps = {
-  reservedStalls: string[];
+type HangerThreeProps = {
   bookedStalls: string[];
-  notAvailableStalls: string[];
   onAvailableStallClick: (stallId: string) => void;
 };
 
-const Food = ({
-  bookedStalls,
-  reservedStalls,
-  notAvailableStalls,
-  onAvailableStallClick,
-}: SponsorPavilionProps) => {
+const Food = ({ bookedStalls, onAvailableStallClick }: HangerThreeProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const svg = svgRef.current;
-    if (!svg) return; // If svg is null, do nothing
+    if (!svg) return;
 
     const updateStallColorAndCursor = (
       clipPathId: string,
       color: string,
-      cursor: string
+      cursor: string,
+      opacity: number = 1
     ) => {
       const stall = svg.querySelector(
         `g[clip-path="url(#${clipPathId})"] path`
       );
       if (stall) {
         stall.setAttribute("fill", color);
+        stall.setAttribute("fill-opacity", opacity.toString());
         const parentG = stall.closest("g[clip-path]");
         if (parentG) {
           (parentG as HTMLElement).style.cursor = cursor;
@@ -38,17 +33,45 @@ const Food = ({
       }
     };
 
-    reservedStalls.forEach((stall) =>
-      updateStallColorAndCursor(stall, "#ffcc00", "not-allowed")
-    );
-    bookedStalls.forEach((stall) =>
-      updateStallColorAndCursor(stall, "#fb2e01", "not-allowed")
-    );
-    notAvailableStalls.forEach((stall) =>
-      updateStallColorAndCursor(stall, "#fff", "normal")
-    );
+    const setStallInteraction = (
+      clipPathId: string,
+      defaultColor: string,
+      isClickable: boolean
+    ) => {
+      const parentG = svg.querySelector(
+        `g[clip-path="url(#${clipPathId})"]`
+      ) as HTMLElement | null;
 
-    // Set the default color to green for stalls not in reserved or booked lists
+      if (parentG) {
+        parentG.onmouseenter = () =>
+          updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
+        parentG.onmouseleave = () =>
+          updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 1);
+        if (isClickable) {
+          parentG.onclick = () => onAvailableStallClick(clipPathId);
+        }
+      }
+    };
+
+    const removeStallInteraction = (clipPathId: string) => {
+      const parentG = svg.querySelector(
+        `g[clip-path="url(#${clipPathId})"]`
+      ) as HTMLElement | null;
+
+      if (parentG) {
+        parentG.onmouseenter = null;
+        parentG.onmouseleave = null;
+        parentG.onclick = null;
+      }
+    };
+
+    // Handle booked stalls
+    bookedStalls.forEach((stall) => {
+      updateStallColorAndCursor(stall, "#fb2e01", "not-allowed");
+      removeStallInteraction(stall);
+    });
+
+    // Set the default color for available stalls
     const allStalls = Array.from(svg.querySelectorAll("g[clip-path] path"));
     allStalls.forEach((stall) => {
       const parentG = stall.closest("g[clip-path]");
@@ -56,34 +79,20 @@ const Food = ({
         ?.getAttribute("clip-path")
         ?.replace("url(#", "")
         .replace(")", "");
-      if (
-        clipPathId &&
-        !reservedStalls.includes(clipPathId) &&
-        !bookedStalls.includes(clipPathId) &&
-        !notAvailableStalls.includes(clipPathId)
-      ) {
-        stall.setAttribute("fill", "#6ec007");
-        if (parentG) {
-          (parentG as HTMLElement).style.cursor = "pointer";
-          (parentG as HTMLElement).onmouseover = () =>
-            updateStallColorAndCursor(clipPathId, "#00ff00", "pointer");
-          (parentG as HTMLElement).onmouseout = () =>
-            updateStallColorAndCursor(clipPathId, "#6ec007", "pointer");
-          (parentG as HTMLElement).onclick = () =>
-            onAvailableStallClick(clipPathId);
-        }
+      if (clipPathId && !bookedStalls.includes(clipPathId)) {
+        const defaultColor = "#6fbe49"; // Available stalls color
+        updateStallColorAndCursor(clipPathId, defaultColor, "pointer");
+        setStallInteraction(clipPathId, defaultColor, true);
       }
     });
-  }, [reservedStalls, bookedStalls, onAvailableStallClick, notAvailableStalls]);
+  }, [bookedStalls, onAvailableStallClick]);
 
   return (
     <svg
       version="1.0"
       preserveAspectRatio="xMidYMid meet"
-      height="135"
       viewBox="0 0 996 101.249998"
       zoomAndPan="magnify"
-      width="1328"
       ref={svgRef}
       xmlnsXlink="http://www.w3.org/1999/xlink"
       xmlns="http://www.w3.org/2000/svg"

@@ -10,6 +10,10 @@ import React from "react";
 const FoodPage = () => {
   const router = useRouter();
 
+  const legendItemsHangers = [
+    { color: "#6fbe49", label: "Food Stalls" },
+    { color: "#fb2e01", label: "Not Available" },
+  ];
   const onAvailableStallClick = (stallId: string) => {
     console.log("Available stall clicked:", stallId);
     router.push(`/book-stall/${stallId}`);
@@ -24,12 +28,10 @@ const FoodPage = () => {
       <h2 className="text-black text-2xl md:text-6xl font-bold pt-20">
         Food Stalls
       </h2>
-      <StallLegend />
+      <StallLegend legendItems={legendItemsHangers} />
       <div className="z-10  max-w-7xl mt-28 mx-auto">
         <Food
-          bookedStalls={["F1"]}
-          reservedStalls={["F10"]}
-          notAvailableStalls={["F5"]}
+          bookedStalls={[""]}
           onAvailableStallClick={onAvailableStallClick}
         />
       </div>

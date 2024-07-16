@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 type AutoBDSPavilionProps = {
   reservedStalls: string[];
@@ -17,55 +17,69 @@ const AutoBDSPavilion = ({
 
   useEffect(() => {
     const svg = svgRef.current;
-    if (!svg) return; // If svg is null, do nothing
+    if (!svg) return;
 
-    const updateStallColorAndCursor = (
+    const updateStallStyle = (
       clipPathId: string,
       color: string,
-      cursor: string
+      cursor: string,
+      opacity: number = 1
     ) => {
       const stall = svg.querySelector(
         `g[clip-path="url(#${clipPathId})"] path`
-      );
+      ) as SVGPathElement | null;
       if (stall) {
-        stall.setAttribute("fill", color);
-        const parentG = stall.closest("g[clip-path]");
+        stall.style.fill = color;
+        stall.style.fillOpacity = opacity.toString();
+        const parentG = stall.closest("g[clip-path]") as HTMLElement | null;
         if (parentG) {
-          (parentG as HTMLElement).style.cursor = cursor;
+          parentG.style.cursor = cursor;
         }
       }
     };
 
-    reservedStalls.forEach((stall) =>
-      updateStallColorAndCursor(stall, "#ffcc00", "not-allowed")
-    );
-    bookedStalls.forEach((stall) =>
-      updateStallColorAndCursor(stall, "#fb2e01", "not-allowed")
-    );
+    const handleStallInteraction = (
+      clipPathId: string,
+      defaultColor: string
+    ) => {
+      const parentG = svg.querySelector(
+        `g[clip-path="url(#${clipPathId})"]`
+      ) as HTMLElement | null;
+      if (parentG) {
+        parentG.onmouseover = () =>
+          updateStallStyle(clipPathId, defaultColor, "pointer", 0.5);
+        parentG.onmouseout = () =>
+          updateStallStyle(clipPathId, defaultColor, "pointer", 1);
+        parentG.onclick = () => onAvailableStallClick(clipPathId);
+      }
+    };
 
-    // Set the default color to green for stalls not in reserved or booked lists
-    const allStalls = Array.from(svg.querySelectorAll("g[clip-path] path"));
+    const allStalls = Array.from(
+      svg.querySelectorAll("g[clip-path] path")
+    ) as SVGPathElement[];
+
     allStalls.forEach((stall) => {
       const parentG = stall.closest("g[clip-path]");
       const clipPathId = parentG
         ?.getAttribute("clip-path")
         ?.replace("url(#", "")
         .replace(")", "");
-      if (
-        clipPathId &&
-        !reservedStalls.includes(clipPathId) &&
-        !bookedStalls.includes(clipPathId)
-      ) {
-        stall.setAttribute("fill", "#6ec007");
-        if (parentG) {
-          (parentG as HTMLElement).style.cursor = "pointer";
-          // hover color change
-          (parentG as HTMLElement).onmouseover = () =>
-            updateStallColorAndCursor(clipPathId, "#00ff00", "pointer");
-          (parentG as HTMLElement).onmouseout = () =>
-            updateStallColorAndCursor(clipPathId, "#6ec007", "pointer");
-          (parentG as HTMLElement).onclick = () =>
-            onAvailableStallClick(clipPathId);
+
+      if (clipPathId) {
+        if (
+          reservedStalls.includes(clipPathId) ||
+          bookedStalls.includes(clipPathId)
+        ) {
+          updateStallStyle(clipPathId, "#fb2e01", "not-allowed");
+        } else if (clipPathId.startsWith("A")) {
+          updateStallStyle(clipPathId, "#fccc65", "pointer");
+          handleStallInteraction(clipPathId, "#fccc65");
+        } else if (clipPathId.startsWith("E")) {
+          updateStallStyle(clipPathId, "#fff", "pointer");
+          handleStallInteraction(clipPathId, "#fff");
+        } else {
+          updateStallStyle(clipPathId, "#6ec007", "pointer");
+          handleStallInteraction(clipPathId, "#6ec007");
         }
       }
     });

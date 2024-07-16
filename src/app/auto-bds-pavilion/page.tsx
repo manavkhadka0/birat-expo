@@ -5,6 +5,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
+const legendItems = [
+  { color: "#fccc65", label: "Auto Pavilion (A)" },
+  { color: "#ffff", label: "BDS Pavilion(E)" },
+  { color: "#fb2e01", label: "Not Available" },
+];
+
 const AutoPage = () => {
   const router = useRouter();
 
@@ -22,11 +28,11 @@ const AutoPage = () => {
       <h2 className="text-black text-2xl md:text-6xl font-bold ">
         Auto and Business Development Service Pavilion
       </h2>
-      <StallLegend />
+      <StallLegend legendItems={legendItems} />
       <div className="z-10 max-w-5xl flex h-[800px] w-[1200px] mx-auto">
         <AutoBDSPavilion
-          bookedStalls={["A1", "E40", "A9"]}
-          reservedStalls={["A2"]}
+          bookedStalls={[""]}
+          reservedStalls={[""]}
           onAvailableStallClick={onAvailableStallClick}
         />
       </div>

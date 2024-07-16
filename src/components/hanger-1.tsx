@@ -1,27 +1,31 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
-type HangerThreeProps = {
+type HangerOneProps = {
   reservedStalls: string[];
   bookedStalls: string[];
-  primeStalls: string[];
+  primeStallsType1: string[];
+  primeStallsType2: string[];
   notAvailableStalls: string[];
+  toiletStalls: string[];
   onAvailableStallClick: (stallId: string) => void;
 };
 
 const Hanger1 = ({
   bookedStalls,
   reservedStalls,
-  primeStalls,
+  primeStallsType1,
+  primeStallsType2,
   notAvailableStalls,
+  toiletStalls,
   onAvailableStallClick,
-}: HangerThreeProps) => {
+}: HangerOneProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const svg = svgRef.current;
-    if (!svg) return; // If svg is null, do nothing
+    if (!svg) return;
 
     const updateStallColorAndCursor = (
       clipPathId: string,
@@ -42,20 +46,78 @@ const Hanger1 = ({
       }
     };
 
-    reservedStalls.forEach((stall) =>
-      updateStallColorAndCursor(stall, "#ffcc00", "not-allowed")
-    );
-    bookedStalls.forEach((stall) =>
-      updateStallColorAndCursor(stall, "#fb2e01", "not-allowed")
-    );
-    primeStalls.forEach((stall) =>
-      updateStallColorAndCursor(stall, "#FFB6C1", "pointer")
-    );
-    notAvailableStalls.forEach((stall) =>
-      updateStallColorAndCursor(stall, "#fff", "normal")
-    );
+    const setStallInteraction = (
+      clipPathId: string,
+      defaultColor: string,
+      isClickable: boolean
+    ) => {
+      const parentG = svg.querySelector(
+        `g[clip-path="url(#${clipPathId})"]`
+      ) as HTMLElement | null;
 
-    // Set the default color to green for stalls not in reserved or booked lists
+      if (parentG) {
+        parentG.onmouseover = () =>
+          updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
+        parentG.onmouseout = () =>
+          updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 1);
+        if (isClickable) {
+          parentG.onclick = () => onAvailableStallClick(clipPathId);
+        }
+      }
+    };
+
+    const removeStallInteraction = (clipPathId: string) => {
+      const parentG = svg.querySelector(
+        `g[clip-path="url(#${clipPathId})"]`
+      ) as HTMLElement | null;
+
+      if (parentG) {
+        parentG.onmouseover = null;
+        parentG.onmouseout = null;
+        parentG.onclick = null;
+      }
+    };
+
+    // Handle reserved stalls first
+    reservedStalls.forEach((stall) => {
+      updateStallColorAndCursor(stall, "#ffcc00", "not-allowed");
+      removeStallInteraction(stall);
+    });
+
+    // Handle booked stalls
+    bookedStalls.forEach((stall) => {
+      updateStallColorAndCursor(stall, "#fb2e01", "not-allowed");
+      removeStallInteraction(stall);
+    });
+
+    // Handle prime stalls
+    primeStallsType1.forEach((stall) => {
+      if (!reservedStalls.includes(stall) && !bookedStalls.includes(stall)) {
+        updateStallColorAndCursor(stall, "#f5aeae", "pointer");
+        setStallInteraction(stall, "#f5aeae", true);
+      }
+    });
+
+    primeStallsType2.forEach((stall) => {
+      if (!reservedStalls.includes(stall) && !bookedStalls.includes(stall)) {
+        updateStallColorAndCursor(stall, "#f3efa3", "pointer");
+        setStallInteraction(stall, "#f3efa3", true);
+      }
+    });
+
+    // Handle not available stalls
+    notAvailableStalls.forEach((stall) => {
+      updateStallColorAndCursor(stall, "#fff", "normal");
+      removeStallInteraction(stall);
+    });
+
+    // Handle toilet stalls
+    toiletStalls.forEach((stall) => {
+      updateStallColorAndCursor(stall, "#26abe2", "not-allowed");
+      removeStallInteraction(stall);
+    });
+
+    // Set the default color for available stalls
     const allStalls = Array.from(svg.querySelectorAll("g[clip-path] path"));
     allStalls.forEach((stall) => {
       const parentG = stall.closest("g[clip-path]");
@@ -67,28 +129,23 @@ const Hanger1 = ({
         clipPathId &&
         !reservedStalls.includes(clipPathId) &&
         !bookedStalls.includes(clipPathId) &&
-        !notAvailableStalls.includes(clipPathId)
+        !primeStallsType1.includes(clipPathId) &&
+        !primeStallsType2.includes(clipPathId) &&
+        !notAvailableStalls.includes(clipPathId) &&
+        !toiletStalls.includes(clipPathId)
       ) {
-        const isAvailable = !primeStalls.includes(clipPathId);
-        const defaultColor = isAvailable ? "#6ec007" : "#FFB6C1";
-
+        const defaultColor = "#fff"; // Available stalls color
         updateStallColorAndCursor(clipPathId, defaultColor, "pointer");
-
-        if (parentG) {
-          (parentG as HTMLElement).onmouseover = () =>
-            updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
-          (parentG as HTMLElement).onmouseout = () =>
-            updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 1);
-          (parentG as HTMLElement).onclick = () =>
-            onAvailableStallClick(clipPathId);
-        }
+        setStallInteraction(clipPathId, defaultColor, true);
       }
     });
   }, [
     reservedStalls,
     bookedStalls,
-    primeStalls,
+    primeStallsType1,
+    primeStallsType2,
     notAvailableStalls,
+    toiletStalls,
     onAvailableStallClick,
   ]);
 
@@ -96,10 +153,8 @@ const Hanger1 = ({
     <svg
       version="1.0"
       preserveAspectRatio="xMidYMid meet"
-      height="806"
       viewBox="0 0 2155.5 604.499982"
       zoomAndPan="magnify"
-      width="2874"
       ref={svgRef}
       xmlnsXlink="http://www.w3.org/1999/xlink"
       xmlns="http://www.w3.org/2000/svg"

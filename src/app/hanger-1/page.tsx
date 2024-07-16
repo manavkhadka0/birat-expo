@@ -10,6 +10,12 @@ import React from "react";
 
 const Hanger1Page = () => {
   const router = useRouter();
+  const legendItemsHangers = [
+    { color: "#26abe2", label: "Toilet" },
+    { color: "#f5aeae", label: "Prime" },
+    { color: "#f3efa3", label: "Prime" },
+    { color: "#fb2e01", label: "Not Available" },
+  ];
 
   const onAvailableStallClick = (stallId: string) => {
     console.log("Available stall clicked:", stallId);
@@ -25,12 +31,23 @@ const Hanger1Page = () => {
       <h2 className="text-black text-2xl md:text-6xl font-bold ">
         Hanger 1- Industrial and Coporate Stalls
       </h2>
-      <StallLegend />
+      <StallLegend legendItems={legendItemsHangers} />
       <div className="z-10  flex max-w-7xl mx-auto">
         <Hanger1
-          bookedStalls={["B61"]}
-          primeStalls={[""]}
-          reservedStalls={["B76"]}
+          bookedStalls={[""]}
+          toiletStalls={["B20", "B57"]}
+          primeStallsType1={["B1", "B2", "B76", "B75"]}
+          primeStallsType2={[
+            "B37",
+            "B38",
+            "B39",
+            "B40",
+            "B22",
+            "B23",
+            "B54",
+            "B55",
+          ]}
+          reservedStalls={[""]}
           notAvailableStalls={["03c0fa4260"]}
           onAvailableStallClick={onAvailableStallClick}
         />

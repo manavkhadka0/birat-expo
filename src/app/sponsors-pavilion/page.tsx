@@ -6,6 +6,10 @@ import React from "react";
 
 const SponsorsPage = () => {
   const router = useRouter();
+  const legendItemsHangers = [
+    { color: "#26abe2", label: "Sponsors" },
+    { color: "#fb2e01", label: "Not Available" },
+  ];
 
   const onAvailableStallClick = (stallId: string) => {
     console.log("Available stall clicked:", stallId);
@@ -21,12 +25,10 @@ const SponsorsPage = () => {
       <h2 className="text-black text-2xl md:text-6xl font-bold ">
         Sponsors Pavilion
       </h2>
-      <StallLegend />
+      <StallLegend legendItems={legendItemsHangers} />
       <div className="z-10 flex max-w-7xl mx-auto">
         <Sponsors
-          bookedStalls={["S1"]}
-          reservedStalls={["S12"]}
-          notAvailableStalls={[""]}
+          bookedStalls={[""]}
           onAvailableStallClick={onAvailableStallClick}
         />
       </div>
