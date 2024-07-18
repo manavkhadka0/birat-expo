@@ -1,41 +1,33 @@
 "use client";
-import AutoBDSPavilion from "@/components/auto-bds-pavilion";
+
 import Food from "@/components/food";
-import Hanger3 from "@/components/hanger-3";
-import StallLegend from "@/components/stall-legend";
-import Image from "next/image";
+import StallArea from "@/components/stall-area";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 const FoodPage = () => {
   const router = useRouter();
 
-  const legendItemsHangers = [
+  const legendItemsFood = [
     { color: "#6fbe49", label: "Food Stalls" },
     { color: "#fb2e01", label: "Not Available" },
   ];
+
   const onAvailableStallClick = (stallId: string) => {
     console.log("Available stall clicked:", stallId);
     router.push(`/book-stall/${stallId}`);
   };
+
   return (
-    <main className="container ">
-      <div className="py-6">
-        <a href="/" className="text-black">
-          Back to Home
-        </a>
-      </div>
-      <h2 className="text-black text-2xl md:text-6xl font-bold pt-20">
-        Food Stalls
-      </h2>
-      <StallLegend legendItems={legendItemsHangers} />
-      <div className="z-10  max-w-7xl mt-28 mx-auto">
-        <Food
-          bookedStalls={[""]}
-          onAvailableStallClick={onAvailableStallClick}
-        />
-      </div>
-    </main>
+    <StallArea
+      title="Food Stalls"
+      subtitle="Food and Beverage Stalls"
+      legendItems={legendItemsFood}
+      StallComponent={Food}
+      stallProps={{
+        bookedStalls: [""],
+        onAvailableStallClick: onAvailableStallClick,
+      }}
+    />
   );
 };
 

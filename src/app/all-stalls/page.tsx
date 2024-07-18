@@ -1,141 +1,108 @@
 "use client";
-import { PinContainer } from "@/components/ui/3d-pin";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
-export default function AnimatedPinDemo() {
-  return (
-    <div className="py-20 container">
-      <div className="py-6">
-        <a href="/" className="text-black">
-          Back to Home
-        </a>
+type ElegantCardProps = {
+  title: string;
+  href: string;
+  description: string;
+  imageSrc: string;
+};
+const ElegantCard = ({
+  title,
+  href,
+  description,
+  imageSrc,
+}: ElegantCardProps) => (
+  <Link href={href} className="group">
+    <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+      <div className="p-5">
+        <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
+          {title}
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">{description}</p>
       </div>
-      <h2 className="text-gray-800 text-2xl md:text-6xl font-bold ">
-        Welcome to Birat Expo 2024 Stall booking portal
-      </h2>
-      <p className="text-gray-800 text-sm md:text-2xl  mt-6 ">
-        Click the buttons below to view our stall layout and book a stall
-      </p>
-      <div className="h-[40rem] w-full flex flex-wrap gap-16 items-center py-20 justify-center ">
-        <PinContainer title="Auto BDS Pavilion" href="/auto-bds-pavilion">
-          <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
-            <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
-              Auto / Business Development Service Pavilion
-              <div className="">
-                <span className="">A = Automobile </span>
-                <span className=" block">E = BDS</span>
-              </div>
-            </h3>
-            <Image
-              src="/1.svg"
-              className="flex flex-1 w-full p-2 z-50 bg-red-50 rounded-md"
-              alt="Auto BDS Pavilion"
-              width={200}
-              height={200}
-            />
-          </div>
-        </PinContainer>{" "}
-        <PinContainer
-          title="Hanger 1- Industrial and Coporate Stalls"
-          href="/hanger-1"
-        >
-          <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
-            <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
-              Hanger 1- Industrial and Coporate Stalls
-            </h3>
-            <div className="text-base !m-0 !p-0 font-normal">
-              <span className="text-slate-500 ">
-                Stalls for industrial and corporate exhibitors.
-              </span>
-            </div>
-            <Image
-              src="/hanger-1.svg"
-              className="flex flex-1 w-full p-2 z-50 bg-red-50 rounded-md"
-              alt="Auto BDS Pavilion"
-              width={200}
-              height={200}
-            />
-          </div>
-        </PinContainer>{" "}
-        <PinContainer
-          title="Hanger 2- Industrial and Coporate Stalls"
-          href="/hanger-2"
-        >
-          <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
-            <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
-              Hanger 2- Industrial and Coporate Stalls
-            </h3>
-            <div className="text-base !m-0 !p-0 font-normal">
-              <span className="text-slate-500 ">
-                Stalls for industrial and corporate exhibitors.
-              </span>
-            </div>
-            <Image
-              src="/hanger-2.svg"
-              className="flex flex-1 w-full p-2 z-50 bg-red-50 rounded-md"
-              alt="Auto BDS Pavilion"
-              width={200}
-              height={200}
-            />
-          </div>
-        </PinContainer>{" "}
-        <PinContainer title="Hanger 3- Agro and SME Stalls" href="/hanger-3">
-          <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
-            <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
-              Hanger 3- Agro and SME Stalls
-            </h3>
-            <div className="text-base !m-0 !p-0 font-normal">
-              <span className="text-slate-500 ">
-                Stalls for agriculture and small and medium enterprises.
-              </span>
-            </div>
-            <Image
-              src="/hanger-3.svg"
-              className="flex flex-1 w-full p-2 z-50 bg-red-50 rounded-md"
-              alt="Auto BDS Pavilion"
-              width={200}
-              height={200}
-            />
-          </div>
-        </PinContainer>{" "}
-        <PinContainer title="Food Stalls" href="/food-stalls">
-          <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
-            <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
-              Food Stalls
-            </h3>
-            <div className="text-base !m-0 !p-0 font-normal">
-              <span className="text-slate-500 ">
-                Stalls for food and beverages.
-              </span>
-            </div>
-            <Image
-              src="/food.svg"
-              className="flex flex-1 w-full p-2 z-50 bg-red-50 rounded-md"
-              alt="Auto BDS Pavilion"
-              width={200}
-              height={100}
-            />
-          </div>
-        </PinContainer>
-        <PinContainer title="Sponsors Pavilion" href="/sponsors-pavilion">
-          <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
-            <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
-              Sponsors Pavilion
-            </h3>
-            <div className="text-base !m-0 !p-0 font-normal">
-              <span className="text-slate-500 ">Pavilion for sponsors.</span>
-            </div>
-            <Image
-              src="/sponsors.svg"
-              className="flex flex-1 w-full p-2 z-50 bg-red-50 rounded-md"
-              alt="Auto BDS Pavilion"
-              width={200}
-              height={100}
-            />
-          </div>
-        </PinContainer>
+      <div className="bg-gray-100 p-4 flex items-center justify-center h-48">
+        <Image
+          src={imageSrc}
+          alt={title}
+          width={400}
+          height={400}
+          objectFit="contain"
+          className="transition-transform duration-300 group-hover:scale-105"
+        />
       </div>
     </div>
+  </Link>
+);
+
+const cardItems = [
+  {
+    title: "Auto / Business Development Service Pavilion",
+    href: "/auto-bds-pavilion",
+    description: "Explore automobile and business development services",
+    imageSrc: "/1.svg",
+  },
+  {
+    title: "Hanger 1 - Industrial and Corporate Stalls",
+    href: "/hanger-1",
+    description: "Discover industrial and corporate exhibitors",
+    imageSrc: "/hanger-1.svg",
+  },
+  {
+    title: "Hanger 2 - Industrial and Corporate Stalls",
+    href: "/hanger-2",
+    description: "More industrial and corporate exhibitions",
+    imageSrc: "/hanger-2.svg",
+  },
+  {
+    title: "Hanger 3 - Agro and SME Stalls",
+    href: "/hanger-3",
+    description: "Agriculture and small-medium enterprise showcase",
+    imageSrc: "/hanger-3.svg",
+  },
+  {
+    title: "Food Stalls",
+    href: "/food-stalls",
+    description: "Savor delicious food and beverages",
+    imageSrc: "/food.svg",
+  },
+  {
+    title: "Sponsors Pavilion",
+    href: "/sponsors-pavilion",
+    description: "Meet our esteemed sponsors",
+    imageSrc: "/sponsors.svg",
+  },
+];
+
+export default function ElegantExpoLayout() {
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <nav className="mb-8">
+          <Link
+            href="/"
+            className="text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out"
+          >
+            ← Back to Home
+          </Link>
+        </nav>
+        <header className="mb-16 text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-4">
+            Birat Expo 2024
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Explore our innovative stall layouts and secure your space at this
+            year&apos;s most anticipated event
+          </p>
+        </header>
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {cardItems.map((item, index) => (
+            <ElegantCard key={index} {...item} />
+          ))}
+        </section>
+      </div>
+    </main>
   );
 }

@@ -1,174 +1,219 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const navItems = [
+    {
+      title: "Book Stalls",
+      items: [
+        { title: "Automobiles Stalls", href: "/auto-bds-pavilion" },
+        {
+          title: "Business Development Service Providers",
+          href: "/auto-bds-pavilion",
+        },
+        {
+          title: "Hanger 1 : Industrial and Corporate Stalls",
+          href: "/hanger-1",
+        },
+        {
+          title: "Hanger 2 : Industrial and Corporate Stalls",
+          href: "/hanger-2",
+        },
+        { title: "Agro and SME Stalls", href: "/hanger-3" },
+        { title: "Food Stalls", href: "/food-stalls" },
+      ],
+    },
+    {
+      title: "Sponsorship",
+      items: [
+        { title: "Main Sponsor", href: "#" },
+        { title: "Powered By Sponsor", href: "#" },
+        { title: "Platinum Sponsor", href: "#" },
+        { title: "Diamond Sponsor", href: "#" },
+        { title: "Gold Sponsor", href: "#" },
+        { title: "Partner [Bank, Insurance, Telecom,etc]", href: "#" },
+        { title: "Silver Sponsor", href: "#" },
+      ],
+    },
+    {
+      title: "Birat Expo'24",
+      subtitle: "Coming soon",
+      subtitleClass: "text-green-700",
+      href: "#",
+    },
+    {
+      title: "Birat Expo'22",
+      subtitle: "Past Event",
+      subtitleClass: "text-red-700",
+      href: "#",
+    },
+    { title: "Floor Plan", href: "#" },
+    {
+      title: "Proposal",
+      className: "bg-blue-900 text-white px-4 py-2 rounded-sm",
+      href: "/floor-plan.pdf",
+      target: "_blank",
+      rel: "noreferrer",
+    },
+  ];
+
   return (
     <nav className="bg-white px-4 sticky shadow-2xl top-0 z-50">
-      <div className="container flex justify-between items-center">
-        <Image src="/logo.png" alt="Birat Expo 2024" width={200} height={600} />
-        <div className="flex items-center justify-end">
-          <div className="relative inline-block text-left group">
-            <button
-              type="button"
-              className="inline-flex justify-center w-full rounded-md shadow-2xl px-4 py-2 bg-white text-sm text-gray-900 font-semibold"
-            >
-              Book Stalls
-              <svg
-                className="-mr-1 ml-2 h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </button>
+      <div className="container mx-auto flex justify-between items-center h-20">
+        <Link href="/">
+          <Image
+            src="/logo.png"
+            alt="Birat Expo 2024"
+            width={200}
+            height={60}
+          />
+        </Link>
 
-            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none invisible group-hover:visible transition-all duration-300 opacity-0 group-hover:opacity-100">
-              <div className="py-1">
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center justify-end space-x-4">
+          {navItems.map((item, index) => (
+            <div key={index} className="relative group">
+              {item.items ? (
+                <>
+                  <button className="px-4 py-2 bg-white text-sm text-gray-900 font-semibold flex items-center hover:text-blue-600 transition-colors duration-200">
+                    {item.title}
+                    <svg
+                      className="ml-2 h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                  <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none invisible group-hover:visible transition-all duration-300 opacity-0 group-hover:opacity-100">
+                    {item.items.map((subItem, subIndex) => (
+                      <Link
+                        key={subIndex}
+                        href={subItem.href}
+                        className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                      >
+                        {subItem.title}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <Link
+                  href={item.href}
+                  className={`px-4 py-2 bg-white text-sm text-gray-900 flex flex-col justify-center items-center hover:text-blue-600 transition-colors duration-200 ${
+                    item.className || ""
+                  }`}
+                  target={item.target}
+                  rel={item.rel}
                 >
-                  Automobiles Stalls
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Business Development Service Providers
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Hanger 1 : Industrial and Corporate Stalls
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Hanger 2 : Industrial and Corporate Stalls
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Agro and SME Stalls
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Food Stalls
-                </a>
-              </div>
+                  {item.title}
+                  {item.subtitle && (
+                    <span
+                      className={`text-[0.6rem] ${item.subtitleClass} leading-[0.3rem]`}
+                    >
+                      {item.subtitle}
+                    </span>
+                  )}
+                </Link>
+              )}
             </div>
-          </div>
-          <div className="relative inline-block text-left group">
-            <button
-              type="button"
-              className="inline-flex justify-center w-full rounded-md shadow-2xl px-4 py-2 bg-white text-sm text-gray-900 font-semibold"
-            >
-              Sponsorship
-              <svg
-                className="-mr-1 ml-2 h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </button>
+          ))}
+        </div>
 
-            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none invisible group-hover:visible transition-all duration-300 opacity-0 group-hover:opacity-100">
-              <div className="py-1">
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
+        {/* Mobile Menu Button */}
+        <button className="md:hidden focus:outline-none" onClick={toggleMenu}>
+          <svg
+            className="w-6 h-6 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${
+          isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <div
+          className={`bg-white h-full w-64 p-4 transform transition-transform duration-300 ease-in-out ${
+            isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <button className="mb-4 focus:outline-none" onClick={toggleMenu}>
+            <svg
+              className="w-6 h-6 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+          {navItems.map((item, index) => (
+            <div key={index} className="mb-4">
+              <h3 className="font-semibold mb-2 text-gray-900">{item.title}</h3>
+              {item.items ? (
+                <ul className="pl-4">
+                  {item.items.map((subItem, subIndex) => (
+                    <li key={subIndex} className="mb-1">
+                      <Link
+                        href={subItem.href}
+                        className="text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                      >
+                        {subItem.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <Link
+                  href={item.href}
+                  className={`text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200 ${
+                    item.className || ""
+                  }`}
+                  target={item.target}
+                  rel={item.rel}
                 >
-                  Main Sponsor
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Powered By Sponsor
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Platinum Sponsor
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Diamond Sponsor
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Gold Sponsor
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Partner [Bank, Insurance, Telecom,etc]
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-900 font-medium hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Silver Sponsor
-                </a>
-              </div>
+                  {item.title}
+                  {item.subtitle && (
+                    <span
+                      className={`text-[0.6rem] ${item.subtitleClass} leading-[0.3rem] ml-2`}
+                    >
+                      ({item.subtitle})
+                    </span>
+                  )}
+                </Link>
+              )}
             </div>
-          </div>
-          <Link
-            href="/all-stalls"
-            className="px-4 py-2 bg-white text-sm text-gray-900 flex flex-col justify-center items-center"
-          >
-            Birat Expo'24
-            <span className="text-[0.6rem] text-green-700 leading-[0.3rem]">
-              Coming soon
-            </span>
-          </Link>
-          <Link
-            href="/all-stalls"
-            className="px-4 py-2 bg-white text-sm text-gray-900 flex flex-col justify-center items-center"
-          >
-            Birat Expo'22
-            <span className="text-[0.6rem] text-red-700 leading-[0.3rem]">
-              Past Event
-            </span>
-          </Link>
-          <Link
-            href="/all-stalls"
-            className="px-4 py-2 bg-white text-xs text-gray-900"
-          >
-            Floor Plan
-          </Link>
-          <Link
-            href="/floor-plan.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="bg-blue-900 text-white px-4 py-2 rounded-sm z-50"
-          >
-            Proposal
-          </Link>
+          ))}
         </div>
       </div>
     </nav>

@@ -1,9 +1,8 @@
 "use client";
+
+import StallArea from "@/components/stall-area";
 import AutoBDSPavilion from "@/components/auto-bds-pavilion";
-import StallLegend from "@/components/stall-legend";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 const legendItems = [
   { color: "#fccc65", label: "Auto Pavilion (A)" },
@@ -18,25 +17,19 @@ const AutoPage = () => {
     console.log("Available stall clicked:", stallId);
     router.push(`/book-stall/${stallId}`);
   };
+
   return (
-    <main className="container  py-20">
-      <div className="py-6">
-        <a href="/" className="text-black">
-          Back to Home
-        </a>
-      </div>
-      <h2 className="text-black text-2xl md:text-6xl font-bold ">
-        Auto and Business Development Service Pavilion
-      </h2>
-      <StallLegend legendItems={legendItems} />
-      <div className="z-10 max-w-5xl flex h-[800px] w-[1200px] mx-auto">
-        <AutoBDSPavilion
-          bookedStalls={[""]}
-          reservedStalls={[""]}
-          onAvailableStallClick={onAvailableStallClick}
-        />
-      </div>
-    </main>
+    <StallArea
+      title="Auto and Business Development Service Pavilion"
+      subtitle="Auto and BDS Stalls"
+      legendItems={legendItems}
+      StallComponent={AutoBDSPavilion}
+      stallProps={{
+        bookedStalls: [""],
+        reservedStalls: [""],
+        onAvailableStallClick: onAvailableStallClick,
+      }}
+    />
   );
 };
 
