@@ -1,12 +1,12 @@
 "use client";
 
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { AnimatedModalDemo } from "./terms-and-conditions";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
@@ -66,6 +66,11 @@ function convertCamelToSnake(camelCaseString: string) {
 
 const ExhibitionForm = () => {
   const searchParams = useSearchParams();
+
+  const router = useRouter();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const {
     register,
     handleSubmit,
@@ -91,7 +96,9 @@ const ExhibitionForm = () => {
     setValue("remainingAmount", totalAmount - advanceAmount);
   }, [advanceAmount, setValue, totalAmount]);
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
+    setIsSubmitting(true);
+    setError("");
     const formData = new FormData();
     for (const key in data) {
       if (key === "voucher") {
@@ -101,19 +108,40 @@ const ExhibitionForm = () => {
       }
     }
 
-    axios
-      .post("https://yachu.baliyoventures.com/api/stall/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      const response = await axios.post(
+        "https://yachu.baliyoventures.com/api/stall/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response);
+      router.push("/thank-you");
+    } catch (error) {
+      console.error(error);
+      setError(
+        "An error occurred while submitting the form. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (isSubmitting) {
+    return (
+      <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+        <div className="bg-white p-8 rounded-lg shadow-xl text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid mx-auto mb-4"></div>
+          <p className="text-xl font-semibold">
+            Submitting your application...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-100 p-6 font-serif pb-40 pt-20">
@@ -128,6 +156,11 @@ const ExhibitionForm = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="p-6">
+          {error && (
+            <div className="mb-6 text-center">
+              <p className="text-red-500">{error}</p>
+            </div>
+          )}
           <h2 className="mb-4 text-2xl font-semibold">
             Application/Agreement for Exhibition Participation
           </h2>
@@ -475,9 +508,21 @@ const ExhibitionForm = () => {
           <div className="text-center">
             <button
               type="submit"
-              className="rounded bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+              disabled={isSubmitting}
+              className={`rounded px-6 py-2 text-white ${
+                isSubmitting
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
             >
-              Submit Application
+              {isSubmitting ? (
+                <>
+                  <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></span>
+                  Submitting...
+                </>
+              ) : (
+                "Submit Application"
+              )}
             </button>
           </div>
         </form>
