@@ -12,7 +12,7 @@ export default function Proposal() {
         <Image
           src="/floor-plan.png"
           alt="biratexpo floor plan"
-          className="max-w-100"
+          className="max-w-100 border  rounded-r-md"
           width={1000}
           height={100}
         />

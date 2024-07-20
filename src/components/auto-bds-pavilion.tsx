@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 
-const STALL_PRICE = 60000;
-
 type StallInfo = {
   id: string;
   companyName?: string;
@@ -11,6 +9,9 @@ type StallInfo = {
 type AutoBDSPavilionProps = {
   bookedStalls: StallInfo[];
   reservedStalls: StallInfo[];
+  stallPrice: number;
+  totalPrice: number;
+  setTotalPrice: (price: number) => void;
   selectedStalls: string[];
   onAvailableStallClick: (stallId: string) => void;
 };
@@ -18,11 +19,13 @@ type AutoBDSPavilionProps = {
 const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
   bookedStalls,
   reservedStalls,
+  setTotalPrice,
+  totalPrice,
   selectedStalls,
+  stallPrice,
   onAvailableStallClick,
 }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -87,7 +90,7 @@ const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
           : stallId.startsWith("E")
           ? "BDS Provider"
           : "Other";
-        const tooltipContent = `${stallType} - $${STALL_PRICE.toLocaleString()}${
+        const tooltipContent = `${stallType} - Rs. ${stallPrice.toLocaleString()}${
           companyName ? ` - ${companyName}` : ""
         }`;
 
@@ -152,7 +155,7 @@ const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
       }
     });
 
-    setTotalPrice(selectedStalls.length * STALL_PRICE);
+    setTotalPrice(selectedStalls.length * stallPrice);
   }, [bookedStalls, reservedStalls, selectedStalls, onAvailableStallClick]);
 
   // showTooltip and hideTooltip functions remain the same

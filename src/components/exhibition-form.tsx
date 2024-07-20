@@ -1,10 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { AnimatedModalDemo } from "./terms-and-conditions";
+import { useSearchParams } from "next/navigation";
+
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
 const schema = yup.object().shape({
   company: yup.string().required("Company/Organization is required"),
@@ -15,10 +20,19 @@ const schema = yup.object().shape({
   country: yup.string().required("Country is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
   stallType: yup.string().required("Please select a stall type"),
-  signature: yup.string().required("Signature is required"),
-  date: yup.date().required("Date is required"),
   stallNo: yup.string().required("Stall number is required"),
   mergeOrSeparate: yup.string().required("Please select merge or separate"),
+  voucher: yup
+    .mixed()
+    .test("fileSize", "File size is too large", function (value) {
+      if (!value || !(value instanceof FileList)) return true;
+      return value[0]?.size <= MAX_FILE_SIZE;
+    })
+    .test("fileFormat", "Unsupported file format", function (value) {
+      if (!value || !(value instanceof FileList)) return true;
+      return SUPPORTED_FORMATS.includes(value[0]?.type);
+    })
+    .required("Voucher is required"),
   totalAmount: yup
     .number()
     .positive("Amount must be positive")
@@ -32,21 +46,42 @@ const schema = yup.object().shape({
     .positive("Amount must be positive")
     .required("Remaining amount is required"),
   amountInWords: yup.string().required("Amount in words is required"),
+  termsAndConditions: yup
+    .boolean()
+    .oneOf([true], "Please accept terms and conditions"),
 });
 
+type FormData = yup.InferType<typeof schema>;
+
 const ExhibitionForm = () => {
+  const searchParams = useSearchParams();
   const {
     register,
     handleSubmit,
     control,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      stallNo: searchParams.get("stalls") || "",
+      totalAmount: parseInt(searchParams.get("total") || ""),
+      stallType: searchParams.get("type") || "",
+    },
   });
 
+  // handle voucher upload
+
+  const advanceAmount = watch("advanceAmount");
+  const totalAmount = watch("totalAmount");
+
+  React.useEffect(() => {
+    setValue("remainingAmount", totalAmount - advanceAmount);
+  }, [advanceAmount, setValue, totalAmount]);
+
   const onSubmit = (data: any) => {
-    console.log(data);
-    // Handle form submission
+    console.log(JSON.stringify(data, null, 2));
   };
 
   return (
@@ -72,7 +107,7 @@ const ExhibitionForm = () => {
             </h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="mb-1 block">Company/Organization:</label>
+                <label className="mb-1 block">Company/Organization Name:</label>
                 <input
                   {...register("company")}
                   type="text"
@@ -85,7 +120,7 @@ const ExhibitionForm = () => {
                 )}
               </div>
               <div>
-                <label className="mb-1 block">Address:</label>
+                <label className="mb-1 block">Organization Address:</label>
                 <input
                   {...register("address")}
                   type="text"
@@ -123,29 +158,33 @@ const ExhibitionForm = () => {
                   <p className="text-red-500 text-sm">{errors.phone.message}</p>
                 )}
               </div>
-              <div>
-                <label className="mb-1 block">City:</label>
-                <input
-                  {...register("city")}
-                  type="text"
-                  className="w-full rounded border p-2"
-                />
-                {errors.city && (
-                  <p className="text-red-500 text-sm">{errors.city.message}</p>
-                )}
-              </div>
-              <div>
-                <label className="mb-1 block">Country:</label>
-                <input
-                  {...register("country")}
-                  type="text"
-                  className="w-full rounded border p-2"
-                />
-                {errors.country && (
-                  <p className="text-red-500 text-sm">
-                    {errors.country.message}
-                  </p>
-                )}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="mb-1 block">City:</label>
+                  <input
+                    {...register("city")}
+                    type="text"
+                    className="w-full rounded border p-2"
+                  />
+                  {errors.city && (
+                    <p className="text-red-500 text-sm">
+                      {errors.city.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-1 block">Country:</label>
+                  <input
+                    {...register("country")}
+                    type="text"
+                    className="w-full rounded border p-2"
+                  />
+                  {errors.country && (
+                    <p className="text-red-500 text-sm">
+                      {errors.country.message}
+                    </p>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="mb-1 block">E-mail:</label>
@@ -231,55 +270,21 @@ const ExhibitionForm = () => {
               <p className="text-red-500 text-sm">{errors.stallType.message}</p>
             )}
             <p className="mt-2 text-sm">
-              *All above rates are exclusive of VAT
+              <span className="text-red-500">* </span>
+              All above rates are exclusive of VAT
             </p>
-          </div>
-
-          <div className="mb-6 rounded bg-yellow-100 p-4">
-            <p className="font-semibold">
-              THIS APPLICATION /CONTRACT WILL NOT BE CONSIDERED UNLESS THE
-              PAYMENT IS ENCLOSED
-            </p>
-            <p className="mt-2">
-              I HEREBY CONFIRM THAT I HAVE READ THE TERMS AND CONDITIONS PRINTED
-              IN THE EXHIBITION STALL BOOKING FORM AND THAT I AM AUTHORIZED AS
-              PROPRIETOR / PARTNER / MANAGER TO SIGN THIS CONTRACT.
-            </p>
-            <div className="mt-4">
-              <label className="mb-1 block">Signature:</label>
-              <input
-                {...register("signature")}
-                type="text"
-                className="w-full rounded border p-2"
-              />
-              {errors.signature && (
-                <p className="text-red-500 text-sm">
-                  {errors.signature.message}
-                </p>
-              )}
-            </div>
-            <div className="mt-2">
-              <label className="mb-1 block">Date:</label>
-              <input
-                {...register("date")}
-                type="date"
-                className="w-full rounded border p-2"
-              />
-              {errors.date && (
-                <p className="text-red-500 text-sm">{errors.date.message}</p>
-              )}
-            </div>
           </div>
 
           <div className="mb-6">
             <h3 className="mb-2 text-xl font-semibold">D. SPACE REQUIREMENT</h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-1 block">Stall no:</label>
+            <div className="grid grid-cols-1 gap-4 ">
+              <div className="flex items-center gap-2">
+                <label className="mb-1 ">Stall no:</label>
                 <input
                   {...register("stallNo")}
                   type="text"
-                  className="w-full rounded border p-2"
+                  disabled
+                  className=" rounded border p-2"
                 />
                 {errors.stallNo && (
                   <p className="text-red-500 text-sm">
@@ -287,15 +292,15 @@ const ExhibitionForm = () => {
                   </p>
                 )}
               </div>
-              <div>
-                <label className="mb-1 block">
+              <div className="flex items-center gap-2">
+                <label className="mb-1 ">
                   If two or more stalls : Merge or Separate?
                 </label>
                 <select
                   {...register("mergeOrSeparate")}
-                  className="w-full rounded border p-2"
+                  className=" rounded border p-2"
+                  defaultValue={"separate"}
                 >
-                  <option value="">Select</option>
                   <option value="merge">Merge</option>
                   <option value="separate">Separate</option>
                 </select>
@@ -305,12 +310,13 @@ const ExhibitionForm = () => {
                   </p>
                 )}
               </div>
-              <div>
-                <label className="mb-1 block">Total Amount:</label>
+              <div className="flex items-center gap-2">
+                <label className="mb-1 ">Total Amount:</label>
                 <input
                   {...register("totalAmount")}
                   type="number"
-                  className="w-full rounded border p-2"
+                  disabled
+                  className=" rounded border p-2"
                 />
                 {errors.totalAmount && (
                   <p className="text-red-500 text-sm">
@@ -318,12 +324,12 @@ const ExhibitionForm = () => {
                   </p>
                 )}
               </div>
-              <div>
-                <label className="mb-1 block">Advance Amount:</label>
+              <div className="flex items-center gap-2">
+                <label className="mb-1 ">Advance Amount:</label>
                 <input
                   {...register("advanceAmount")}
                   type="number"
-                  className="w-full rounded border p-2"
+                  className=" rounded border p-2"
                 />
                 {errors.advanceAmount && (
                   <p className="text-red-500 text-sm">
@@ -331,12 +337,13 @@ const ExhibitionForm = () => {
                   </p>
                 )}
               </div>
-              <div>
-                <label className="mb-1 block">Remaining Amount:</label>
+              <div className="flex items-center gap-2">
+                <label className="mb-1 ">Remaining Amount:</label>
                 <input
                   {...register("remainingAmount")}
                   type="number"
-                  className="w-full rounded border p-2"
+                  disabled
+                  className=" rounded border p-2"
                 />
                 {errors.remainingAmount && (
                   <p className="text-red-500 text-sm">
@@ -344,16 +351,36 @@ const ExhibitionForm = () => {
                   </p>
                 )}
               </div>
-              <div>
-                <label className="mb-1 block">Total Amount in words:</label>
+              <div className="flex items-center gap-2">
+                <label className="mb-1 ">Total Amount in words:</label>
                 <input
                   {...register("amountInWords")}
                   type="text"
-                  className="w-full rounded border p-2"
+                  className=" rounded border p-2"
                 />
                 {errors.amountInWords && (
                   <p className="text-red-500 text-sm">
                     {errors.amountInWords.message}
+                  </p>
+                )}
+              </div>
+
+              {/* file field  to upload voucher */}
+              <div className="mb-6">
+                <label className="mb-1 block">Upload Voucher:</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  {...register("voucher")}
+                  className="rounded border p-2"
+                />
+                <p className="text-sm text-gray-600 mt-1">
+                  Please upload an image file (JPG, JPEG, PNG) up to 1MB in
+                  size.
+                </p>
+                {errors.voucher && (
+                  <p className="text-red-500 text-sm">
+                    {errors.voucher.message}
                   </p>
                 )}
               </div>
@@ -380,6 +407,38 @@ const ExhibitionForm = () => {
               width={300}
               height={100}
             />
+          </div>
+
+          <div className="mb-6 rounded  p-4">
+            <p className="font-semibold">
+              THIS APPLICATION /CONTRACT WILL NOT BE CONSIDERED UNLESS THE
+              PAYMENT IS ENCLOSED
+            </p>
+            <p className="mt-2">
+              I HEREBY CONFIRM THAT I HAVE READ THE TERMS AND CONDITIONS PRINTED
+              IN THE EXHIBITION STALL BOOKING FORM AND THAT I AM AUTHORIZED AS
+              PROPRIETOR / PARTNER / MANAGER TO SIGN THIS CONTRACT.
+            </p>
+          </div>
+
+          {/* checkbox terms and condition with link to terms and condition which will open a modal  */}
+          <div className="flex mb-6 flex-col items-start">
+            <div className="flex items-center justify-center">
+              <label className="flex items-center justify-center">
+                <input
+                  type="checkbox"
+                  {...register("termsAndConditions")}
+                  className="form-checkbox mr-2"
+                />
+                <span>I have read and agree to the</span>
+                <AnimatedModalDemo />
+              </label>
+            </div>
+            {errors.termsAndConditions && (
+              <div className="text-red-500 text-sm">
+                {errors.termsAndConditions.message}
+              </div>
+            )}
           </div>
 
           <div className="text-center">

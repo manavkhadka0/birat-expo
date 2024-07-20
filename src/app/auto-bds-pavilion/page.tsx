@@ -20,6 +20,7 @@ type StallInfo = {
 const AutoPage = () => {
   const router = useRouter();
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const onAvailableStallClick = useCallback((stallId: string) => {
     setSelectedStalls((prevSelected) => {
@@ -43,7 +44,25 @@ const AutoPage = () => {
 
   const handleProceed = () => {
     if (selectedStalls.length > 0) {
-      router.push(`/book-stalls?stalls=${selectedStalls.join(",")}`);
+      // selected stalls start with A are from Auto Pavilion
+      // selected stalls start with E are from BDS Pavilion
+      // if both are selected alert user to select only one type of stalls
+      if (
+        selectedStalls.some((stall) => stall.startsWith("A")) &&
+        selectedStalls.some((stall) => stall.startsWith("E"))
+      ) {
+        alert("Please select stalls only from one pavilion");
+        return;
+      }
+      const type = selectedStalls[0].startsWith("A")
+        ? "Automobiles"
+        : "BDS Providers Stall";
+
+      router.push(
+        `/book-stalls?stalls=${selectedStalls.join(
+          ","
+        )}&total=${totalPrice}&type=${type}`
+      );
     }
   };
 
@@ -73,6 +92,9 @@ const AutoPage = () => {
           reservedStalls: reservedStalls,
           onAvailableStallClick: onAvailableStallClick,
           selectedStalls: selectedStalls,
+          stallPrice: 60000,
+          totalPrice: totalPrice,
+          setTotalPrice: setTotalPrice,
         }}
       />
     </div>
