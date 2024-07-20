@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import Image from "next/image";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -52,8 +52,6 @@ const schema = yup.object().shape({
     .oneOf([true], "Please accept terms and conditions"),
 });
 
-type FormData = yup.InferType<typeof schema>;
-
 function convertCamelToSnake(camelCaseString: string) {
   // Insert underscore before each uppercase letter and convert to lowercase
   let snakeCaseString = camelCaseString
@@ -89,7 +87,7 @@ const ExhibitionForm = () => {
   const advanceAmount = watch("advanceAmount");
   const totalAmount = watch("totalAmount");
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue("remainingAmount", totalAmount - advanceAmount);
   }, [advanceAmount, setValue, totalAmount]);
 
