@@ -8,7 +8,7 @@ const Footer = () => {
   const [expandedSection, setExpandedSection] = useState<null | number>(null);
 
   return (
-    <footer className="bg-gray-100 text-gray-800 py-12">
+    <footer className="bg-white border-t text-gray-800 py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="space-y-6">
@@ -81,7 +81,7 @@ const Footer = () => {
             ))}
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-6 z-0">
             <h2 className="text-2xl font-bold mb-4">Technical Partner</h2>
             <Link
               href="https://baliyoventures.com"

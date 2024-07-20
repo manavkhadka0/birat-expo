@@ -146,10 +146,9 @@ const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
 
   return (
     <>
-      <div className="text-center text-bold text-xl">
-        {" "}
-        Total Price: Rs. {totalPrice.toLocaleString()}
-      </div>
+      <h2 className="text-center mb-4 px-4 text-extrabold text-xl">
+        {"Total Price: Rs. " + totalPrice.toLocaleString()}
+      </h2>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -158,7 +157,7 @@ const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
         viewBox="0 0 1992.75 1007.249969"
         preserveAspectRatio="xMidYMid meet"
         version="1.0"
-        height={500}
+        height={300}
         width="100%"
       >
         <defs>

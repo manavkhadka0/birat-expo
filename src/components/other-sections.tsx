@@ -194,7 +194,9 @@ export const IntroSection = () => (
 
 export const ObjectivesSection = () => (
   <section className="mb-16">
-    <h3 className="text-3xl font-bold text-gray-800 mb-6">Our Objectives</h3>
+    <h2 className="text-4xl font-black text-start mb-5 border-l-[5px] ps-2 border-blue-800 text-gray-800">
+      Birat Expo'24 Objectives
+    </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {objectives.map((objective, index) => (
         <div
@@ -204,7 +206,9 @@ export const ObjectivesSection = () => (
           <h4 className="text-base font-semibold text-blue-800 mb-2">
             {objective.title}
           </h4>
-          <p className="text-gray-600">{objective.description}</p>
+          <p className="text-gray-600 text-sm leading-6">
+            {objective.description}
+          </p>
         </div>
       ))}
     </div>
@@ -213,7 +217,9 @@ export const ObjectivesSection = () => (
 
 export const AttractionsSection = () => (
   <section className="mb-16">
-    <h3 className="text-3xl font-bold text-gray-800 mb-6">Major Attractions</h3>
+    <h2 className="text-4xl font-black text-start mb-5 border-l-[5px] ps-2 border-blue-800 text-gray-800">
+      Major Attractions
+    </h2>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {attractions.map((attraction, index) => (
         <div
@@ -223,7 +229,9 @@ export const AttractionsSection = () => (
           <h4 className="text-base font-semibold text-blue-800 mb-2">
             {attraction.title}
           </h4>
-          <p className="text-gray-600">{attraction.description}</p>
+          <p className="text-gray-600 text-sm leading-6">
+            {attraction.description}
+          </p>
         </div>
       ))}
     </div>
@@ -232,24 +240,27 @@ export const AttractionsSection = () => (
 
 export const SponsorshipSection = () => (
   <section className="mb-16">
-    <h3 className="text-3xl font-bold text-gray-800 mb-6">
-      Sponsorship Opportunities
-    </h3>
+    <h2 className="text-4xl font-black text-start mb-5 border-l-[5px] ps-2 border-blue-800 text-gray-800">
+      Birat Expo'24 Sponsorship Opportunities
+    </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {sponsorshipLevels.map((level, index) => (
         <div
           key={index}
           className="bg-white p-6 rounded-lg border border-gray-200 transition-shadow"
         >
-          <h4 className="text-base font-semibold text-blue-800 mb-2">
+          <p className="text-xl font-bold text-gray-800">{level.price}</p>
+          <h4 className="text-base font-semibold text-blue-900 mb-5 mt-2">
             {level.title}
           </h4>
-          <p className="text-sm font-bold text-gray-800 mb-4">{level.price}</p>
-          <ul className="text-gray-600 list-disc">
+          <ul className="text-gray-600 list-disc leading-7 text-xs">
             {level.benefits.map((benefit, i) => (
               <li key={i}>{benefit}</li>
             ))}
           </ul>
+          <button className="my-4 border-gray-300 rounded-md border w-full py-2 text-sm hover:bg-gray-100">
+            View Proposal
+          </button>
         </div>
       ))}
     </div>

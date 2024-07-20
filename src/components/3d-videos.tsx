@@ -2,9 +2,9 @@ import React from "react";
 
 const ThreeDVideos = () => {
   return (
-    <div className="container mx-auto px-4 py-16 ">
-      <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
-        3D Videos
+    <div className="mx-auto py-20">
+      <h2 className="text-4xl font-black text-start mb-12 text-gray-800">
+        Birat Expo 3D Visualization
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -18,12 +18,9 @@ const ThreeDVideos = () => {
             ></iframe>
           </div>
           <div className="p-6">
-            <h3 className="text-2xl font-semibold text-gray-800 mb-2">
-              3D Video &apos;22
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              3D Video Birat Expo&apos;22
             </h3>
-            <p className="text-gray-600">
-              Experience our groundbreaking 3D technology from 2022.
-            </p>
           </div>
         </div>
 
@@ -37,12 +34,9 @@ const ThreeDVideos = () => {
             ></iframe>
           </div>
           <div className="p-6">
-            <h3 className="text-2xl font-semibold text-gray-800 mb-2">
-              3D Video &apos;24
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              3D Video Birat Expo&apos;24
             </h3>
-            <p className="text-gray-600">
-              Discover the latest advancements in our 3D technology for 2024.
-            </p>
           </div>
         </div>
       </div>

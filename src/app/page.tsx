@@ -32,9 +32,14 @@ export default function Home() {
     <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8 overflow-hidden">
       <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
         <div className="w-full md:w-1/2 flex flex-col gap-10 items-center md:items-start">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-4">
-            Birat Expo 2024
-          </h2>
+          <div>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 uppercase">
+              Birat Expo 2024
+            </h2>
+            <p className="tracking-[0.5rem]">
+              Bridging Innovation and Investment
+            </p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
             {stalls.map((stall, index) => (
               <Link href={stall.href} key={index}>
@@ -81,8 +86,11 @@ export default function Home() {
         <AboutEvent />
       </div> */}
       {/* <IntroSection /> */}
+      <div className="py-10"></div>
       <ObjectivesSection />
+      <div className="py-10"></div>
       <SponsorshipSection />
+      <div className="py-10"></div>
       <AttractionsSection />
     </div>
   );

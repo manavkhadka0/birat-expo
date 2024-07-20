@@ -22,27 +22,24 @@ const StallArea = ({
   const router = useRouter();
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <nav className="mb-8">
+    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 pb-40">
+      <div className="container mx-auto px-4 py-5 sm:px-6 lg:px-8">
+        <nav className="mb-12 mt-3 flex items-center justify-start gap-4">
           <Link
             href="/"
-            className="text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out"
+            className="text-gray-600 hover:text-blue-800 transition duration-300 ease-in-out border border-gray-800 px-2 py-1 text-sm rounded-lg"
           >
             ← Back to Home
           </Link>
+          <header>
+            <h1 className="text-xl sm:text-2xl md:text-2xl  font-extrabold text-gray-900 ">
+              {title}
+            </h1>
+          </header>
         </nav>
 
-        <header className="mb-12 ">
-          <h1 className="text-xl sm:text-2xl md:text-3xl  font-extrabold text-gray-900 mb-4">
-            {title}
-          </h1>
-          <p className="text-xl text-gray-600">{subtitle}</p>
-        </header>
-
-        <StallLegend legendItems={legendItems} />
-
-        <section className="bg-white rounded-lg shadow-lg p-6 overflow-x-auto">
+        <section className="bg-white rounded-lg shadow-lg p-6 overflow-x-auto pb-20">
+          <StallLegend legendItems={legendItems} />
           <StallComponent
             {...stallProps}
             onAvailableStallClick={stallProps.onAvailableStallClick}

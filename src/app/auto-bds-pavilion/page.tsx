@@ -49,7 +49,7 @@ const AutoPage = () => {
   return (
     <div className="relative">
       {selectedStalls.length > 0 && (
-        <div className="fixed gap-4 bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center">
+        <div className="fixed gap-4 bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center z-50 bg-white px-10 py-10 rounded-md shadow-lg">
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 text-lg rounded-full shadow-lg">
             Selected ({selectedStalls.join(",")})
           </button>
