@@ -91,20 +91,33 @@ const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
           companyName ? ` - ${companyName}` : ""
         }`;
 
+        const isBookedOrReserved =
+          bookedStalls.some((s) => s.id === stallId) ||
+          reservedStalls.some((s) => s.id === stallId);
+
         parentG.onmouseover = () => {
-          updateStallStyle(stallId, defaultColor, "pointer", 0.5);
+          updateStallStyle(
+            stallId,
+            defaultColor,
+            isBookedOrReserved ? "not-allowed" : "pointer",
+            0.5
+          );
           showTooltip(tooltipContent, parentG);
         };
         parentG.onmouseout = () => {
           updateStallStyle(
             stallId,
             selectedStalls.includes(stallId) ? "#00ff00" : defaultColor,
-            "pointer",
+            isBookedOrReserved ? "not-allowed" : "pointer",
             1
           );
           hideTooltip();
         };
-        parentG.onclick = () => onAvailableStallClick(stallId);
+        if (!isBookedOrReserved) {
+          parentG.onclick = () => onAvailableStallClick(stallId);
+        } else {
+          parentG.onclick = null; // Remove click event for booked/reserved stalls
+        }
       }
     };
 

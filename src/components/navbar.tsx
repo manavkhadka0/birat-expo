@@ -122,7 +122,6 @@ const Navbar = () => {
                   className={`px-4 py-2 bg-white text-sm text-gray-900 flex flex-col justify-center items-center hover:text-blue-600 transition-colors duration-200 ${
                     item.className || ""
                   }`}
-                  target={item.target}
                   rel={item.rel}
                 >
                   {item.title}
@@ -207,7 +206,6 @@ const Navbar = () => {
                   className={`text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200 ${
                     item.className || ""
                   }`}
-                  target={item.target}
                   rel={item.rel}
                 >
                   {item.title}

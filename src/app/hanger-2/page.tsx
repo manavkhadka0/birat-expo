@@ -63,56 +63,17 @@ const Hanger2Page = () => {
       />
 
       {selectedStalls.length > 0 && (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 text-lg rounded-full shadow-lg"
-          >
-            View Selected ({selectedStalls.length})
+        <div className="fixed gap-4 bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center z-50 bg-white px-10 py-10 rounded-md shadow-lg">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 text-lg rounded-full shadow-lg">
+            Selected ({selectedStalls.join(",")})
           </button>
-        </div>
-      )}
 
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-          onClick={() => setIsModalOpen(false)}
-        >
-          <div
-            className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
-            onClick={(e) => e.stopPropagation()}
+          <button
+            onClick={handleProceed}
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 text-lg rounded-full shadow-lg"
           >
-            <div className="mt-3 text-center">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Selected Stalls
-              </h3>
-              <div className="mt-2 px-7 py-3">
-                <ul className="text-sm text-gray-500">
-                  {selectedStalls.map((stall) => (
-                    <li key={stall} className="mb-1">
-                      {stall}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="items-center px-4 py-3">
-                <button
-                  onClick={handleProceed}
-                  className="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300"
-                >
-                  Proceed with Selected Stalls
-                </button>
-              </div>
-              <div className="items-center px-4 py-3">
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
+            Proceed with Selected Stalls
+          </button>
         </div>
       )}
     </div>

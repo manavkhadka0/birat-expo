@@ -195,7 +195,7 @@ export const IntroSection = () => (
 export const ObjectivesSection = () => (
   <section className="mb-16">
     <h2 className="text-4xl font-black text-start mb-5 border-l-[5px] ps-2 border-blue-800 text-gray-800">
-      Birat Expo'24 Objectives
+      Birat Expo&apos;24 Objectives
     </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {objectives.map((objective, index) => (
@@ -241,7 +241,7 @@ export const AttractionsSection = () => (
 export const SponsorshipSection = () => (
   <section className="mb-16">
     <h2 className="text-4xl font-black text-start mb-5 border-l-[5px] ps-2 border-blue-800 text-gray-800">
-      Birat Expo'24 Sponsorship Opportunities
+      Birat Expo&apos;24 Sponsorship Opportunities
     </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {sponsorshipLevels.map((level, index) => (

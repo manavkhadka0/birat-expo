@@ -25,20 +25,12 @@ export default function Home() {
             </p>
           </div>
 
-          <StallsList></StallsList>
+          <StallsList />
 
           <div className="flex flex-col sm:flex-row items-center justify-start gap-4">
-            <a
-              href="/floor-plan.pdf"
-              target="_blank"
-              rel="noreferrer"
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 transition duration-200 rounded-lg text-white shadow-[0px_2px_0px_0px_#FFFFFF40_inset]"
-            >
-              Book Stalls
-            </a>
             <Link
               href="/all-stalls"
-              className="px-4 py-2 text-black hover:underline"
+              className="px-4 py-2 text-black bg-gray-200 rounded-md hover:underline"
             >
               Event & Sponsorship Details
             </Link>

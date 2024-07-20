@@ -66,7 +66,6 @@ const Footer = () => {
                     className={`block text-sm hover:text-blue-600 transition-colors ${
                       item.className || ""
                     }`}
-                    target={item.target}
                     rel={item.rel}
                   >
                     {item.title}
