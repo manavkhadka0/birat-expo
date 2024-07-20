@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { AnimatedModalDemo } from "./terms-and-conditions";
 import { useSearchParams } from "next/navigation";
+import axios from "axios";
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
@@ -53,6 +54,18 @@ const schema = yup.object().shape({
 
 type FormData = yup.InferType<typeof schema>;
 
+function convertCamelToSnake(camelCaseString) {
+  // Insert underscore before each uppercase letter and convert to lowercase
+  let snakeCaseString = camelCaseString
+    .replace(/([A-Z])/g, "_$1")
+    .toLowerCase();
+  // Remove leading underscore if it exists
+  if (snakeCaseString.startsWith("_")) {
+    snakeCaseString = snakeCaseString.slice(1);
+  }
+  return snakeCaseString;
+}
+
 const ExhibitionForm = () => {
   const searchParams = useSearchParams();
   const {
@@ -81,7 +94,27 @@ const ExhibitionForm = () => {
   }, [advanceAmount, setValue, totalAmount]);
 
   const onSubmit = (data: any) => {
-    console.log(JSON.stringify(data, null, 2));
+    const formData = new FormData();
+    for (const key in data) {
+      if (key === "voucher") {
+        formData.append(convertCamelToSnake(key), data[key][0]);
+      } else {
+        formData.append(convertCamelToSnake(key), data[key]);
+      }
+    }
+
+    axios
+      .post("https://yachu.baliyoventures.com/api/stall/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -299,10 +332,10 @@ const ExhibitionForm = () => {
                 <select
                   {...register("mergeOrSeparate")}
                   className=" rounded border p-2"
-                  defaultValue={"separate"}
+                  defaultValue={"Separate"}
                 >
-                  <option value="merge">Merge</option>
-                  <option value="separate">Separate</option>
+                  <option value="Merge">Merge</option>
+                  <option value="Separate">Separate</option>
                 </select>
                 {errors.mergeOrSeparate && (
                   <p className="text-red-500 text-sm">
