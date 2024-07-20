@@ -3,70 +3,75 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+export const navItems = [
+  {
+    title: "Book Stalls",
+    items: [
+      { title: "Automobiles Stalls", href: "/auto-bds-pavilion" },
+      {
+        title: "Business Development Service Providers",
+        href: "/auto-bds-pavilion",
+      },
+      {
+        title: "Hanger 1 : Industrial and Corporate Stalls",
+        href: "/hanger-1",
+      },
+      {
+        title: "Hanger 2 : Industrial and Corporate Stalls",
+        href: "/hanger-2",
+      },
+      { title: "Agro and SME Stalls", href: "/hanger-3" },
+      { title: "Food Stalls", href: "/food-stalls" },
+    ],
+  },
+  {
+    title: "Sponsorship",
+    items: [
+      { title: "Main Sponsor", href: "/sponsorship#main-sponsor" },
+      {
+        title: "Powered By Sponsor",
+        href: "/sponsorship#powered-by-sponsor",
+      },
+      { title: "Platinum Sponsor", href: "/sponsorship#platinum-sponsor" },
+      { title: "Diamond Sponsor", href: "/sponsorship#diamond-sponsor" },
+      { title: "Gold Sponsor", href: "/sponsorship#gold-sponsor" },
+      {
+        title: "Partner (Bank, Insurance, Telecom,etc)",
+        href: "/sponsorship#partner-(bank,-insurance,-digital-and-others)",
+      },
+      { title: "Silver Sponsor", href: "/sponsorship#silver-sponsor" },
+    ],
+  },
+  {
+    title: "Birat Expo'24",
+    subtitle: "Coming soon",
+    subtitleClass: "text-green-700",
+    href: "#",
+  },
+  {
+    title: "Birat Expo'22",
+    subtitle: "Past Event",
+    subtitleClass: "text-red-700",
+    href: "#",
+  },
+  {
+    title: "Floor Plan",
+    href: "/floor-plan.pdf",
+    target: "_blank",
+    rel: "noreferrer",
+  },
+  {
+    title: "Proposal",
+    className: "",
+    href: "/Birat Expo 2024 - Proposal.pdf",
+    target: "_blank",
+    rel: "noreferrer",
+  },
+];
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
-  const navItems = [
-    {
-      title: "Book Stalls",
-      items: [
-        { title: "Automobiles Stalls", href: "/auto-bds-pavilion" },
-        {
-          title: "Business Development Service Providers",
-          href: "/auto-bds-pavilion",
-        },
-        {
-          title: "Hanger 1 : Industrial and Corporate Stalls",
-          href: "/hanger-1",
-        },
-        {
-          title: "Hanger 2 : Industrial and Corporate Stalls",
-          href: "/hanger-2",
-        },
-        { title: "Agro and SME Stalls", href: "/hanger-3" },
-        { title: "Food Stalls", href: "/food-stalls" },
-      ],
-    },
-    {
-      title: "Sponsorship",
-      items: [
-        { title: "Main Sponsor", href: "#" },
-        { title: "Powered By Sponsor", href: "#" },
-        { title: "Platinum Sponsor", href: "#" },
-        { title: "Diamond Sponsor", href: "#" },
-        { title: "Gold Sponsor", href: "#" },
-        { title: "Partner [Bank, Insurance, Telecom,etc]", href: "#" },
-        { title: "Silver Sponsor", href: "#" },
-      ],
-    },
-    {
-      title: "Birat Expo'24",
-      subtitle: "Coming soon",
-      subtitleClass: "text-green-700",
-      href: "#",
-    },
-    {
-      title: "Birat Expo'22",
-      subtitle: "Past Event",
-      subtitleClass: "text-red-700",
-      href: "#",
-    },
-    {
-      title: "Floor Plan",
-      href: "/floor-plan.pdf",
-      target: "_blank",
-      rel: "noreferrer",
-    },
-    {
-      title: "Proposal",
-      className: "",
-      href: "/Birat Expo 2024 - Proposal.pdf",
-      target: "_blank",
-      rel: "noreferrer",
-    },
-  ];
 
   return (
     <nav className="bg-white px-4 sticky shadow-2xl top-0 z-50">

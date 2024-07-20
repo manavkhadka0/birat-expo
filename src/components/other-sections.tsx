@@ -87,7 +87,7 @@ const attractions = [
   },
 ];
 
-const sponsorshipLevels = [
+export const sponsorshipLevels = [
   {
     title: "Main Sponsor",
     price: "NRS. 75,00,000",
@@ -199,9 +199,9 @@ export const ObjectivesSection = () => (
       {objectives.map((objective, index) => (
         <div
           key={index}
-          className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+          className="bg-white p-6 rounded-lg border border-gray-200 transition-shadow"
         >
-          <h4 className="text-xl font-semibold text-blue-600 mb-2">
+          <h4 className="text-base font-semibold text-blue-800 mb-2">
             {objective.title}
           </h4>
           <p className="text-gray-600">{objective.description}</p>
@@ -218,9 +218,9 @@ export const AttractionsSection = () => (
       {attractions.map((attraction, index) => (
         <div
           key={index}
-          className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+          className="bg-white p-6 rounded-lg border border-gray-200 transition-shadow"
         >
-          <h4 className="text-xl font-semibold text-blue-600 mb-2">
+          <h4 className="text-base font-semibold text-blue-800 mb-2">
             {attraction.title}
           </h4>
           <p className="text-gray-600">{attraction.description}</p>
@@ -239,13 +239,13 @@ export const SponsorshipSection = () => (
       {sponsorshipLevels.map((level, index) => (
         <div
           key={index}
-          className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+          className="bg-white p-6 rounded-lg border border-gray-200 transition-shadow"
         >
-          <h4 className="text-2xl font-semibold text-blue-600 mb-2">
+          <h4 className="text-base font-semibold text-blue-800 mb-2">
             {level.title}
           </h4>
-          <p className="text-xl font-bold text-gray-800 mb-4">{level.price}</p>
-          <ul className="text-gray-600 list-disc list-inside">
+          <p className="text-sm font-bold text-gray-800 mb-4">{level.price}</p>
+          <ul className="text-gray-600 list-disc">
             {level.benefits.map((benefit, i) => (
               <li key={i}>{benefit}</li>
             ))}

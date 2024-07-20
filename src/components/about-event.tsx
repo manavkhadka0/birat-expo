@@ -6,7 +6,7 @@ type EventFeatureProps = {
   description: string;
 };
 const EventFeature = ({ icon, title, description }: EventFeatureProps) => (
-  <div className="flex flex-col items-center text-center">
+  <div className="flex flex-col items-start">
     <Image src={icon} alt={title} width={80} height={80} className="mb-4" />
     <h3 className="text-xl font-semibold mb-2">{title}</h3>
     <p className="text-sm">{description}</p>

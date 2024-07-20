@@ -1,3 +1,4 @@
+import ThreeDVideos from "@/components/3d-videos";
 import AboutEvent from "@/components/about-event";
 import {
   AttractionsSection,
@@ -28,17 +29,26 @@ export default function Home() {
   ];
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8 overflow-hidden">
       <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
-        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start">
-          <Image
-            src="/title.png"
-            alt="title"
-            className="max-w-full h-auto"
-            width={300}
-            height={500}
-          />
-          <div className="flex flex-col sm:flex-row items-center justify-start gap-4 mt-6">
+        <div className="w-full md:w-1/2 flex flex-col gap-10 items-center md:items-start">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-4">
+            Birat Expo 2024
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+            {stalls.map((stall, index) => (
+              <Link href={stall.href} key={index}>
+                <div className="flex items-center bg-gray-100 rounded-lg p-3 hover:bg-gray-200 transition duration-200">
+                  <span className="text-2xl mr-3">{stall.emoji}</span>
+                  <span className="text-sm font-medium flex-grow">
+                    {stall.name}
+                  </span>
+                  <span className="text-gray-400">›</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-start gap-4">
             <a
               href="/floor-plan.pdf"
               target="_blank"
@@ -65,23 +75,12 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-        {stalls.map((stall, index) => (
-          <Link href={stall.href} key={index}>
-            <div className="flex items-center bg-gray-100 rounded-lg p-3 hover:bg-gray-200 transition duration-200">
-              <span className="text-2xl mr-3">{stall.emoji}</span>
-              <span className="text-sm font-medium flex-grow">
-                {stall.name}
-              </span>
-              <span className="text-gray-400">›</span>
-            </div>
-          </Link>
-        ))}
-      </div>
-      <div className="mb-12">
+
+      <ThreeDVideos />
+      {/* <div className="mb-12">
         <AboutEvent />
-      </div>
-      <IntroSection />
+      </div> */}
+      {/* <IntroSection /> */}
       <ObjectivesSection />
       <SponsorshipSection />
       <AttractionsSection />

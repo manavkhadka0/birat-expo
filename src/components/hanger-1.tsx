@@ -9,6 +9,7 @@ type HangerOneProps = {
   primeStallsType2: string[];
   notAvailableStalls: string[];
   toiletStalls: string[];
+  selectedStalls: string[];
   onAvailableStallClick: (stallId: string) => void;
 };
 
@@ -19,6 +20,7 @@ const Hanger1 = ({
   primeStallsType2,
   notAvailableStalls,
   toiletStalls,
+  selectedStalls,
   onAvailableStallClick,
 }: HangerOneProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -59,7 +61,12 @@ const Hanger1 = ({
         parentG.onmouseover = () =>
           updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
         parentG.onmouseout = () =>
-          updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 1);
+          updateStallColorAndCursor(
+            clipPathId,
+            selectedStalls.includes(clipPathId) ? "#00ff00" : defaultColor,
+            "pointer",
+            1
+          );
         if (isClickable) {
           parentG.onclick = () => onAvailableStallClick(clipPathId);
         }
@@ -93,15 +100,17 @@ const Hanger1 = ({
     // Handle prime stalls
     primeStallsType1.forEach((stall) => {
       if (!reservedStalls.includes(stall) && !bookedStalls.includes(stall)) {
-        updateStallColorAndCursor(stall, "#f5aeae", "pointer");
-        setStallInteraction(stall, "#f5aeae", true);
+        const color = selectedStalls.includes(stall) ? "#00ff00" : "#f5aeae";
+        updateStallColorAndCursor(stall, color, "pointer");
+        setStallInteraction(stall, color, true);
       }
     });
 
     primeStallsType2.forEach((stall) => {
       if (!reservedStalls.includes(stall) && !bookedStalls.includes(stall)) {
-        updateStallColorAndCursor(stall, "#f3efa3", "pointer");
-        setStallInteraction(stall, "#f3efa3", true);
+        const color = selectedStalls.includes(stall) ? "#00ff00" : "#f3efa3";
+        updateStallColorAndCursor(stall, color, "pointer");
+        setStallInteraction(stall, color, true);
       }
     });
 
@@ -117,7 +126,7 @@ const Hanger1 = ({
       removeStallInteraction(stall);
     });
 
-    // Set the default color for available stalls
+    // Set the color for available and selected stalls
     const allStalls = Array.from(svg.querySelectorAll("g[clip-path] path"));
     allStalls.forEach((stall) => {
       const parentG = stall.closest("g[clip-path]");
@@ -134,7 +143,9 @@ const Hanger1 = ({
         !notAvailableStalls.includes(clipPathId) &&
         !toiletStalls.includes(clipPathId)
       ) {
-        const defaultColor = "#fff"; // Available stalls color
+        const defaultColor = selectedStalls.includes(clipPathId)
+          ? "#00ff00"
+          : "#fff";
         updateStallColorAndCursor(clipPathId, defaultColor, "pointer");
         setStallInteraction(clipPathId, defaultColor, true);
       }
@@ -146,6 +157,7 @@ const Hanger1 = ({
     primeStallsType2,
     notAvailableStalls,
     toiletStalls,
+    selectedStalls,
     onAvailableStallClick,
   ]);
 

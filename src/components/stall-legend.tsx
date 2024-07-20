@@ -13,7 +13,7 @@ type StallLegendProps = {
 
 const StallLegend: React.FC<StallLegendProps> = ({ legendItems }) => {
   return (
-    <div className="p-4 bg-gray-100 rounded-lg my-2 shadow-md">
+    <div className="p-4 mb-12 bg-white rounded-lg my-2 shadow-lg">
       <h2 className="text-lg font-semibold mb-3">Color Legend</h2>
       <div className="space-x-2 flex flex-wrap">
         {legendItems.map((item, index) => (

@@ -21,11 +21,6 @@ const StallArea = ({
 }: StallAreaProps) => {
   const router = useRouter();
 
-  const handleAvailableStallClick = (stallId: string) => {
-    console.log("Available stall clicked:", stallId);
-    router.push(`/book-stall/${stallId}`);
-  };
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
@@ -38,24 +33,19 @@ const StallArea = ({
           </Link>
         </nav>
 
-        <header className="mb-12 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-4">
+        <header className="mb-12 ">
+          <h1 className="text-xl sm:text-2xl md:text-3xl  font-extrabold text-gray-900 mb-4">
             {title}
           </h1>
           <p className="text-xl text-gray-600">{subtitle}</p>
         </header>
 
-        <section className="bg-white rounded-lg shadow-lg p-6 mb-12">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Stall Legend
-          </h2>
-          <StallLegend legendItems={legendItems} />
-        </section>
+        <StallLegend legendItems={legendItems} />
 
         <section className="bg-white rounded-lg shadow-lg p-6 overflow-x-auto">
           <StallComponent
             {...stallProps}
-            onAvailableStallClick={handleAvailableStallClick}
+            onAvailableStallClick={stallProps.onAvailableStallClick}
           />
         </section>
       </div>

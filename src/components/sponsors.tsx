@@ -2,15 +2,17 @@
 
 import React, { useEffect, useRef } from "react";
 
-type HangerThreeProps = {
+type FoodProps = {
   bookedStalls: string[];
+  selectedStalls: string[];
   onAvailableStallClick: (stallId: string) => void;
 };
 
 const Sponsors = ({
   bookedStalls,
+  selectedStalls,
   onAvailableStallClick,
-}: HangerThreeProps) => {
+}: FoodProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -49,7 +51,12 @@ const Sponsors = ({
         parentG.onmouseenter = () =>
           updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
         parentG.onmouseleave = () =>
-          updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 1);
+          updateStallColorAndCursor(
+            clipPathId,
+            selectedStalls.includes(clipPathId) ? "#00ff00" : defaultColor,
+            "pointer",
+            1
+          );
         if (isClickable) {
           parentG.onclick = () => onAvailableStallClick(clipPathId);
         }
@@ -74,7 +81,7 @@ const Sponsors = ({
       removeStallInteraction(stall);
     });
 
-    // Set the default color for available stalls
+    // Set the color for available and selected stalls
     const allStalls = Array.from(svg.querySelectorAll("g[clip-path] path"));
     allStalls.forEach((stall) => {
       const parentG = stall.closest("g[clip-path]");
@@ -83,12 +90,14 @@ const Sponsors = ({
         ?.replace("url(#", "")
         .replace(")", "");
       if (clipPathId && !bookedStalls.includes(clipPathId)) {
-        const defaultColor = "#d54596"; // Available stalls color
+        const defaultColor = selectedStalls.includes(clipPathId)
+          ? "#00ff00"
+          : "#6fbe49";
         updateStallColorAndCursor(clipPathId, defaultColor, "pointer");
         setStallInteraction(clipPathId, defaultColor, true);
       }
     });
-  }, [bookedStalls, onAvailableStallClick]);
+  }, [bookedStalls, selectedStalls, onAvailableStallClick]);
 
   return (
     <svg
