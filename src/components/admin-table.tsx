@@ -27,6 +27,29 @@ interface Stall {
   updated_at: string;
 }
 
+type ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+};
+
+const Modal = ({ isOpen, onClose, children }: ModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-end">
+          <button onClick={onClose} className="text-xl font-bold">
+            &times;
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const AdminTable: React.FC = () => {
   const { stallData, stallDataEmpty, stallDataError, stallDataLoading } =
     useGetStallData();
@@ -35,6 +58,31 @@ const AdminTable: React.FC = () => {
     key: keyof Stall;
     direction: "asc" | "desc";
   } | null>(null);
+  const [selectedStall, setSelectedStall] = useState<Stall | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Approved":
+        return "text-green-600";
+      case "Rejected":
+        return "text-red-600";
+      default:
+        return "text-yellow-600";
+    }
+  };
+
+  const handleViewDetails = async (id: number) => {
+    try {
+      const response = await axios.get(
+        `https://yachu.baliyoventures.com/api/stall/${id}/`
+      );
+      setSelectedStall(response.data);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching stall details:", error);
+    }
+  };
 
   const handleStatusChange = async (
     id: number,
@@ -46,14 +94,19 @@ const AdminTable: React.FC = () => {
       await axios.post(
         `https://yachu.baliyoventures.com/api/${endpoint}/${id}/`
       );
-      // After successful change, you might want to refetch the data
-      // This depends on how your useGetStallData hook is implemented
-      //   refresh the data
-      //   mutate("https://yachu.baliyoventures.com/api/stall/");
+      // Update the selected stall status
+      if (selectedStall && selectedStall.id === id) {
+        setSelectedStall({ ...selectedStall, status: newStatus });
+      }
+      // Close the modal if approving from within it
+      if (newStatus === "Approved" && isModalOpen) {
+        setIsModalOpen(false);
+      }
+      // Refresh the data
+      mutate("https://yachu.baliyoventures.com/api/stall/");
     } catch (error) {
       console.error("Error updating status:", error);
     }
-    mutate("https://yachu.baliyoventures.com/api/stall/");
   };
 
   const handleSort = (key: keyof Stall) => {
@@ -148,6 +201,7 @@ const AdminTable: React.FC = () => {
               </th>
               <th className="py-3 px-6 text-left">Status</th>
               <th className="py-3 px-6 text-left">Action</th>
+              <th className="py-3 px-6 text-left">Details</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
@@ -183,11 +237,79 @@ const AdminTable: React.FC = () => {
                     <option value="Rejected">Rejected</option>
                   </select>
                 </td>
+
+                <td className="py-3 px-6 text-left">
+                  <button
+                    onClick={() => handleViewDetails(item.id)}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                  >
+                    View Details
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {selectedStall && (
+          <>
+            <div className="bg-white rounded-lg shadow-xl p-6">
+              <h2 className="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">
+                {selectedStall.company}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {Object.entries(selectedStall).map(([key, value]) => {
+                  if (key === "company") return null; // Skip company as it's already in the title
+                  return (
+                    <div key={key} className="flex flex-col">
+                      <span className="text-sm font-semibold text-gray-600 uppercase">
+                        {key.replace(/_/g, " ")}
+                      </span>
+                      {key === "voucher" ? (
+                        <a
+                          href={value as string}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline mt-1"
+                        >
+                          View Voucher
+                        </a>
+                      ) : key === "status" ? (
+                        <span
+                          className={`mt-1 font-semibold ${getStatusColor(
+                            value as string
+                          )}`}
+                        >
+                          {value as string}
+                        </span>
+                      ) : (
+                        <span className="mt-1">{value as React.ReactNode}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-8 flex justify-end space-x-4">
+                <button
+                  onClick={() =>
+                    handleStatusChange(selectedStall.id, "Approved")
+                  }
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition duration-300"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </Modal>
     </div>
   );
 };

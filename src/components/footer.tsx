@@ -80,7 +80,7 @@ const Footer = () => {
             ))}
           </div>
 
-          <div className="space-y-6 z-0">
+          <div className="space-y-6 -z-3">
             <h2 className="text-2xl font-bold mb-4">Technical Partner</h2>
             <Link
               href="https://baliyoventures.com"
