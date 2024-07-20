@@ -2,8 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-const STALL_PRICE = 100000; // Rs. 1,00,000
-
 type StallInfo = {
   id: string;
   companyName?: string;
@@ -11,6 +9,9 @@ type StallInfo = {
 
 type FoodProps = {
   bookedStalls: StallInfo[];
+  stallPrice: number;
+  totalPrice: number;
+  setTotalPrice: (price: number) => void;
   selectedStalls: string[];
   onAvailableStallClick: (stallId: string) => void;
 };
@@ -18,17 +19,19 @@ type FoodProps = {
 const Food: React.FC<FoodProps> = ({
   bookedStalls,
   selectedStalls,
+  setTotalPrice,
+  stallPrice,
+  totalPrice,
   onAvailableStallClick,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const svg = svgRef.current;
     if (!svg) return;
 
     // Update total price
-    setTotalPrice(selectedStalls.length * STALL_PRICE);
+    setTotalPrice(selectedStalls.length * stallPrice);
 
     const updateStallColorAndCursor = (
       clipPathId: string,
@@ -95,7 +98,7 @@ const Food: React.FC<FoodProps> = ({
             ? "Selected"
             : "Available";
           tooltip = showTooltip(
-            `Food Stall ${clipPathId} - Rs. ${STALL_PRICE.toLocaleString()} - ${status}`,
+            `Food Stall ${clipPathId} - Rs. ${stallPrice.toLocaleString()} - ${status}`,
             parentG
           );
         };

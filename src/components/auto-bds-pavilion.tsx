@@ -156,7 +156,14 @@ const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
     });
 
     setTotalPrice(selectedStalls.length * stallPrice);
-  }, [bookedStalls, reservedStalls, selectedStalls, onAvailableStallClick]);
+  }, [
+    bookedStalls,
+    reservedStalls,
+    selectedStalls,
+    onAvailableStallClick,
+    setTotalPrice,
+    stallPrice,
+  ]);
 
   // showTooltip and hideTooltip functions remain the same
 

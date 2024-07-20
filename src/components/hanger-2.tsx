@@ -2,18 +2,25 @@
 
 import React, { useEffect, useRef } from "react";
 
+type StallInfo = {
+  id: string;
+  companyName?: string;
+};
+
 type HangerOneProps = {
-  reservedStalls: string[];
-  bookedStalls: string[];
+  reservedStalls: StallInfo[];
+  bookedStalls: StallInfo[];
   primeStallsType1: string[];
   primeStallsType2: string[];
   notAvailableStalls: string[];
   toiletStalls: string[];
   selectedStalls: string[];
   onAvailableStallClick: (stallId: string) => void;
+  totalPrice: number;
+  setTotalPrice: (price: number) => void;
 };
 
-const Hanger2 = ({
+const Hanger2: React.FC<HangerOneProps> = ({
   bookedStalls,
   reservedStalls,
   primeStallsType1,
@@ -22,7 +29,9 @@ const Hanger2 = ({
   toiletStalls,
   selectedStalls,
   onAvailableStallClick,
-}: HangerOneProps) => {
+  totalPrice,
+  setTotalPrice,
+}) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -48,27 +57,70 @@ const Hanger2 = ({
       }
     };
 
+    const showTooltip = (content: string, element: HTMLElement) => {
+      const tooltip = document.createElement("div");
+      tooltip.textContent = content;
+      tooltip.style.position = "absolute";
+      tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+      tooltip.style.color = "white";
+      tooltip.style.padding = "5px";
+      tooltip.style.borderRadius = "3px";
+      tooltip.style.zIndex = "1000";
+
+      const rect = element.getBoundingClientRect();
+      tooltip.style.left = `${rect.left - 20}px`;
+      tooltip.style.top = `${rect.bottom + 5}px`;
+
+      document.body.appendChild(tooltip);
+    };
+
+    const hideTooltip = () => {
+      const tooltip = document.querySelector(
+        "div[style*='position: absolute']"
+      );
+      if (tooltip) {
+        tooltip.remove();
+      }
+    };
+
     const setStallInteraction = (
       clipPathId: string,
       defaultColor: string,
-      isClickable: boolean
+      isClickable: boolean,
+      isPrime: boolean,
+      companyName?: string
     ) => {
       const parentG = svg.querySelector(
         `g[clip-path="url(#${clipPathId})"]`
       ) as HTMLElement | null;
 
       if (parentG) {
-        parentG.onmouseover = () =>
+        const stallPrice = isPrime ? 60000 : 50000;
+        const tooltipContent = `Stall ${clipPathId} - Rs. ${stallPrice.toLocaleString()}${
+          companyName ? ` - ${companyName}` : ""
+        }`;
+
+        parentG.onmouseover = () => {
           updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
-        parentG.onmouseout = () =>
+          showTooltip(tooltipContent, parentG);
+        };
+        parentG.onmouseout = () => {
           updateStallColorAndCursor(
             clipPathId,
             selectedStalls.includes(clipPathId) ? "#00ff00" : defaultColor,
             "pointer",
             1
           );
+          hideTooltip();
+        };
         if (isClickable) {
-          parentG.onclick = () => onAvailableStallClick(clipPathId);
+          parentG.onclick = () => {
+            onAvailableStallClick(clipPathId);
+            const newPrice = selectedStalls.includes(clipPathId)
+              ? totalPrice - stallPrice
+              : totalPrice + stallPrice;
+            setTotalPrice(newPrice);
+          };
         }
       }
     };
@@ -85,32 +137,38 @@ const Hanger2 = ({
       }
     };
 
-    // Handle reserved stalls first
+    // Handle reserved stalls
     reservedStalls.forEach((stall) => {
-      updateStallColorAndCursor(stall, "#ffcc00", "not-allowed");
-      removeStallInteraction(stall);
+      updateStallColorAndCursor(stall.id, "#ffcc00", "not-allowed");
+      setStallInteraction(stall.id, "#ffcc00", false, false, stall.companyName);
     });
 
     // Handle booked stalls
     bookedStalls.forEach((stall) => {
-      updateStallColorAndCursor(stall, "#fb2e01", "not-allowed");
-      removeStallInteraction(stall);
+      updateStallColorAndCursor(stall.id, "#fb2e01", "not-allowed");
+      setStallInteraction(stall.id, "#fb2e01", false, false, stall.companyName);
     });
 
     // Handle prime stalls
     primeStallsType1.forEach((stall) => {
-      if (!reservedStalls.includes(stall) && !bookedStalls.includes(stall)) {
+      if (
+        !reservedStalls.some((s) => s.id === stall) &&
+        !bookedStalls.some((s) => s.id === stall)
+      ) {
         const color = selectedStalls.includes(stall) ? "#00ff00" : "#f5aeae";
         updateStallColorAndCursor(stall, color, "pointer");
-        setStallInteraction(stall, color, true);
+        setStallInteraction(stall, color, true, true);
       }
     });
 
     primeStallsType2.forEach((stall) => {
-      if (!reservedStalls.includes(stall) && !bookedStalls.includes(stall)) {
+      if (
+        !reservedStalls.some((s) => s.id === stall) &&
+        !bookedStalls.some((s) => s.id === stall)
+      ) {
         const color = selectedStalls.includes(stall) ? "#00ff00" : "#f3efa3";
         updateStallColorAndCursor(stall, color, "pointer");
-        setStallInteraction(stall, color, true);
+        setStallInteraction(stall, color, true, true);
       }
     });
 
@@ -136,8 +194,8 @@ const Hanger2 = ({
         .replace(")", "");
       if (
         clipPathId &&
-        !reservedStalls.includes(clipPathId) &&
-        !bookedStalls.includes(clipPathId) &&
+        !reservedStalls.some((s) => s.id === clipPathId) &&
+        !bookedStalls.some((s) => s.id === clipPathId) &&
         !primeStallsType1.includes(clipPathId) &&
         !primeStallsType2.includes(clipPathId) &&
         !notAvailableStalls.includes(clipPathId) &&
@@ -147,9 +205,21 @@ const Hanger2 = ({
           ? "#00ff00"
           : "#fff";
         updateStallColorAndCursor(clipPathId, defaultColor, "pointer");
-        setStallInteraction(clipPathId, defaultColor, true);
+        setStallInteraction(clipPathId, defaultColor, true, false);
       }
     });
+
+    // Update total price
+    const calculateTotalPrice = () => {
+      const primeStallCount = selectedStalls.filter(
+        (stall) =>
+          primeStallsType1.includes(stall) || primeStallsType2.includes(stall)
+      ).length;
+      const regularStallCount = selectedStalls.length - primeStallCount;
+      return primeStallCount * 60000 + regularStallCount * 50000;
+    };
+
+    setTotalPrice(calculateTotalPrice());
   }, [
     reservedStalls,
     bookedStalls,
@@ -159,6 +229,8 @@ const Hanger2 = ({
     toiletStalls,
     selectedStalls,
     onAvailableStallClick,
+    totalPrice,
+    setTotalPrice,
   ]);
 
   return (

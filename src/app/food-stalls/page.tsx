@@ -13,6 +13,7 @@ type StallInfo = {
 const FoodPage = () => {
   const router = useRouter();
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const legendItemsFood = [
     { color: "#6fbe49", label: "Food Stalls" },
@@ -32,7 +33,11 @@ const FoodPage = () => {
 
   const handleProceed = () => {
     if (selectedStalls.length > 0) {
-      router.push(`/book-stalls?stalls=${selectedStalls.join(",")}`);
+      router.push(
+        `/book-stalls?stalls=${selectedStalls.join(
+          ","
+        )}&type=Food stalls&total=${totalPrice}`
+      );
     }
   };
 
@@ -52,6 +57,9 @@ const FoodPage = () => {
           bookedStalls: bookedStalls,
           onAvailableStallClick: onAvailableStallClick,
           selectedStalls: selectedStalls,
+          totalPrice: totalPrice,
+          stallPrice: 100000,
+          setTotalPrice: setTotalPrice,
         }}
       />
 

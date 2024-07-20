@@ -8,7 +8,7 @@ import Hanger3 from "@/components/hanger-3";
 const Hanger3Page = () => {
   const router = useRouter();
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const legendItemsHangers = [
     { color: "#26abe2", label: "Toilet" },
@@ -30,9 +30,46 @@ const Hanger3Page = () => {
 
   const handleProceed = () => {
     if (selectedStalls.length > 0) {
-      router.push(`/book-stalls?stalls=${selectedStalls.join(",")}`);
+      let type = "National General";
+      if (
+        selectedStalls.filter((stall) => primeStallsType1.includes(stall))
+          .length > 0 ||
+        selectedStalls.filter((stall) => primeStallsType2.includes(stall))
+          .length > 0
+      ) {
+        type = "National Prime";
+      }
+      router.push(
+        `/book-stalls?stalls=${selectedStalls.join(
+          ","
+        )}&total=${totalPrice}&type=${type}`
+      );
     }
   };
+
+  const primeStallsType1 = ["B153", "B154", "B228", "B227"];
+
+  const primeStallsType2 = [
+    "B189",
+    "B190",
+    "B191",
+    "B192",
+    "B174",
+    "B175",
+    "B206",
+    "B207",
+  ];
+
+  const notAvailableStalls = ["b3d4ab18d0"];
+
+  const toiletStalls = ["B172", "B209"];
+
+  const reservedStalls = [""];
+
+  const bookedStalls = [
+    { id: "B173", companyName: "Company X" },
+    { id: "B208", companyName: "Company Y" },
+  ];
 
   return (
     <div className="relative">
@@ -42,23 +79,16 @@ const Hanger3Page = () => {
         legendItems={legendItemsHangers}
         StallComponent={Hanger3}
         stallProps={{
-          bookedStalls: [""],
-          reservedStalls: [""],
-          primeStallsType1: ["B153", "B154", "B228", "B227"],
-          primeStallsType2: [
-            "B189",
-            "B190",
-            "B191",
-            "B192",
-            "B174",
-            "B175",
-            "B206",
-            "B207",
-          ],
-          toiletStalls: ["B172", "B209"],
-          notAvailableStalls: ["b3d4ab18d0"],
+          bookedStalls,
+          reservedStalls,
+          primeStallsType1,
+          primeStallsType2,
+          toiletStalls,
+          notAvailableStalls,
           onAvailableStallClick: onAvailableStallClick,
           selectedStalls: selectedStalls,
+          totalPrice: totalPrice,
+          setTotalPrice: setTotalPrice,
         }}
       />
 
@@ -74,49 +104,6 @@ const Hanger3Page = () => {
           >
             Proceed with Selected Stalls
           </button>
-        </div>
-      )}
-
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-          onClick={() => setIsModalOpen(false)}
-        >
-          <div
-            className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mt-3 text-center">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Selected Stalls
-              </h3>
-              <div className="mt-2 px-7 py-3">
-                <ul className="text-sm text-gray-500">
-                  {selectedStalls.map((stall) => (
-                    <li key={stall} className="mb-1">
-                      {stall}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="items-center px-4 py-3">
-                <button
-                  onClick={handleProceed}
-                  className="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300"
-                >
-                  Proceed with Selected Stalls
-                </button>
-              </div>
-              <div className="items-center px-4 py-3">
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       )}
     </div>

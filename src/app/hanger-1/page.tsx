@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 const Hanger1Page = () => {
   const router = useRouter();
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const legendItemsHangers = [
     { color: "#26abe2", label: "Toilet" },
@@ -27,11 +28,46 @@ const Hanger1Page = () => {
     });
   }, []);
 
+  const primeStallsType1 = ["B1", "B2", "B76", "B75"];
+
+  const primeStallsType2 = [
+    "B37",
+    "B38",
+    "B39",
+    "B40",
+    "B22",
+    "B23",
+    "B54",
+    "B55",
+  ];
+
+  const notAvailableStalls = ["03c0fa4260"];
+
+  const toiletStalls = ["B20", "B57"];
+
   const handleProceed = () => {
     if (selectedStalls.length > 0) {
-      router.push(`/book-stalls?stalls=${selectedStalls.join(",")}`);
+      let type = "National General";
+      if (
+        selectedStalls.filter((stall) => primeStallsType1.includes(stall))
+          .length > 0 ||
+        selectedStalls.filter((stall) => primeStallsType2.includes(stall))
+          .length > 0
+      ) {
+        type = "National Prime";
+      }
+      router.push(
+        `/book-stalls?stalls=${selectedStalls.join(
+          ","
+        )}&total=${totalPrice}&type=${type}`
+      );
     }
   };
+
+  const bookedStalls = [
+    { id: "B1", companyName: "Company" },
+    { id: "B2", companyName: "Company" },
+  ];
 
   return (
     <div className="relative">
@@ -41,23 +77,16 @@ const Hanger1Page = () => {
         legendItems={legendItemsHangers}
         StallComponent={Hanger1}
         stallProps={{
-          bookedStalls: [""],
-          toiletStalls: ["B20", "B57"],
-          primeStallsType1: ["B1", "B2", "B76", "B75"],
-          primeStallsType2: [
-            "B37",
-            "B38",
-            "B39",
-            "B40",
-            "B22",
-            "B23",
-            "B54",
-            "B55",
-          ],
+          bookedStalls,
+          toiletStalls: toiletStalls,
+          primeStallsType1,
+          primeStallsType2,
           reservedStalls: [""],
-          notAvailableStalls: ["03c0fa4260"],
+          notAvailableStalls,
           selectedStalls: selectedStalls,
           onAvailableStallClick: onAvailableStallClick,
+          totalPrice: totalPrice,
+          setTotalPrice: setTotalPrice,
         }}
       />
 

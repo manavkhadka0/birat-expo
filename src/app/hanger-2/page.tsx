@@ -4,11 +4,12 @@ import { useState, useCallback } from "react";
 import StallArea from "@/components/stall-area";
 import { useRouter } from "next/navigation";
 import Hanger2 from "@/components/hanger-2";
+import { set } from "react-hook-form";
 
 const Hanger2Page = () => {
   const router = useRouter();
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const legendItemsHangers = [
     { color: "#26abe2", label: "Toilet" },
@@ -30,9 +31,44 @@ const Hanger2Page = () => {
 
   const handleProceed = () => {
     if (selectedStalls.length > 0) {
-      router.push(`/book-stalls?stalls=${selectedStalls.join(",")}`);
+      let type = "National General";
+      if (
+        selectedStalls.filter((stall) => primeStallsType1.includes(stall))
+          .length > 0 ||
+        selectedStalls.filter((stall) => primeStallsType2.includes(stall))
+          .length > 0
+      ) {
+        type = "National Prime";
+      }
+      router.push(
+        `/book-stalls?stalls=${selectedStalls.join(
+          ","
+        )}&total=${totalPrice}&type=${type}`
+      );
     }
   };
+
+  const reservedStalls = ["B77"];
+
+  const primeStallsType1 = [
+    "B113",
+    "B114",
+    "B115",
+    "B116",
+    "B98",
+    "B99",
+    "B130",
+    "B131",
+  ];
+
+  const toiletStalls = ["B133", "B96"];
+
+  const primeStallsType2 = ["B77", "B78", "B152", "B151"];
+
+  const bookedStalls = [
+    { id: "B112", companyName: "Company x" },
+    { id: "B117", companyName: "Company y" },
+  ];
 
   return (
     <div className="relative">
@@ -42,23 +78,16 @@ const Hanger2Page = () => {
         legendItems={legendItemsHangers}
         StallComponent={Hanger2}
         stallProps={{
-          primeStallsType1: ["B77", "B78", "B152", "B151"],
-          primeStallsType2: [
-            "B113",
-            "B114",
-            "B115",
-            "B116",
-            "B98",
-            "B99",
-            "B130",
-            "B131",
-          ],
-          toiletStalls: ["B133", "B96"],
-          reservedStalls: [""],
-          bookedStalls: [""],
+          primeStallsType1,
+          primeStallsType2,
+          toiletStalls,
+          reservedStalls,
+          bookedStalls,
           notAvailableStalls: ["eb1d587ec6"],
           selectedStalls: selectedStalls,
           onAvailableStallClick: onAvailableStallClick,
+          totalPrice: totalPrice,
+          setTotalPrice,
         }}
       />
 

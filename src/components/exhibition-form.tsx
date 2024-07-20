@@ -54,7 +54,7 @@ const schema = yup.object().shape({
 
 type FormData = yup.InferType<typeof schema>;
 
-function convertCamelToSnake(camelCaseString) {
+function convertCamelToSnake(camelCaseString: string) {
   // Insert underscore before each uppercase letter and convert to lowercase
   let snakeCaseString = camelCaseString
     .replace(/([A-Z])/g, "_$1")
@@ -263,8 +263,8 @@ const ExhibitionForm = () => {
                 <th className="border p-2">Select</th>
               </tr>
               {[
-                { type: "National (Prime)", rate: "Rs. 60,000" },
-                { type: "National (General)", rate: "Rs. 50,000" },
+                { type: "National Prime", rate: "Rs. 60,000" },
+                { type: "National General", rate: "Rs. 50,000" },
                 { type: "International", rate: "US$ 500" },
                 { type: "Agro & MSMEs", rate: "Rs. 25,000" },
                 { type: "Automobiles", rate: "Rs. 60,000" },
