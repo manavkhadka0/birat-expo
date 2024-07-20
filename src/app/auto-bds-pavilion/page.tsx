@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import StallArea from "@/components/stall-area";
 import AutoBDSPavilion from "@/components/auto-bds-pavilion";
 import { useRouter } from "next/navigation";
+import StallsList from "@/components/stalls-list";
 
 const legendItems = [
   { color: "#fccc65", label: "Auto Pavilion (A)" },
@@ -63,7 +64,7 @@ const AutoPage = () => {
         </div>
       )}
       <StallArea
-        title="Auto and Business Development Service Pavilion"
+        title="Automobiles and Business Development Service Pavilion"
         subtitle="Auto and BDS Stalls"
         legendItems={legendItems}
         StallComponent={AutoBDSPavilion}

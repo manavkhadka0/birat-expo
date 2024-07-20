@@ -40,6 +40,7 @@ const StallArea = ({
 
         <section className="bg-white rounded-lg shadow-lg p-6 overflow-x-auto pb-20">
           <StallLegend legendItems={legendItems} />
+          <div className="my-5"></div>
           <StallComponent
             {...stallProps}
             onAvailableStallClick={stallProps.onAvailableStallClick}

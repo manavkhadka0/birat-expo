@@ -46,13 +46,13 @@ export const navItems = [
     title: "Birat Expo'24",
     subtitle: "Coming soon",
     subtitleClass: "text-green-700",
-    href: "#",
+    href: "/biratexpo-2024",
   },
   {
     title: "Birat Expo'22",
     subtitle: "Past Event",
     subtitleClass: "text-red-700",
-    href: "#",
+    href: "/biratexpo-2022",
   },
   {
     title: "Floor Plan",

@@ -37,7 +37,7 @@ const Hanger3Page = () => {
   return (
     <div className="relative">
       <StallArea
-        title="Hanger 3"
+        title="Hanger 3 : Agro and SME Stalls"
         subtitle="Agro and SME Stalls"
         legendItems={legendItemsHangers}
         StallComponent={Hanger3}
