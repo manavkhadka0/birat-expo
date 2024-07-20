@@ -1,6 +1,6 @@
 "use client";
 
-export default function Sponsorship() {
+export default function BiratExpo24() {
   return (
     <div className="pt-20 pb-40 flex justify-center">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">

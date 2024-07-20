@@ -56,15 +56,13 @@ export const navItems = [
   },
   {
     title: "Floor Plan",
-    href: "/floor-plan.pdf",
-    target: "_blank",
+    href: "/floorplan",
     rel: "noreferrer",
   },
   {
     title: "Proposal",
     className: "",
-    href: "/Birat Expo 2024 - Proposal.pdf",
-    target: "_blank",
+    href: "/proposal",
     rel: "noreferrer",
   },
 ];

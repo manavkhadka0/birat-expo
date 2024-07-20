@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -49,9 +50,9 @@ const ExhibitionForm = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-6 font-serif">
+    <div className="bg-gray-100 p-6 font-serif pb-40 pt-20">
       <div className="mx-auto max-w-4xl overflow-hidden rounded-lg bg-white shadow-md">
-        <div className="bg-blue-600 p-6 text-center text-white">
+        <div className="bg-blue-800 p-6 text-center text-white">
           <h1 className="text-3xl font-bold font-serif">BIRAT EXPO-2024</h1>
           <p className="mt-2 text-xl">
             Digital Koshi : Bridging Innovation and Investment
@@ -361,10 +362,24 @@ const ExhibitionForm = () => {
 
           <div className="mb-6">
             <h3 className="mb-2 text-xl font-semibold">Bank Detail:</h3>
-            <p>
-              Udyog Sangthan Morang-Birat Expo, A/C No. 0701017501451, Nabil
-              Bank Ltd, Biratnagar, Nepal (Swift Code : NARBNPKA)
+            <p className="mb-5">
+              <b>Udyog Sangthan Morang-Birat Expo</b>
+              <br />
+              <b>A/C No</b> : 0701017501451
+              <br />
+              <b>Bank</b> : Nabil Bank Ltd
+              <br />
+              <b>Branch</b> : Biratnagar, Nepal (Swift Code : NARBNPKA)
             </p>
+            <h1 className="text-6xl mb-4">OR</h1>
+            <h1>OR Scan the QR Below for Payment</h1>
+            <Image
+              src="/scan.png"
+              alt="scan qr for payment"
+              className="max-w-100"
+              width={300}
+              height={100}
+            />
           </div>
 
           <div className="text-center">
