@@ -133,13 +133,12 @@ const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
       const bookedStall = bookedStalls.find((s) => s.id === stallId);
       const reservedStall = reservedStalls.find((s) => s.id === stallId);
 
-      if (bookedStall || reservedStall) {
+      if (bookedStall) {
         updateStallStyle(stallId, "#fb2e01", "not-allowed");
-        handleStallInteraction(
-          stallId,
-          "#fb2e01",
-          bookedStall?.companyName || reservedStall?.companyName
-        );
+        handleStallInteraction(stallId, "#fb2e01", bookedStall?.companyName);
+      } else if (reservedStall) {
+        updateStallStyle(stallId, "#E9D66B", "not-allowed");
+        handleStallInteraction(stallId, "#E9D66B", reservedStall?.companyName);
       } else if (selectedStalls.includes(stallId)) {
         updateStallStyle(stallId, "#00ff00", "pointer");
         handleStallInteraction(stallId, "#00ff00");

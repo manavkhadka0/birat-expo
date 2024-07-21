@@ -9,6 +9,7 @@ type StallInfo = {
 
 type FoodProps = {
   bookedStalls: StallInfo[];
+  reservedStalls: StallInfo[];
   stallPrice: number;
   totalPrice: number;
   setTotalPrice: (price: number) => void;
@@ -19,6 +20,7 @@ type FoodProps = {
 const Food: React.FC<FoodProps> = ({
   bookedStalls,
   selectedStalls,
+  reservedStalls,
   setTotalPrice,
   stallPrice,
   totalPrice,
@@ -81,7 +83,8 @@ const Food: React.FC<FoodProps> = ({
       clipPathId: string,
       defaultColor: string,
       isClickable: boolean,
-      companyName?: string
+      companyName?: string,
+      status?: string
     ) => {
       const parentG = svg.querySelector(
         `g[clip-path="url(#${clipPathId})"]`
@@ -92,13 +95,19 @@ const Food: React.FC<FoodProps> = ({
 
         parentG.onmouseenter = () => {
           updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
-          const status = bookedStalls.some((stall) => stall.id === clipPathId)
-            ? `Booked${companyName ? ` by ${companyName}` : ""}`
-            : selectedStalls.includes(clipPathId)
-            ? "Selected"
-            : "Available";
+          const stallStatus =
+            status ||
+            (bookedStalls.some((stall) => stall.id === clipPathId)
+              ? "Booked"
+              : reservedStalls.some((stall) => stall.id === clipPathId)
+              ? "Reserved"
+              : selectedStalls.includes(clipPathId)
+              ? "Selected"
+              : "Available");
           tooltip = showTooltip(
-            `Food Stall ${clipPathId} - Rs. ${stallPrice.toLocaleString()} - ${status}`,
+            `Food Stall ${clipPathId} - Rs. ${stallPrice.toLocaleString()} - ${stallStatus}${
+              companyName ? ` by ${companyName}` : ""
+            }`,
             parentG
           );
         };
@@ -129,7 +138,25 @@ const Food: React.FC<FoodProps> = ({
     // Handle booked stalls
     bookedStalls.forEach((stall) => {
       updateStallColorAndCursor(stall.id, "#fb2e01", "not-allowed");
-      setStallInteraction(stall.id, "#fb2e01", false, stall.companyName);
+      setStallInteraction(
+        stall.id,
+        "#fb2e01",
+        false,
+        stall.companyName,
+        "Booked"
+      );
+    });
+
+    // Handle reserved stalls
+    reservedStalls.forEach((stall) => {
+      updateStallColorAndCursor(stall.id, "#E9D66B", "not-allowed");
+      setStallInteraction(
+        stall.id,
+        "#E9D66B",
+        false,
+        stall.companyName,
+        "Reserved"
+      );
     });
 
     // Set the color for available and selected stalls
@@ -142,7 +169,8 @@ const Food: React.FC<FoodProps> = ({
         .replace(")", "");
       if (
         clipPathId &&
-        !bookedStalls.some((booked) => booked.id === clipPathId)
+        !bookedStalls.some((booked) => booked.id === clipPathId) &&
+        !reservedStalls.some((reserved) => reserved.id === clipPathId)
       ) {
         const defaultColor = selectedStalls.includes(clipPathId)
           ? "#00ff00"
@@ -151,7 +179,14 @@ const Food: React.FC<FoodProps> = ({
         setStallInteraction(clipPathId, defaultColor, true);
       }
     });
-  }, [bookedStalls, selectedStalls, onAvailableStallClick]);
+  }, [
+    bookedStalls,
+    selectedStalls,
+    onAvailableStallClick,
+    setTotalPrice,
+    stallPrice,
+    reservedStalls,
+  ]);
 
   return (
     <>

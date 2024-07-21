@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import Food from "@/components/food";
 import StallArea from "@/components/stall-area";
 import { useRouter } from "next/navigation";
+import { useGetStallTypeData } from "@/api/stall-status";
+import { StallTypeData } from "@/types/stall";
 
 type StallInfo = {
   id: string;
@@ -15,20 +17,58 @@ const FoodPage = () => {
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
+  const {
+    stallTypeData,
+    stallTypeDataEmpty,
+    stallTypeDataError,
+    stallTypeDataLoading,
+  } = useGetStallTypeData("Food Stalls");
+
   const legendItemsFood = [
     { color: "#6fbe49", label: "Food Stalls" },
     { color: "#fb2e01", label: "Not Available" },
     { color: "#00ff00", label: "Selected" },
+    { color: "#E9D66B", label: "Reserved" },
   ];
 
+  const isLoading = stallTypeDataLoading;
+  const isError = stallTypeDataError;
+
+  const { bookedStalls, reservedStalls } = useMemo(() => {
+    if (isLoading || isError) return { bookedStalls: [], reservedStalls: [] };
+
+    const processData = (
+      data: StallTypeData
+    ): { booked: StallInfo[]; reserved: StallInfo[] } => {
+      const booked = data.stall_no_booked.map((stall) => ({
+        id: stall[0],
+        companyName: stall[1],
+      }));
+      const reserved = data.stall_no_pending.map((stall) => ({
+        id: stall[0],
+        companyName: stall[1],
+      }));
+      return { booked, reserved };
+    };
+
+    const autoProcessed = processData(
+      stallTypeData
+        ? stallTypeData
+        : { booked: [], pending: [], stall_no_booked: [], stall_no_pending: [] }
+    );
+
+    return {
+      bookedStalls: [...autoProcessed.booked],
+      reservedStalls: [...autoProcessed.reserved],
+    };
+  }, [isLoading, isError, stallTypeData]);
+
   const onAvailableStallClick = useCallback((stallId: string) => {
-    setSelectedStalls((prevSelected) => {
-      if (prevSelected.includes(stallId)) {
-        return prevSelected.filter((id) => id !== stallId);
-      } else {
-        return [...prevSelected, stallId];
-      }
-    });
+    setSelectedStalls((prevSelected) =>
+      prevSelected.includes(stallId)
+        ? prevSelected.filter((id) => id !== stallId)
+        : [...prevSelected, stallId]
+    );
   }, []);
 
   const handleProceed = () => {
@@ -41,10 +81,47 @@ const FoodPage = () => {
     }
   };
 
-  const bookedStalls: StallInfo[] = [
-    { id: "F1", companyName: "Food Company X" },
-    { id: "F2", companyName: "Food Provider Y" },
-  ];
+  if (stallTypeDataLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (stallTypeDataError) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
+          <strong className="font-bold">Error!</strong>
+          <span className="block sm:inline">
+            {" "}
+            Failed to load stall data. Please try again later.
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (stallTypeDataEmpty) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div
+          className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
+          <strong className="font-bold">Notice:</strong>
+          <span className="block sm:inline">
+            {" "}
+            No stall data available at the moment.
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
@@ -54,24 +131,25 @@ const FoodPage = () => {
         legendItems={legendItemsFood}
         StallComponent={Food}
         stallProps={{
-          bookedStalls: bookedStalls,
-          onAvailableStallClick: onAvailableStallClick,
-          selectedStalls: selectedStalls,
-          totalPrice: totalPrice,
+          bookedStalls,
+          reservedStalls,
+          onAvailableStallClick,
+          selectedStalls,
+          totalPrice,
           stallPrice: 100000,
-          setTotalPrice: setTotalPrice,
+          setTotalPrice,
         }}
       />
 
       {selectedStalls.length > 0 && (
         <div className="fixed gap-4 bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center z-50 bg-white px-10 py-10 rounded-md shadow-lg">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 text-lg rounded-full shadow-lg">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 text-lg rounded-full shadow-lg transition duration-300">
             Selected ({selectedStalls.join(",")})
           </button>
 
           <button
             onClick={handleProceed}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 text-lg rounded-full shadow-lg"
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 text-lg rounded-full shadow-lg transition duration-300"
           >
             Proceed with Selected Stalls
           </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 
 type StallInfo = {
   id: string;
@@ -34,11 +34,9 @@ const Hanger2: React.FC<HangerOneProps> = ({
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
-  useEffect(() => {
-    const svg = svgRef.current;
-    if (!svg) return;
-
-    const updateStallColorAndCursor = (
+  const updateStallColorAndCursor = useCallback(
+    (
+      svg: SVGSVGElement,
       clipPathId: string,
       color: string,
       cursor: string,
@@ -55,35 +53,37 @@ const Hanger2: React.FC<HangerOneProps> = ({
           (parentG as HTMLElement).style.cursor = cursor;
         }
       }
-    };
+    },
+    []
+  );
 
-    const showTooltip = (content: string, element: HTMLElement) => {
-      const tooltip = document.createElement("div");
-      tooltip.textContent = content;
-      tooltip.style.position = "absolute";
-      tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-      tooltip.style.color = "white";
-      tooltip.style.padding = "5px";
-      tooltip.style.borderRadius = "3px";
-      tooltip.style.zIndex = "1000";
+  const showTooltip = useCallback((content: string, element: HTMLElement) => {
+    const tooltip = document.createElement("div");
+    tooltip.textContent = content;
+    tooltip.style.position = "absolute";
+    tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    tooltip.style.color = "white";
+    tooltip.style.padding = "5px";
+    tooltip.style.borderRadius = "3px";
+    tooltip.style.zIndex = "1000";
 
-      const rect = element.getBoundingClientRect();
-      tooltip.style.left = `${rect.left - 20}px`;
-      tooltip.style.top = `${rect.bottom + 5}px`;
+    const rect = element.getBoundingClientRect();
+    tooltip.style.left = `${rect.left - 20}px`;
+    tooltip.style.top = `${rect.bottom + 5}px`;
 
-      document.body.appendChild(tooltip);
-    };
+    document.body.appendChild(tooltip);
+  }, []);
 
-    const hideTooltip = () => {
-      const tooltip = document.querySelector(
-        "div[style*='position: absolute']"
-      );
-      if (tooltip) {
-        tooltip.remove();
-      }
-    };
+  const hideTooltip = useCallback(() => {
+    const tooltip = document.querySelector("div[style*='position: absolute']");
+    if (tooltip) {
+      tooltip.remove();
+    }
+  }, []);
 
-    const setStallInteraction = (
+  const setStallInteraction = useCallback(
+    (
+      svg: SVGSVGElement,
       clipPathId: string,
       defaultColor: string,
       isClickable: boolean,
@@ -101,14 +101,21 @@ const Hanger2: React.FC<HangerOneProps> = ({
         }`;
 
         parentG.onmouseover = () => {
-          updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
+          updateStallColorAndCursor(
+            svg,
+            clipPathId,
+            defaultColor,
+            isClickable ? "pointer" : "not-allowed",
+            0.5
+          );
           showTooltip(tooltipContent, parentG);
         };
         parentG.onmouseout = () => {
           updateStallColorAndCursor(
+            svg,
             clipPathId,
             selectedStalls.includes(clipPathId) ? "#00ff00" : defaultColor,
-            "pointer",
+            isClickable ? "pointer" : "not-allowed",
             1
           );
           hideTooltip();
@@ -121,70 +128,32 @@ const Hanger2: React.FC<HangerOneProps> = ({
               : totalPrice + stallPrice;
             setTotalPrice(newPrice);
           };
+        } else {
+          parentG.onclick = null;
         }
       }
-    };
+    },
+    [
+      updateStallColorAndCursor,
+      showTooltip,
+      hideTooltip,
+      selectedStalls,
+      onAvailableStallClick,
+      totalPrice,
+      setTotalPrice,
+    ]
+  );
 
-    const removeStallInteraction = (clipPathId: string) => {
-      const parentG = svg.querySelector(
-        `g[clip-path="url(#${clipPathId})"]`
-      ) as HTMLElement | null;
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
 
-      if (parentG) {
-        parentG.onmouseover = null;
-        parentG.onmouseout = null;
-        parentG.onclick = null;
-      }
-    };
+    const bookedStallIds = new Set(bookedStalls.map((s) => s.id));
+    const reservedStallIds = new Set(reservedStalls.map((s) => s.id));
+    const primeStallsSet = new Set([...primeStallsType1, ...primeStallsType2]);
+    const notAvailableSet = new Set(notAvailableStalls);
+    const toiletStallsSet = new Set(toiletStalls);
 
-    // Handle reserved stalls
-    reservedStalls.forEach((stall) => {
-      updateStallColorAndCursor(stall.id, "#ffcc00", "not-allowed");
-      setStallInteraction(stall.id, "#ffcc00", false, false, stall.companyName);
-    });
-
-    // Handle booked stalls
-    bookedStalls.forEach((stall) => {
-      updateStallColorAndCursor(stall.id, "#fb2e01", "not-allowed");
-      setStallInteraction(stall.id, "#fb2e01", false, false, stall.companyName);
-    });
-
-    // Handle prime stalls
-    primeStallsType1.forEach((stall) => {
-      if (
-        !reservedStalls.some((s) => s.id === stall) &&
-        !bookedStalls.some((s) => s.id === stall)
-      ) {
-        const color = selectedStalls.includes(stall) ? "#00ff00" : "#f5aeae";
-        updateStallColorAndCursor(stall, color, "pointer");
-        setStallInteraction(stall, color, true, true);
-      }
-    });
-
-    primeStallsType2.forEach((stall) => {
-      if (
-        !reservedStalls.some((s) => s.id === stall) &&
-        !bookedStalls.some((s) => s.id === stall)
-      ) {
-        const color = selectedStalls.includes(stall) ? "#00ff00" : "#f3efa3";
-        updateStallColorAndCursor(stall, color, "pointer");
-        setStallInteraction(stall, color, true, true);
-      }
-    });
-
-    // Handle not available stalls
-    notAvailableStalls.forEach((stall) => {
-      updateStallColorAndCursor(stall, "#fff", "normal");
-      removeStallInteraction(stall);
-    });
-
-    // Handle toilet stalls
-    toiletStalls.forEach((stall) => {
-      updateStallColorAndCursor(stall, "#26abe2", "not-allowed");
-      removeStallInteraction(stall);
-    });
-
-    // Set the color for available and selected stalls
     const allStalls = Array.from(svg.querySelectorAll("g[clip-path] path"));
     allStalls.forEach((stall) => {
       const parentG = stall.closest("g[clip-path]");
@@ -192,28 +161,53 @@ const Hanger2: React.FC<HangerOneProps> = ({
         ?.getAttribute("clip-path")
         ?.replace("url(#", "")
         .replace(")", "");
-      if (
-        clipPathId &&
-        !reservedStalls.some((s) => s.id === clipPathId) &&
-        !bookedStalls.some((s) => s.id === clipPathId) &&
-        !primeStallsType1.includes(clipPathId) &&
-        !primeStallsType2.includes(clipPathId) &&
-        !notAvailableStalls.includes(clipPathId) &&
-        !toiletStalls.includes(clipPathId)
-      ) {
+      if (!clipPathId) return;
+
+      if (reservedStallIds.has(clipPathId)) {
+        updateStallColorAndCursor(svg, clipPathId, "#ffcc00", "not-allowed");
+        setStallInteraction(
+          svg,
+          clipPathId,
+          "#ffcc00",
+          false,
+          false,
+          reservedStalls.find((s) => s.id === clipPathId)?.companyName
+        );
+      } else if (bookedStallIds.has(clipPathId)) {
+        updateStallColorAndCursor(svg, clipPathId, "#fb2e01", "not-allowed");
+        setStallInteraction(
+          svg,
+          clipPathId,
+          "#fb2e01",
+          false,
+          false,
+          bookedStalls.find((s) => s.id === clipPathId)?.companyName
+        );
+      } else if (primeStallsSet.has(clipPathId)) {
+        const color = selectedStalls.includes(clipPathId)
+          ? "#00ff00"
+          : primeStallsType1.includes(clipPathId)
+          ? "#f5aeae"
+          : "#f3efa3";
+        updateStallColorAndCursor(svg, clipPathId, color, "pointer");
+        setStallInteraction(svg, clipPathId, color, true, true);
+      } else if (notAvailableSet.has(clipPathId)) {
+        updateStallColorAndCursor(svg, clipPathId, "#fff", "normal");
+      } else if (toiletStallsSet.has(clipPathId)) {
+        updateStallColorAndCursor(svg, clipPathId, "#26abe2", "not-allowed");
+      } else {
         const defaultColor = selectedStalls.includes(clipPathId)
           ? "#00ff00"
           : "#fff";
-        updateStallColorAndCursor(clipPathId, defaultColor, "pointer");
-        setStallInteraction(clipPathId, defaultColor, true, false);
+        updateStallColorAndCursor(svg, clipPathId, defaultColor, "pointer");
+        setStallInteraction(svg, clipPathId, defaultColor, true, false);
       }
     });
 
     // Update total price
     const calculateTotalPrice = () => {
-      const primeStallCount = selectedStalls.filter(
-        (stall) =>
-          primeStallsType1.includes(stall) || primeStallsType2.includes(stall)
+      const primeStallCount = selectedStalls.filter((stall) =>
+        primeStallsSet.has(stall)
       ).length;
       const regularStallCount = selectedStalls.length - primeStallCount;
       return primeStallCount * 60000 + regularStallCount * 50000;
@@ -228,8 +222,8 @@ const Hanger2: React.FC<HangerOneProps> = ({
     notAvailableStalls,
     toiletStalls,
     selectedStalls,
-    onAvailableStallClick,
-    totalPrice,
+    updateStallColorAndCursor,
+    setStallInteraction,
     setTotalPrice,
   ]);
 

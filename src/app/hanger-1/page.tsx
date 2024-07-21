@@ -1,14 +1,62 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import Hanger1 from "@/components/hanger-1";
 import StallArea from "@/components/stall-area";
 import { useRouter } from "next/navigation";
+import { useGetStallTypeData } from "@/api/stall-status";
+import { StallTypeData } from "@/types/stall";
+
+type StallInfo = {
+  id: string;
+  companyName: string;
+};
 
 const Hanger1Page = () => {
   const router = useRouter();
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+
+  const autoData = useGetStallTypeData("National General");
+  const bdsData = useGetStallTypeData("National Prime");
+
+  const isLoading =
+    autoData.stallTypeDataLoading || bdsData.stallTypeDataLoading;
+  const isError = autoData.stallTypeDataError || bdsData.stallTypeDataError;
+
+  const { bookedStalls, reservedStalls } = useMemo(() => {
+    if (isLoading || isError) return { bookedStalls: [], reservedStalls: [] };
+
+    const processData = (
+      data: StallTypeData
+    ): { booked: StallInfo[]; reserved: StallInfo[] } => {
+      const booked = data.stall_no_booked.map((stall) => ({
+        id: stall[0],
+        companyName: stall[1],
+      }));
+      const reserved = data.stall_no_pending.map((stall) => ({
+        id: stall[0],
+        companyName: stall[1],
+      }));
+      return { booked, reserved };
+    };
+
+    const autoProcessed = processData(
+      autoData.stallTypeData
+        ? autoData.stallTypeData
+        : { booked: [], pending: [], stall_no_booked: [], stall_no_pending: [] }
+    );
+    const bdsProcessed = processData(
+      bdsData.stallTypeData
+        ? bdsData.stallTypeData
+        : { booked: [], pending: [], stall_no_booked: [], stall_no_pending: [] }
+    );
+
+    return {
+      bookedStalls: [...autoProcessed.booked, ...bdsProcessed.booked],
+      reservedStalls: [...autoProcessed.reserved, ...bdsProcessed.reserved],
+    };
+  }, [isLoading, isError, autoData.stallTypeData, bdsData.stallTypeData]);
 
   const legendItemsHangers = [
     { color: "#26abe2", label: "Toilet" },
@@ -64,11 +112,6 @@ const Hanger1Page = () => {
     }
   };
 
-  const bookedStalls = [
-    { id: "B1", companyName: "Company" },
-    { id: "B2", companyName: "Company" },
-  ];
-
   return (
     <div className="relative">
       <StallArea
@@ -78,10 +121,10 @@ const Hanger1Page = () => {
         StallComponent={Hanger1}
         stallProps={{
           bookedStalls,
+          reservedStalls,
           toiletStalls: toiletStalls,
           primeStallsType1,
           primeStallsType2,
-          reservedStalls: [""],
           notAvailableStalls,
           selectedStalls: selectedStalls,
           onAvailableStallClick: onAvailableStallClick,

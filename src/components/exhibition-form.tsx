@@ -297,9 +297,9 @@ const ExhibitionForm = () => {
                 { type: "National Prime", rate: "Rs. 60,000" },
                 { type: "National General", rate: "Rs. 50,000" },
                 { type: "International", rate: "US$ 500" },
-                { type: "Agro & MSMEs", rate: "Rs. 25,000" },
+                { type: "Agro & MSME", rate: "Rs. 25,000" },
                 { type: "Automobiles", rate: "Rs. 60,000" },
-                { type: "Food stalls", rate: "Rs. 1,00,000" },
+                { type: "Food Stalls", rate: "Rs. 1,00,000" },
                 { type: "BDS Providers Stall", rate: "Rs. 60,000" },
               ].map((stall, index) => (
                 <tr key={index}>

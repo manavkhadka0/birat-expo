@@ -1,10 +1,17 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import StallArea from "@/components/stall-area";
 import { useRouter } from "next/navigation";
 import Hanger2 from "@/components/hanger-2";
 import { set } from "react-hook-form";
+import { useGetStallTypeData } from "@/api/stall-status";
+import { StallTypeData } from "@/types/stall";
+
+type StallInfo = {
+  id: string;
+  companyName: string;
+};
 
 const Hanger2Page = () => {
   const router = useRouter();
@@ -18,6 +25,47 @@ const Hanger2Page = () => {
     { color: "#fb2e01", label: "Not Available" },
     { color: "#00ff00", label: "Selected" },
   ];
+
+  const autoData = useGetStallTypeData("National General");
+  const bdsData = useGetStallTypeData("National Prime");
+
+  const isLoading =
+    autoData.stallTypeDataLoading || bdsData.stallTypeDataLoading;
+  const isError = autoData.stallTypeDataError || bdsData.stallTypeDataError;
+
+  const { bookedStalls, reservedStalls } = useMemo(() => {
+    if (isLoading || isError) return { bookedStalls: [], reservedStalls: [] };
+
+    const processData = (
+      data: StallTypeData
+    ): { booked: StallInfo[]; reserved: StallInfo[] } => {
+      const booked = data.stall_no_booked.map((stall) => ({
+        id: stall[0],
+        companyName: stall[1],
+      }));
+      const reserved = data.stall_no_pending.map((stall) => ({
+        id: stall[0],
+        companyName: stall[1],
+      }));
+      return { booked, reserved };
+    };
+
+    const autoProcessed = processData(
+      autoData.stallTypeData
+        ? autoData.stallTypeData
+        : { booked: [], pending: [], stall_no_booked: [], stall_no_pending: [] }
+    );
+    const bdsProcessed = processData(
+      bdsData.stallTypeData
+        ? bdsData.stallTypeData
+        : { booked: [], pending: [], stall_no_booked: [], stall_no_pending: [] }
+    );
+
+    return {
+      bookedStalls: [...autoProcessed.booked, ...bdsProcessed.booked],
+      reservedStalls: [...autoProcessed.reserved, ...bdsProcessed.reserved],
+    };
+  }, [isLoading, isError, autoData.stallTypeData, bdsData.stallTypeData]);
 
   const onAvailableStallClick = useCallback((stallId: string) => {
     setSelectedStalls((prevSelected) => {
@@ -48,8 +96,6 @@ const Hanger2Page = () => {
     }
   };
 
-  const reservedStalls = ["B77"];
-
   const primeStallsType1 = [
     "B113",
     "B114",
@@ -64,11 +110,6 @@ const Hanger2Page = () => {
   const toiletStalls = ["B133", "B96"];
 
   const primeStallsType2 = ["B77", "B78", "B152", "B151"];
-
-  const bookedStalls = [
-    { id: "B112", companyName: "Company x" },
-    { id: "B117", companyName: "Company y" },
-  ];
 
   return (
     <div className="relative">
