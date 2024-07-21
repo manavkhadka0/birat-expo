@@ -1,7 +1,7 @@
 import EmailTemplate from "@/components/email-template";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API);
 
 interface FormData {
   firstName?: string;
@@ -25,8 +25,8 @@ export async function POST(request: Request) {
     };
 
     const { data, error } = await resend.emails.send({
-      from: "BIRAT EXPO 2024 Notifications <notifications@biratexpo2024.com>",
-      to: ["admin@biratexpo2024.com"], // Replace with actual admin email
+      from: "Acme <onboarding@resend.dev>",
+      to: ["hermanita5109@gmail.com"], // Replace with actual admin email
       subject: "New Contact Inquiry for BIRAT EXPO 2024",
       react: EmailTemplate(templateProps),
     });

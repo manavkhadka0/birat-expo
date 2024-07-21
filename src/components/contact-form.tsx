@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { User, Mail, Phone, MessageSquare, Send } from "lucide-react";
+import axios from "axios";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -28,6 +29,15 @@ const ContactForm = () => {
   const onSubmit = (data: any) => {
     console.log(data);
     // Handle form submission here
+
+    axios
+      .post("/api/send", data)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
