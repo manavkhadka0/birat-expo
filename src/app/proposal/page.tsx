@@ -10,9 +10,9 @@ export default function Proposal() {
           </h2>
           <div className="flex justify-center my-6">
             <a
-              href="/Contract_Sponsorships_Birat_Expo_2024.docxf"
+              href="/Contract_Sponsorships_Birat_Expo_2024.docx.pdf"
               download
-              className="px-4 py-2 text-white bg-blue-600 rounded-md hover:underline"
+              className="px-4 py-2 text-white bg-blue-600 rounded-md no-underline"
             >
               Download SponsorShip Contract
             </a>

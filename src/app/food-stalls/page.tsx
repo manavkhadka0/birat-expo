@@ -76,7 +76,7 @@ const FoodPage = () => {
       router.push(
         `/book-stalls?stalls=${selectedStalls.join(
           ","
-        )}&type=Food stalls&total=${totalPrice}`
+        )}&type=Food Stalls&total=${totalPrice}`
       );
     }
   };
@@ -106,22 +106,22 @@ const FoodPage = () => {
     );
   }
 
-  if (stallTypeDataEmpty) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div
-          className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative"
-          role="alert"
-        >
-          <strong className="font-bold">Notice:</strong>
-          <span className="block sm:inline">
-            {" "}
-            No stall data available at the moment.
-          </span>
-        </div>
-      </div>
-    );
-  }
+  // if (stallTypeDataEmpty) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <div
+  //         className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative"
+  //         role="alert"
+  //       >
+  //         <strong className="font-bold">Notice:</strong>
+  //         <span className="block sm:inline">
+  //           {" "}
+  //           No stall data available at the moment.
+  //         </span>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="relative">
