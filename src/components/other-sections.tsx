@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const objectives = [
   {
@@ -258,9 +259,11 @@ export const SponsorshipSection = () => (
               <li key={i}>{benefit}</li>
             ))}
           </ul>
-          <button className="my-4 border-gray-300 rounded-md border w-full py-2 text-sm hover:bg-gray-100">
-            View Proposal
-          </button>
+          <Link href="/proposal">
+            <button className="my-4 border-gray-300 rounded-md border w-full py-2 text-sm hover:bg-gray-100">
+              View Proposal
+            </button>
+          </Link>
         </div>
       ))}
     </div>

@@ -27,9 +27,10 @@ const ThreeDVideos = () => {
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="aspect-w-16 aspect-h-9">
             <iframe
-              src="https://www.youtube.com/embed/0WxpbTpsYVM"
-              title="3D Video 2024"
+              src="https://www.youtube.com/embed/8b7Y2vuB9jE?si=IUDS-AAPtV_a04iK"
+              title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
               className="w-full h-[340px]"
             ></iframe>
           </div>

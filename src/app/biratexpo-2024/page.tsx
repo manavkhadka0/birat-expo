@@ -6,10 +6,12 @@ export default function BiratExpo24() {
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="aspect-w-20 aspect-h-9">
           <iframe
-            src="https://www.youtube.com/embed/0WxpbTpsYVM"
-            title="3D Video 2022"
+            width="1000"
+            height="500"
+            src="https://www.youtube.com/embed/8b7Y2vuB9jE?si=IUDS-AAPtV_a04iK"
+            title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            className="w-[1000px] h-[500px]"
+            referrerPolicy="strict-origin-when-cross-origin"
           ></iframe>
         </div>
         <div className="p-6">
