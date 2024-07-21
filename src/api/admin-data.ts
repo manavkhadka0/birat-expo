@@ -11,7 +11,7 @@ type StallBooking = {
   city: string;
   country: string;
   email: string;
-  status: "Pending" | "Confirmed" | "Cancelled";
+  status: "Pending" | "Approved" | "Rejected";
   stall_type: string;
   stall_no: string;
   merge_or_separate: "Merge" | "Separate";

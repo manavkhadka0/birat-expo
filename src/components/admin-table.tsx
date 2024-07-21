@@ -3,6 +3,7 @@ import React, { useState, useMemo } from "react";
 import { useGetStallData } from "@/api/admin-data";
 import axios from "axios";
 import { mutate } from "swr";
+import { set } from "react-hook-form";
 
 interface Stall {
   id: number;
@@ -60,6 +61,7 @@ const AdminTable: React.FC = () => {
   } | null>(null);
   const [selectedStall, setSelectedStall] = useState<Stall | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loadingStallId, setLoadingStallId] = useState<number | null>(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -88,24 +90,24 @@ const AdminTable: React.FC = () => {
     id: number,
     newStatus: "Approved" | "Rejected"
   ) => {
+    setLoadingStallId(id);
     try {
       const endpoint =
         newStatus === "Approved" ? "approve-stall" : "reject-stall";
       await axios.post(
         `https://yachu.baliyoventures.com/api/${endpoint}/${id}/`
       );
-      // Update the selected stall status
       if (selectedStall && selectedStall.id === id) {
         setSelectedStall({ ...selectedStall, status: newStatus });
       }
-      // Close the modal if approving from within it
       if (newStatus === "Approved" && isModalOpen) {
         setIsModalOpen(false);
       }
-      // Refresh the data
       mutate("https://yachu.baliyoventures.com/api/stall/");
     } catch (error) {
       console.error("Error updating status:", error);
+    } finally {
+      setLoadingStallId(null);
     }
   };
 
@@ -128,13 +130,27 @@ const AdminTable: React.FC = () => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
         if (key === "global") {
-          // Global search across all fields
           return Object.values(item).some(
             (field) =>
               field !== null &&
               field !== undefined &&
               field.toString().toLowerCase().includes(value.toLowerCase())
           );
+        }
+        if (key === "paymentStatus") {
+          const totalAmount = parseFloat(item.total_amount);
+          const advanceAmount = parseFloat(item.advance_amount);
+          if (value === "fullyPaid") {
+            return totalAmount === advanceAmount;
+          } else if (value === "partiallyPaid") {
+            return advanceAmount > 0 && advanceAmount < totalAmount;
+          }
+          return true;
+        }
+        if (key === "dateRange") {
+          const [start, end] = value.split(",");
+          const createdDate = new Date(item.created_at);
+          return createdDate >= new Date(start) && createdDate <= new Date(end);
         }
         const itemValue = item[key as keyof Stall];
         return (
@@ -160,88 +176,154 @@ const AdminTable: React.FC = () => {
 
   if (stallDataError)
     return <div className="text-red-500">Failed to load data</div>;
-  if (stallDataLoading) return <div className="text-blue-500">Loading...</div>;
+  if (stallDataLoading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   if (stallDataEmpty)
     return <div className="text-gray-500">No data available</div>;
 
   return (
-    <div className="">
-      <div className="mb-4">
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <input
           type="text"
           placeholder="Search all fields"
           className="w-full p-2 border rounded"
-          onChange={(e) => setFilters({ global: e.target.value })}
+          onChange={(e) => setFilters({ ...filters, global: e.target.value })}
+        />
+        <select
+          className="w-full p-2 border rounded"
+          onChange={(e) =>
+            setFilters({ ...filters, stall_type: e.target.value })
+          }
+        >
+          {/* STALL_TYPE_CHOICES = [
+         ('National Prime', 'National Prime'),
+         ('National General', 'National General'),
+         ('International', 'International'),
+         ('Agro & MSME', 'Agro & MSME'),
+         ('Automobiles', 'Automobiles'),
+         ('Food Stalls', 'Food Stalls'),
+         ('BDS Providers Stall', 'BDS Providers Stall'),
+    ] */}
+          <option value="">All Stall Types</option>
+          <option value="Automobiles">Automobiles</option>
+          <option value="BDS Providers Stall">BDS Providers Stall</option>
+          <option value="Food Stalls">Food Stalls</option>
+          <option value="National General">National General</option>
+          <option value="National Prime">National Prime</option>
+          <option value="International">International</option>
+          <option value="Agro & MSME">Agro & MSME</option>
+
+          {/* Add more stall types as needed */}
+        </select>
+        <select
+          className="w-full p-2 border rounded"
+          onChange={(e) =>
+            setFilters({ ...filters, paymentStatus: e.target.value })
+          }
+        >
+          <option value="">All Payment Status</option>
+          <option value="fullyPaid">Fully Paid</option>
+          <option value="partiallyPaid">Partially Paid</option>
+        </select>
+        <input
+          type="date"
+          className="w-full p-2 border rounded"
+          onChange={(e) => {
+            const endDate = new Date(e.target.value);
+            endDate.setDate(endDate.getDate() + 1);
+            setFilters({
+              ...filters,
+              dateRange: `${e.target.value},${
+                endDate.toISOString().split("T")[0]
+              }`,
+            });
+          }}
         />
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="min-w-full bg-white">
-          <thead>
-            <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-              <th
-                className="py-3 px-6 text-left cursor-pointer"
-                onClick={() => handleSort("id")}
-              >
-                ID
-              </th>
-              <th
-                className="py-3 px-6 text-left cursor-pointer"
-                onClick={() => handleSort("company")}
-              >
-                Company
-              </th>
-              <th className="py-3 px-6 text-left">Chief Executive</th>
-              <th className="py-3 px-6 text-left">Stall Type</th>
-              <th className="py-3 px-6 text-left">Stall No</th>
-              <th
-                className="py-3 px-6 text-left cursor-pointer"
-                onClick={() => handleSort("total_amount")}
-              >
-                Total Amount
-              </th>
-              <th className="py-3 px-6 text-left">Status</th>
-              <th className="py-3 px-6 text-left">Action</th>
-              <th className="py-3 px-6 text-left">Details</th>
+          <thead className="bg-gray-200 text-gray-600">
+            <tr>
+              {[
+                "ID",
+                "Company",
+                "Chief Executive",
+                "Stall Type",
+                "Stall No",
+                "Total Amount",
+                "Status",
+                "Action",
+                "Details",
+              ].map((header) => (
+                <th
+                  key={header}
+                  className="py-3 px-6 text-left font-semibold uppercase text-sm"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody className="text-gray-600 text-sm font-light">
+          <tbody className="text-gray-600 text-sm">
             {filteredAndSortedData.map((item) => (
               <tr
                 key={item.id}
                 className="border-b border-gray-200 hover:bg-gray-100"
               >
-                <td className="py-3 px-6 text-left whitespace-nowrap">
-                  {item.id}
-                </td>
-                <td className="py-3 px-6 text-left">{item.company}</td>
-                <td className="py-3 px-6 text-left">{item.chief_executive}</td>
-                <td className="py-3 px-6 text-left">{item.stall_type}</td>
-                <td className="py-3 px-6 text-left">{item.stall_no}</td>
-                <td className="py-3 px-6 text-left">
+                <td className="py-4 px-6">{item.id}</td>
+                <td className="py-4 px-6">{item.company}</td>
+                <td className="py-4 px-6">{item.chief_executive}</td>
+                <td className="py-4 px-6">{item.stall_type}</td>
+                <td className="py-4 px-6">{item.stall_no}</td>
+                <td className="py-4 px-6">
                   {parseFloat(item.total_amount).toFixed(2)}
                 </td>
-                <td className="py-3 px-6 text-left">{item.status}</td>
-                <td className="py-3 px-6 text-left">
-                  <select
-                    className="bg-white border rounded px-3 py-1"
-                    value={item.status}
-                    onChange={(e) =>
-                      handleStatusChange(
-                        item.id,
-                        e.target.value as "Approved" | "Rejected"
-                      )
-                    }
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                  </select>
+                <td
+                  className={`py-4 px-6 font-semibold ${getStatusColor(
+                    item.status
+                  )}`}
+                >
+                  {item.status}
                 </td>
-
-                <td className="py-3 px-6 text-left">
+                <td className="py-4 px-6">
+                  {loadingStallId === item.id ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>
+                  ) : (
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleStatusChange(item.id, "Approved")}
+                        className={`${
+                          item.status === "Approved"
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-green-500 hover:bg-green-700"
+                        }  text-white font-bold py-1 px-2 rounded text-xs`}
+                        disabled={item.status === "Approved"}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleStatusChange(item.id, "Rejected")}
+                        className={`${
+                          item.status === "Rejected"
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-red-500 hover:bg-red-700"
+                        }  text-white font-bold py-1 px-2 rounded text-xs`}
+                        disabled={item.status === "Rejected"}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+                </td>
+                <td className="py-4 px-6">
                   <button
                     onClick={() => handleViewDetails(item.id)}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs"
                   >
                     View Details
                   </button>
@@ -253,61 +335,80 @@ const AdminTable: React.FC = () => {
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         {selectedStall && (
-          <>
-            <div className="bg-white rounded-lg shadow-xl p-6">
-              <h2 className="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">
-                {selectedStall.company}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {Object.entries(selectedStall).map(([key, value]) => {
-                  if (key === "company") return null; // Skip company as it's already in the title
-                  return (
-                    <div key={key} className="flex flex-col">
-                      <span className="text-sm font-semibold text-gray-600 uppercase">
-                        {key.replace(/_/g, " ")}
+          <div className="bg-white rounded-lg p-6">
+            <h2 className="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">
+              {selectedStall.company}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Object.entries(selectedStall).map(([key, value]) => {
+                if (key === "company") return null;
+                return (
+                  <div key={key} className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600 uppercase">
+                      {key.replace(/_/g, " ")}
+                    </span>
+                    {key === "voucher" ? (
+                      <a
+                        href={value as string}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline mt-1"
+                      >
+                        View Voucher
+                      </a>
+                    ) : key === "status" ? (
+                      <span
+                        className={`mt-1 font-semibold ${getStatusColor(
+                          value as string
+                        )}`}
+                      >
+                        {value as string}
                       </span>
-                      {key === "voucher" ? (
-                        <a
-                          href={value as string}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 underline mt-1"
-                        >
-                          View Voucher
-                        </a>
-                      ) : key === "status" ? (
-                        <span
-                          className={`mt-1 font-semibold ${getStatusColor(
-                            value as string
-                          )}`}
-                        >
-                          {value as string}
-                        </span>
-                      ) : (
-                        <span className="mt-1">{value as React.ReactNode}</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="mt-8 flex justify-end space-x-4">
-                <button
-                  onClick={() =>
-                    handleStatusChange(selectedStall.id, "Approved")
-                  }
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition duration-300"
-                >
-                  Close
-                </button>
-              </div>
+                    ) : (
+                      <span className="mt-1">{value as React.ReactNode}</span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-          </>
+            <div className="mt-8 flex justify-end space-x-4">
+              {loadingStallId ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>
+              ) : (
+                <>
+                  <button
+                    onClick={() =>
+                      handleStatusChange(
+                        selectedStall.id,
+                        selectedStall.status === "Approved"
+                          ? "Rejected"
+                          : "Approved"
+                      ).then(() => setIsModalOpen(false))
+                    }
+                    className={`${
+                      selectedStall.status === "Approved"
+                        ? "bg-red-500"
+                        : "bg-green-500"
+                    } hover:${
+                      selectedStall.status === "Approved"
+                        ? "bg-red-700"
+                        : "bg-green-700"
+                    } px-4 py-2 text-white rounded transition duration-300`}
+                  >
+                    {selectedStall.status === "Approved"
+                      ? "Reject Stall"
+                      : "Approve Stall"}
+                  </button>
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition duration-300"
+                  >
+                    Close
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         )}
       </Modal>
     </div>
