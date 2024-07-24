@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Food from "@/components/food";
 import StallArea from "@/components/stall-area";
 import { useRouter } from "next/navigation";
 import Sponsors from "@/components/sponsors";
