@@ -9,7 +9,6 @@ import Sponsors from "@/components/sponsors";
 const SponsorsPage = () => {
   const router = useRouter();
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const legendItemsFood = [
     { color: "#6fbe49", label: "Food Stalls" },

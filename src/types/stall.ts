@@ -2,7 +2,7 @@ export type StallType =
   | "National Prime"
   | "National General"
   | "International"
-  | "Agro & MSME"
+  | "Agro and MSME"
   | "Automobiles"
   | "Food Stalls"
   | "BDS Providers Stall";

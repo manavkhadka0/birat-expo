@@ -59,7 +59,7 @@ interface FormData {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.formData();
+    const body = await request.json();
 
     console.log("Received contact inquiry:", body);
 
@@ -72,25 +72,25 @@ export async function POST(request: Request) {
     // };
 
     const templateProps = {
-      company: body.get("company") || "Not provided",
-      address: body.get("address") || "Not provided",
-      chief_executive: body.get("chief_executive") || "Not provided",
-      phone: body.get("phone") || "Not provided",
-      city: body.get("city") || "Not provided",
-      country: body.get("country") || "Not provided",
-      email: body.get("email") || "Not provided",
-      stall_type: body.get("stall_type") || "Not provided",
-      stall_no: body.get("stall_no") || "Not provided",
-      merge_or_separate: body.get("merge_or_separate") || "Not provided",
-      total_amount: body.get("total_amount") || "Not provided",
-      advance_amount: body.get("advance_amount") || "Not provided",
-      remaining_amount: body.get("remaining_amount") || "Not provided",
-      amount_in_words: body.get("amount_in_words") || "Not provided",
+      company: body.company || "Not provided",
+      address: body.address || "Not provided",
+      chief_executive: body.chief_executive || "Not provided",
+      phone: body.phone || "Not provided",
+      city: body.city || "Not provided",
+      country: body.country || "Not provided",
+      email: body.email || "Not provided",
+      stall_type: body.stall_type || "Not provided",
+      stall_no: body.stall_no || "Not provided",
+      merge_or_separate: body.merge_or_separate || "Not provided",
+      total_amount: body.total_amount || 0,
+      advance_amount: body.advance_amount || 0,
+      remaining_amount: body.remaining_amount || 0,
+      amount_in_words: body.amount_in_words || "Not provided",
     };
 
     const { data, error } = await resend.emails.send({
       from: "Birat Expo 2024 Contact <info@baliyoventures.com>",
-      to: ["manavkhadka0@gmail.com"], // Replace with actual admin email
+      to: [templateProps.email.toString(), "biratexpo2024@gmail.com"], // Replace with actual admin email
       subject: `Your Stall Booking for Birat Expo 2024`,
       react: StallBookingTemplate({ data: templateProps }),
     });

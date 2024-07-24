@@ -77,7 +77,7 @@ const Hanger3Page = () => {
 
   const handleProceed = () => {
     if (selectedStalls.length > 0) {
-      let type = "Agro & MSME";
+      let type = "Agro and MSME";
       if (
         selectedStalls.filter((stall) => primeStallsType1.includes(stall))
           .length > 0 ||

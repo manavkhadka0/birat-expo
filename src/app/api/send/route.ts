@@ -14,8 +14,6 @@ export async function POST(request: Request) {
   try {
     const body: FormData = await request.json();
 
-    console.log("Received contact inquiry:", body);
-
     // Provide default values for potentially missing fields
     const templateProps = {
       name: body.name || "Not provided",
@@ -26,7 +24,7 @@ export async function POST(request: Request) {
 
     const { data, error } = await resend.emails.send({
       from: "Birat Expo 2024 Contact <info@baliyoventures.com>",
-      to: ["hermanita5109@gmail.com"], // Replace with actual admin email
+      to: ["biratexpo2024@gmail.com"],
       subject: `Contact Enquiry for Birat Expo 2024`,
       react: EmailTemplate(templateProps),
     });

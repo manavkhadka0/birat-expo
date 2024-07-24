@@ -52,17 +52,17 @@ const schema = yup.object().shape({
     .oneOf([true], "Please accept terms and conditions"),
 });
 
-function convertCamelToSnake(camelCaseString: string) {
-  // Insert underscore before each uppercase letter and convert to lowercase
-  let snakeCaseString = camelCaseString
-    .replace(/([A-Z])/g, "_$1")
-    .toLowerCase();
-  // Remove leading underscore if it exists
-  if (snakeCaseString.startsWith("_")) {
-    snakeCaseString = snakeCaseString.slice(1);
-  }
-  return snakeCaseString;
-}
+// function convertCamelToSnake(camelCaseString: string) {
+//   // Insert underscore before each uppercase letter and convert to lowercase
+//   let snakeCaseString = camelCaseString
+//     .replace(/([A-Z])/g, "_$1")
+//     .toLowerCase();
+//   // Remove leading underscore if it exists
+//   if (snakeCaseString.startsWith("_")) {
+//     snakeCaseString = snakeCaseString.slice(1);
+//   }
+//   return snakeCaseString;
+// }
 
 const ExhibitionForm = () => {
   const searchParams = useSearchParams();
@@ -127,7 +127,7 @@ const ExhibitionForm = () => {
           formData.append("voucher", data[key][0]);
         }
       } else {
-        formData.append(convertCamelToSnake(key), data[key]);
+        formData.append(key, data[key]);
       }
     }
 
@@ -139,7 +139,7 @@ const ExhibitionForm = () => {
           },
         })
         .then(() => {
-          axios.post("/api/confirm-bookings", data, {
+          axios.post("/api/confirm-booking", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -335,7 +335,7 @@ const ExhibitionForm = () => {
                 { type: "National Prime", rate: "Rs. 60,000" },
                 { type: "National General", rate: "Rs. 50,000" },
                 { type: "International", rate: "US$ 500" },
-                { type: "Agro & MSME", rate: "Rs. 25,000" },
+                { type: "Agro and MSME", rate: "Rs. 25,000" },
                 { type: "Automobiles", rate: "Rs. 60,000" },
                 { type: "Food Stalls", rate: "Rs. 1,00,000" },
                 { type: "BDS Providers Stall", rate: "Rs. 60,000" },

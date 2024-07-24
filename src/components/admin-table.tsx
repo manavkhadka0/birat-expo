@@ -204,7 +204,7 @@ const AdminTable: React.FC = () => {
          ('National Prime', 'National Prime'),
          ('National General', 'National General'),
          ('International', 'International'),
-         ('Agro & MSME', 'Agro & MSME'),
+         ('Agro and MSME', 'Agro and MSME'),
          ('Automobiles', 'Automobiles'),
          ('Food Stalls', 'Food Stalls'),
          ('BDS Providers Stall', 'BDS Providers Stall'),
@@ -216,7 +216,7 @@ const AdminTable: React.FC = () => {
           <option value="National General">National General</option>
           <option value="National Prime">National Prime</option>
           <option value="International">International</option>
-          <option value="Agro & MSME">Agro & MSME</option>
+          <option value="Agro and MSME">Agro and MSME</option>
 
           {/* Add more stall types as needed */}
         </select>

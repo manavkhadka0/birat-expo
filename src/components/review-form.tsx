@@ -48,7 +48,7 @@ const ReviewAndDownload = ({
               <InfoItem label="Stall Number" value={data.stall_no} />
               <InfoItem
                 label="Merge or Separate"
-                value={data.mergeOrSeparate}
+                value={data.merge_or_separate}
               />
               <InfoItem
                 label="Total Amount"
