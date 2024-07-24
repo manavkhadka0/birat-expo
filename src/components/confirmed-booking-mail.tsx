@@ -1,144 +1,125 @@
-import Image from "next/image";
+import React from "react";
 
-interface EmailTemplateProps {
-  firstName: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-}
+const StallBookingTemplate = ({ data }: { data: any }) => {
+  const renderInfoItem = (label: string, value: string, bold = false) => (
+    <div key={label}>
+      <p
+        style={{
+          fontSize: "0.875rem",
+          color: "#4b5563",
+          marginBottom: "0.25rem",
+        }}
+      >
+        {label}
+      </p>
+      <p style={{ color: "#1f2937", fontWeight: bold ? 600 : "normal" }}>
+        {value}
+      </p>
+    </div>
+  );
 
-const EmailTemplate = ({
-  email,
-  firstName,
-  message,
-  phone,
-  subject,
-}: EmailTemplateProps) => {
+  const sectionStyle = {
+    marginBottom: "1.5rem",
+  };
+
+  const headingStyle = {
+    fontSize: "1.25rem",
+    fontWeight: 600,
+    marginBottom: "0.75rem",
+    paddingBottom: "0.5rem",
+    borderBottom: "1px solid #e5e7eb",
+  };
+
+  const gridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "1rem",
+  };
+
   return (
     <div
       style={{
-        fontFamily: "Arial, sans-serif",
-        maxWidth: "600px",
-        margin: "0 auto",
-        padding: "20px",
-        backgroundColor: "#f4f7f9",
-        borderRadius: "10px",
+        backgroundColor: "#f3f4f6",
+        padding: "1.5rem",
+        fontFamily: "sans-serif",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <header
+      <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-          padding: "20px",
+          width: "100%",
           backgroundColor: "white",
-          borderRadius: "10px",
+          boxShadow:
+            "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+          borderRadius: "0.5rem",
+          overflow: "hidden",
         }}
       >
-        <Image
-          src="logo.png"
-          alt="BIRAT EXPO 2024 Logo"
-          style={{ height: "50px" }}
-          height={50}
-          width={100}
-        />
-        <Image
-          src="baliyo-logo.svg"
-          alt="Baliyo Logo"
-          style={{ height: "40px" }}
-          height={40}
-          width={100}
-        />
-      </header>
-
-      <main
-        style={{
-          backgroundColor: "white",
-          padding: "30px",
-          borderRadius: "10px",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <h1
-          style={{
-            color: "#3730a3",
-            fontSize: "24px",
-            marginBottom: "20px",
-          }}
-        >
-          Welcome to BIRAT EXPO 2024, {firstName}!
-        </h1>
-
-        <p style={{ color: "#4b5563", lineHeight: "1.6" }}>
-          Thank you for your interest in BIRAT EXPO 2024. We&apos;ve received
-          your inquiry and will get back to you shortly. Here&apos;s a summary
-          of the information you provided:
-        </p>
-
         <div
           style={{
-            backgroundColor: "#f0f4f8",
-            padding: "20px",
-            borderRadius: "8px",
-            marginTop: "20px",
-            marginBottom: "20px",
+            backgroundColor: "#2563eb",
+            color: "white",
+            padding: "1.5rem",
           }}
         >
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Email:</strong> {email}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Phone:</strong> {phone}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Subject:</strong> {subject}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Message:</strong> {message}
+          <h2 style={{ fontSize: "1.875rem", fontWeight: "bold" }}>
+            Your Application has been submitted
+          </h2>
+          <p style={{ marginTop: "0.5rem", color: "#bfdbfe" }}>
+            BIRAT EXPO-2024
           </p>
         </div>
-
-        <p style={{ color: "#4b5563", lineHeight: "1.6" }}>
-          We&apos;re excited to have you join us for this innovative showcase of
-          technology and ideas. Our team will review your message and respond as
-          soon as possible.
-        </p>
-
-        <a
-          href="https://biratexpo2024.com"
-          style={{
-            display: "inline-block",
-            marginTop: "20px",
-            padding: "12px 24px",
-            backgroundColor: "#3730a3",
-            color: "white",
-            textDecoration: "none",
-            borderRadius: "5px",
-            fontWeight: "bold",
-          }}
-        >
-          Learn More About BIRAT EXPO 2024
-        </a>
-      </main>
-
-      <footer
-        style={{
-          marginTop: "20px",
-          textAlign: "center",
-          color: "#6b7280",
-          fontSize: "14px",
-        }}
-      >
-        <p>&copy; 2024 BIRAT EXPO. All rights reserved.</p>
-        <p>
-          You&apos;re receiving this email because you contacted us about BIRAT
-          EXPO 2024.
-        </p>
-      </footer>
+        <div style={{ padding: "1.5rem" }}>
+          <section style={sectionStyle}>
+            <h3 style={headingStyle}>Exhibitor&apos;s Details</h3>
+            <div style={gridStyle}>
+              {[
+                "company",
+                "address",
+                "chief_executive",
+                "phone",
+                "city",
+                "country",
+                "email",
+              ].map((item) =>
+                renderInfoItem(
+                  item.replace("_", " ").charAt(0).toUpperCase() +
+                    item.slice(1),
+                  data[item]
+                )
+              )}
+            </div>
+          </section>
+          <section style={sectionStyle}>
+            <h3 style={headingStyle}>Participation Details</h3>
+            <div style={gridStyle}>
+              {renderInfoItem("Stall Type", data.stall_type)}
+              {renderInfoItem("Stall Number", data.stall_no)}
+              {renderInfoItem("Merge or Separate", data.merge_or_separate)}
+              {renderInfoItem(
+                "Total Amount",
+                `Rs. ${data.total_amount.toLocaleString()}`,
+                true
+              )}
+              {renderInfoItem(
+                "Advance Amount",
+                `Rs. ${data.advance_amount.toLocaleString()}`
+              )}
+              {renderInfoItem(
+                "Remaining Amount",
+                `Rs. ${data.remaining_amount.toLocaleString()}`
+              )}
+              {renderInfoItem("Amount in Words", data.amount_in_words)}
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default EmailTemplate;
+export default StallBookingTemplate;

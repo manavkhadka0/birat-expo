@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,6 +9,7 @@ import { AnimatedModalDemo } from "./terms-and-conditions";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import ReviewAndDownload from "./review-form";
+import { headers } from "next/headers";
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
@@ -129,16 +130,22 @@ const ExhibitionForm = () => {
     }
 
     try {
-      const response = await axios.post(
-        "https://yachu.baliyoventures.com/api/stall/",
-        formData,
-        {
+      await axios
+        .post("https://yachu.baliyoventures.com/api/stall/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
-      );
-      router.push("/thank-you");
+        })
+        .then(() => {
+          axios.post("/api/confirm-bookings", data, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+        })
+        .then(() => {
+          router.push("/thank-you");
+        });
     } catch (error) {
       console.error(error);
       setError(
