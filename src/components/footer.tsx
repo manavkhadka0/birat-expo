@@ -83,11 +83,21 @@ const Footer = () => {
               ))}
             </div>
 
-            <div className="space-y-6 -z-3">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold mb-4">Organizer</h2>
+              <div className="flex items-center space-x-4">
+                <Image
+                  src="/1.png"
+                  alt="Baliyo Ventures"
+                  width={100}
+                  height={50}
+                  className="rounded-md"
+                />
+              </div>
               <h2 className="text-2xl font-bold mb-4">Technical Partner</h2>
               <Link
                 href="https://baliyoventures.com"
-                className="group block hover:bg-white p-4 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                className="group block hover:bg-white "
               >
                 <div className="flex items-center space-x-4">
                   <Image
@@ -97,9 +107,6 @@ const Footer = () => {
                     height={50}
                     className="rounded-md"
                   />
-                  <span className="font-semibold group-hover:text-blue-600 transition-colors">
-                    Baliyo Ventures
-                  </span>
                 </div>
               </Link>
             </div>

@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import ReviewAndDownload from "./review-form";
 import { headers } from "next/headers";
+import { formatNumberInternational } from "@/lib/formatNumber";
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
@@ -83,9 +84,10 @@ const ExhibitionForm = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    reValidateMode: "onSubmit",
     defaultValues: {
       stall_no: searchParams.get("stalls") || "",
-      total_amount: parseInt(searchParams.get("total") || "") * 1.13,
+      total_amount: Math.ceil(parseInt(searchParams.get("total") || "") * 1.13),
       stall_type: searchParams.get("type") || "",
     },
   });
@@ -180,10 +182,10 @@ const ExhibitionForm = () => {
   }
 
   return (
-    <div className="bg-gray-100 p-6 font-serif pb-40 pt-20">
+    <div className="bg-gray-100 p-6  pb-40 pt-20">
       <div className="mx-auto max-w-4xl overflow-hidden rounded-lg bg-white shadow-md">
         <div className="bg-blue-800 p-6 text-center text-white">
-          <h1 className="text-3xl font-bold font-serif">BIRAT EXPO-2024</h1>
+          <h1 className="text-3xl font-bold ">BIRAT EXPO-2024</h1>
           <p className="mt-2 text-xl">
             Digital Koshi : Bridging Innovation and Investment
           </p>
@@ -411,6 +413,28 @@ const ExhibitionForm = () => {
                     {errors.merge_or_separate.message}
                   </p>
                 )}
+              </div>
+              <div className="items-center italic mt-10 underline underline-offset-4 inline gap-2 p-2">
+                <span className="text-red-500">* </span>
+                <span className="">
+                  Stall Amount : Rs.{" "}
+                  {`${formatNumberInternational(
+                    parseInt(searchParams.get("total") || "")
+                  )}`}
+                </span>
+                <span className="">
+                  +{" Rs. "}
+                  {`${formatNumberInternational(
+                    parseInt(searchParams.get("total") || "") * 0.13
+                  )}`}
+                  (13 % VAT) ={" "}
+                  <span className="font-semibold">
+                    Rs.{" "}
+                    {`${formatNumberInternational(
+                      parseInt(searchParams.get("total") || "") * 1.13
+                    )}`}
+                  </span>
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <label className="mb-1 ">Total Amount:</label>

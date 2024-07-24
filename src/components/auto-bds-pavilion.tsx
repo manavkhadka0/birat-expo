@@ -139,8 +139,8 @@ const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
         updateStallStyle(stallId, "#fb2e01", "not-allowed");
         handleStallInteraction(stallId, "#fb2e01", bookedStall?.companyName);
       } else if (reservedStall) {
-        updateStallStyle(stallId, "#E9D66B", "not-allowed");
-        handleStallInteraction(stallId, "#E9D66B", reservedStall?.companyName);
+        updateStallStyle(stallId, "#fffa00", "not-allowed");
+        handleStallInteraction(stallId, "#fffa00", reservedStall?.companyName);
       } else if (selectedStalls.includes(stallId)) {
         updateStallStyle(stallId, "#00ff00", "pointer");
         handleStallInteraction(stallId, "#00ff00");

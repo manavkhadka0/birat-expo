@@ -12,8 +12,8 @@ export function AnimatedModalDemo() {
   return (
     <div className="inline-block items-center justify-center overflow-scroll">
       <Modal>
-        <ModalTrigger className=" inline-block ">
-          <a className="text-blue-600 underline">terms and conditions</a>
+        <ModalTrigger className="inline-block">
+          <p className="text-blue-600 underline">terms and conditions</p>
         </ModalTrigger>
         <ModalBody>
           <ModalContent className="overflow-scroll">

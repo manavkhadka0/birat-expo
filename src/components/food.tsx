@@ -147,10 +147,10 @@ const Food: React.FC<FoodProps> = ({
 
     // Handle reserved stalls
     reservedStalls.forEach((stall) => {
-      updateStallColorAndCursor(stall.id, "#E9D66B", "not-allowed");
+      updateStallColorAndCursor(stall.id, "#fffa00", "not-allowed");
       setStallInteraction(
         stall.id,
-        "#E9D66B",
+        "#fffa00",
         false,
         stall.companyName,
         "Reserved"

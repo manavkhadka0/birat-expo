@@ -10,7 +10,7 @@ const legendItems = [
   { color: "#fccc65", label: "Auto Pavilion (A)" },
   { color: "#ffff", label: "BDS Pavilion(E)" },
   { color: "#fb2e01", label: "Booked" },
-  { color: "#E9D66B", label: "Pending" },
+  { color: "#fffa00", label: "Pending" },
   { color: "#00ff00", label: "Selected" },
 ];
 

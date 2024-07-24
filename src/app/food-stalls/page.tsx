@@ -26,7 +26,7 @@ const FoodPage = () => {
 
   const legendItemsFood = [
     { color: "#6fbe49", label: "Food Stalls" },
-    { color: "#E9D66B", label: "Reserved" },
+    { color: "#fffa00", label: "Reserved" },
     { color: "#fb2e01", label: "Booked" },
     { color: "#00ff00", label: "Selected" },
   ];

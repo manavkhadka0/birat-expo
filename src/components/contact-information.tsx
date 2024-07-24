@@ -8,6 +8,22 @@ const ContactInformation = () => {
       <ContactForm />
       <div className="bg-gradient-to-r from-blue-800 to-blue-300 py-20">
         <div className=" container text-white p-6 md:p-8 rounded-t-3xl">
+          <div className="flex items-center pb-10 space-x-4">
+            <Image
+              src="/1.png"
+              alt="Baliyo Ventures"
+              width={100}
+              height={50}
+              className="rounded-full bg-white"
+            />
+            <Image
+              src="/2.png"
+              alt="Baliyo Ventures"
+              width={100}
+              height={50}
+              className="rounded-md"
+            />
+          </div>
           <h1 className="text-2xl md:text-3xl font-bold mb-4">
             Chamber of Industries, Morang
           </h1>

@@ -25,20 +25,25 @@ export const navItems = [
     ],
   },
   {
-    title: "Sponsorship Opportunities",
+    title: "Sponsorships",
     href: "/sponsorship",
   },
-  {
-    title: "Birat Expo'24",
-    subtitle: "Coming soon",
-    subtitleClass: "text-green-700",
-    href: "/biratexpo-2024",
-  },
+  // {
+  //   title: "Birat Expo'24",
+  //   subtitle: "Coming soon",
+  //   subtitleClass: "text-green-700",
+  //   href: "/biratexpo-2024",
+  // },
   {
     title: "Birat Expo'22",
     subtitle: "Past Event",
     subtitleClass: "text-red-700",
     href: "/biratexpo-2022",
+  },
+  // about
+  {
+    title: "Organizer",
+    href: "/organizer",
   },
   {
     title: "Floor Plan",

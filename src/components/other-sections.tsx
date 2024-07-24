@@ -219,7 +219,7 @@ export const ObjectivesSection = () => (
 export const AttractionsSection = () => (
   <section className="mb-16">
     <h2 className="text-4xl font-black text-start mb-5 border-l-[5px] ps-2 border-blue-800 text-gray-800">
-      Major Attractions
+      Other Attractions
     </h2>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {attractions.map((attraction, index) => (
