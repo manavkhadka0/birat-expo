@@ -1,20 +1,11 @@
-import Image from "next/image";
-
 interface EmailTemplateProps {
-  firstName: string;
+  name: string;
   email: string;
   phone: string;
-  subject: string;
   message: string;
 }
 
-const EmailTemplate = ({
-  email,
-  firstName,
-  message,
-  phone,
-  subject,
-}: EmailTemplateProps) => {
+const EmailTemplate = ({ email, name, message, phone }: EmailTemplateProps) => {
   return (
     <div
       style={{
@@ -26,31 +17,6 @@ const EmailTemplate = ({
         borderRadius: "10px",
       }}
     >
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-          padding: "20px",
-          backgroundColor: "white",
-          borderRadius: "10px",
-        }}
-      >
-        <Image
-          src="logo.png"
-          alt="BIRAT EXPO 2024 Logo"
-          height={50}
-          width={100}
-        />
-        <Image
-          src="baliyo-logo.svg"
-          alt="Baliyo Logo"
-          height={40}
-          width={100}
-        />
-      </header>
-
       <main
         style={{
           backgroundColor: "white",
@@ -85,16 +51,19 @@ const EmailTemplate = ({
           }}
         >
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Name:</strong> {firstName}
+            <strong>Name:</strong> {name}
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Email:</strong> {email}
+            <strong>Email:</strong>
+            <a href={`mailto:${email}`} style={{ color: "#4b5563" }}>
+              {email}
+            </a>
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Phone:</strong> {phone}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Subject:</strong> {subject}
+            <strong>Phone:</strong>
+            <a href={`tel:${phone}`} style={{ color: "#4b5563" }}>
+              {phone}
+            </a>
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
             <strong>Message:</strong> {message}

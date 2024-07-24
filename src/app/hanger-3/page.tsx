@@ -58,10 +58,10 @@ const Hanger3Page = () => {
   }, [isLoading, isError, autoData.stallTypeData, bdsData.stallTypeData]);
 
   const legendItemsHangers = [
-    { color: "#26abe2", label: "Toilet" },
     { color: "#f5aeae", label: "Prime" },
     { color: "#f3efa3", label: "Prime" },
-    { color: "#fb2e01", label: "Not Available" },
+    { color: "#E9D66B", label: "Pending" },
+    { color: "#fb2e01", label: "Booked" },
     { color: "#00ff00", label: "Selected" },
   ];
 
@@ -105,11 +105,13 @@ const Hanger3Page = () => {
     "B175",
     "B206",
     "B207",
+    "B172",
+    "B209",
   ];
 
   const notAvailableStalls = ["b3d4ab18d0"];
 
-  const toiletStalls = ["B172", "B209"];
+  const toiletStalls = [""];
 
   return (
     <div className="relative">

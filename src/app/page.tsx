@@ -20,6 +20,7 @@ export default function Home() {
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 uppercase">
               Birat Expo 2024
             </h2>
+            <p className="tracking-[0.5rem]">Digital KOSHI</p>
             <p className="tracking-[0.5rem]">
               Bridging Innovation and Investment
             </p>

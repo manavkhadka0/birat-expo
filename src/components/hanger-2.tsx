@@ -96,9 +96,11 @@ const Hanger2: React.FC<HangerOneProps> = ({
 
       if (parentG) {
         const stallPrice = isPrime ? 60000 : 50000;
-        const tooltipContent = `Stall ${clipPathId} - Rs. ${stallPrice.toLocaleString()}${
-          companyName ? ` - ${companyName}` : ""
-        }`;
+        const tooltipContent = `${
+          companyName
+            ? `${companyName}`
+            : `Stall ${clipPathId}- Rs. ${stallPrice.toLocaleString()}`
+        } `;
 
         parentG.onmouseover = () => {
           updateStallColorAndCursor(

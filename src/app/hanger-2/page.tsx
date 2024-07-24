@@ -19,10 +19,10 @@ const Hanger2Page = () => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   const legendItemsHangers = [
-    { color: "#26abe2", label: "Toilet" },
     { color: "#f5aeae", label: "Prime" },
     { color: "#f3efa3", label: "Prime" },
-    { color: "#fb2e01", label: "Not Available" },
+    { color: "#E9D66B", label: "Pending" },
+    { color: "#fb2e01", label: "Booked" },
     { color: "#00ff00", label: "Selected" },
   ];
 
@@ -105,9 +105,11 @@ const Hanger2Page = () => {
     "B99",
     "B130",
     "B131",
+    "B133",
+    "B96",
   ];
 
-  const toiletStalls = ["B133", "B96"];
+  const toiletStalls = [""];
 
   const primeStallsType2 = ["B77", "B78", "B152", "B151"];
 

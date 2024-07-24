@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { AnimatedModalDemo } from "./terms-and-conditions";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import ReviewAndDownload from "./review-form";
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
@@ -15,14 +16,14 @@ const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 const schema = yup.object().shape({
   company: yup.string().required("Company/Organization is required"),
   address: yup.string().required("Address is required"),
-  chiefExecutive: yup.string().required("Chief Executive name is required"),
+  chief_executive: yup.string().required("Chief Executive name is required"),
   phone: yup.string().required("Phone/Mobile is required"),
   city: yup.string().required("City is required"),
   country: yup.string().required("Country is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
-  stallType: yup.string().required("Please select a stall type"),
-  stallNo: yup.string().required("Stall number is required"),
-  mergeOrSeparate: yup.string().required("Please select merge or separate"),
+  stall_type: yup.string().required("Please select a stall type"),
+  stall_no: yup.string().required("Stall number is required"),
+  merge_or_separate: yup.string().required("Please select merge or separate"),
   voucher: yup
     .mixed()
     .test("fileSize", "File size is too large", function (value) {
@@ -34,20 +35,17 @@ const schema = yup.object().shape({
       return SUPPORTED_FORMATS.includes(value[0]?.type);
     })
     .required("Voucher is required"),
-  totalAmount: yup
+  total_amount: yup
     .number()
     .positive("Amount must be positive")
     .required("Total amount is required"),
-  advanceAmount: yup
+  advance_amount: yup
     .number()
     .positive("Amount must be positive")
     .required("Advance amount is required"),
-  remainingAmount: yup
-    .number()
-    .positive("Amount must be positive")
-    .required("Remaining amount is required"),
-  amountInWords: yup.string().required("Amount in words is required"),
-  termsAndConditions: yup
+  remaining_amount: yup.number().required("Remaining amount is required"),
+  amount_in_words: yup.string().required("Amount in words is required"),
+  terms_and_conditions: yup
     .boolean()
     .oneOf([true], "Please accept terms and conditions"),
 });
@@ -71,6 +69,10 @@ const ExhibitionForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  const [reviewMode, setReviewMode] = useState(false);
+  const [data, setData] = useState<any>(null);
+
   const {
     register,
     handleSubmit,
@@ -81,28 +83,46 @@ const ExhibitionForm = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      stallNo: searchParams.get("stalls") || "",
-      totalAmount: parseInt(searchParams.get("total") || ""),
-      stallType: searchParams.get("type") || "",
+      stall_no: searchParams.get("stalls") || "",
+      total_amount: parseInt(searchParams.get("total") || "") * 1.13,
+      stall_type: searchParams.get("type") || "",
     },
   });
 
   // handle voucher upload
 
-  const advanceAmount = watch("advanceAmount");
-  const totalAmount = watch("totalAmount");
+  const advance_amount = watch("advance_amount");
+  const total_amount = watch("total_amount");
 
   useEffect(() => {
-    setValue("remainingAmount", totalAmount - advanceAmount);
-  }, [advanceAmount, setValue, totalAmount]);
+    setValue("remaining_amount", total_amount - advance_amount);
+  }, [advance_amount, setValue, total_amount]);
 
   const onSubmit = async (data: any) => {
+    setData(data);
+    setReviewMode(true);
+    scrollToTop();
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const handleFinalSubmit = async () => {
     setIsSubmitting(true);
     setError("");
     const formData = new FormData();
     for (const key in data) {
       if (key === "voucher") {
-        formData.append(convertCamelToSnake(key), data[key][0]);
+        // Check if voucher is an array and has at least one file
+        if (Array.isArray(data[key]) && data[key].length > 0) {
+          formData.append("voucher", data[key][0]);
+        } else if (data[key] instanceof FileList && data[key].length > 0) {
+          formData.append("voucher", data[key][0]);
+        }
       } else {
         formData.append(convertCamelToSnake(key), data[key]);
       }
@@ -118,7 +138,6 @@ const ExhibitionForm = () => {
           },
         }
       );
-      console.log(response);
       router.push("/thank-you");
     } catch (error) {
       console.error(error);
@@ -130,6 +149,16 @@ const ExhibitionForm = () => {
     }
   };
 
+  if (reviewMode) {
+    return (
+      <ReviewAndDownload
+        data={data}
+        isSubmitting={isSubmitting}
+        onSubmit={handleFinalSubmit}
+        onEdit={() => setReviewMode(false)}
+      />
+    );
+  }
   if (isSubmitting) {
     return (
       <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
@@ -201,13 +230,13 @@ const ExhibitionForm = () => {
                   Name of the Chief Executive:
                 </label>
                 <input
-                  {...register("chiefExecutive")}
+                  {...register("chief_executive")}
                   type="text"
                   className="w-full rounded border p-2"
                 />
-                {errors.chiefExecutive && (
+                {errors.chief_executive && (
                   <p className="text-red-500 text-sm">
-                    {errors.chiefExecutive.message}
+                    {errors.chief_executive.message}
                   </p>
                 )}
               </div>
@@ -313,7 +342,7 @@ const ExhibitionForm = () => {
                   )}
                   <td className="border p-2">
                     <Controller
-                      name="stallType"
+                      name="stall_type"
                       control={control}
                       render={({ field }) => (
                         <input
@@ -330,8 +359,10 @@ const ExhibitionForm = () => {
                 </tr>
               ))}
             </table>
-            {errors.stallType && (
-              <p className="text-red-500 text-sm">{errors.stallType.message}</p>
+            {errors.stall_type && (
+              <p className="text-red-500 text-sm">
+                {errors.stall_type.message}
+              </p>
             )}
             <p className="mt-2 text-sm">
               <span className="text-red-500">* </span>
@@ -345,14 +376,14 @@ const ExhibitionForm = () => {
               <div className="flex items-center gap-2">
                 <label className="mb-1 ">Stall no:</label>
                 <input
-                  {...register("stallNo")}
+                  {...register("stall_no")}
                   type="text"
                   disabled
                   className=" rounded border p-2"
                 />
-                {errors.stallNo && (
+                {errors.stall_no && (
                   <p className="text-red-500 text-sm">
-                    {errors.stallNo.message}
+                    {errors.stall_no.message}
                   </p>
                 )}
               </div>
@@ -361,70 +392,70 @@ const ExhibitionForm = () => {
                   If two or more stalls : Merge or Separate?
                 </label>
                 <select
-                  {...register("mergeOrSeparate")}
+                  {...register("merge_or_separate")}
                   className=" rounded border p-2"
                   defaultValue={"Separate"}
                 >
                   <option value="Merge">Merge</option>
                   <option value="Separate">Separate</option>
                 </select>
-                {errors.mergeOrSeparate && (
+                {errors.merge_or_separate && (
                   <p className="text-red-500 text-sm">
-                    {errors.mergeOrSeparate.message}
+                    {errors.merge_or_separate.message}
                   </p>
                 )}
               </div>
               <div className="flex items-center gap-2">
                 <label className="mb-1 ">Total Amount:</label>
                 <input
-                  {...register("totalAmount")}
+                  {...register("total_amount")}
                   type="number"
                   disabled
                   className=" rounded border p-2"
                 />
-                {errors.totalAmount && (
+                {errors.total_amount && (
                   <p className="text-red-500 text-sm">
-                    {errors.totalAmount.message}
+                    {errors.total_amount.message}
                   </p>
                 )}
               </div>
               <div className="flex items-center gap-2">
                 <label className="mb-1 ">Advance Amount:</label>
                 <input
-                  {...register("advanceAmount")}
+                  {...register("advance_amount")}
                   type="number"
                   className=" rounded border p-2"
                 />
-                {errors.advanceAmount && (
+                {errors.advance_amount && (
                   <p className="text-red-500 text-sm">
-                    {errors.advanceAmount.message}
+                    {errors.advance_amount.message}
                   </p>
                 )}
               </div>
               <div className="flex items-center gap-2">
                 <label className="mb-1 ">Remaining Amount:</label>
                 <input
-                  {...register("remainingAmount")}
+                  {...register("remaining_amount")}
                   type="number"
                   disabled
                   className=" rounded border p-2"
                 />
-                {errors.remainingAmount && (
+                {errors.remaining_amount && (
                   <p className="text-red-500 text-sm">
-                    {errors.remainingAmount.message}
+                    {errors.remaining_amount.message}
                   </p>
                 )}
               </div>
               <div className="flex items-center gap-2">
                 <label className="mb-1 ">Total Amount in words:</label>
                 <input
-                  {...register("amountInWords")}
+                  {...register("amount_in_words")}
                   type="text"
                   className=" rounded border p-2"
                 />
-                {errors.amountInWords && (
+                {errors.amount_in_words && (
                   <p className="text-red-500 text-sm">
-                    {errors.amountInWords.message}
+                    {errors.amount_in_words.message}
                   </p>
                 )}
               </div>
@@ -491,16 +522,16 @@ const ExhibitionForm = () => {
               <label className="flex items-center justify-center">
                 <input
                   type="checkbox"
-                  {...register("termsAndConditions")}
+                  {...register("terms_and_conditions")}
                   className="form-checkbox mr-2"
                 />
                 <span>I have read and agree to the</span>
                 <AnimatedModalDemo />
               </label>
             </div>
-            {errors.termsAndConditions && (
+            {errors.terms_and_conditions && (
               <div className="text-red-500 text-sm">
-                {errors.termsAndConditions.message}
+                {errors.terms_and_conditions.message}
               </div>
             )}
           </div>

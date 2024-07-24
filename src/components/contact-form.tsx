@@ -13,7 +13,6 @@ const schema = yup.object().shape({
     .matches(/^[0-9]+$/, "Must be only digits")
     .min(10, "Must be at least 10 digits")
     .required("Phone number is required"),
-  subject: yup.string().required("Subject is required"),
   message: yup.string().required("Message is required"),
 });
 
@@ -26,9 +25,12 @@ const ContactForm = () => {
     resolver: yupResolver(schema),
   });
 
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   const onSubmit = (data: any) => {
     console.log(data);
     // Handle form submission here
+    setIsSubmitting(true);
 
     axios
       .post("/api/send", data)
@@ -37,6 +39,9 @@ const ContactForm = () => {
       })
       .catch((error) => {
         console.error(error);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
   };
 
@@ -61,6 +66,11 @@ const ContactForm = () => {
                 className="w-full px-4 py-4 bg-gray-100 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-900"
                 placeholder=" "
               />
+              {errors.name && (
+                <span className="text-red-500 text-xs line-clamp-1">
+                  {errors.name.message}
+                </span>
+              )}
               <label
                 htmlFor="name"
                 className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 ease-in-out origin-left transform scale-75 -translate-y-3 pointer-events-none"
@@ -78,6 +88,11 @@ const ContactForm = () => {
                   className="w-full px-4 py-4 bg-gray-100 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-900"
                   placeholder=" "
                 />
+                {errors.email && (
+                  <span className="text-red-500 text-xs line-clamp-1">
+                    {errors.email.message}
+                  </span>
+                )}
                 <label
                   htmlFor="email"
                   className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 ease-in-out origin-left transform scale-75 -translate-y-3 pointer-events-none"
@@ -93,6 +108,11 @@ const ContactForm = () => {
                   className="w-full px-4 py-4 bg-gray-100 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-900"
                   placeholder=" "
                 />
+                {errors.phone && (
+                  <span className="text-red-500 text-xs line-clamp-1">
+                    {errors.phone.message}
+                  </span>
+                )}
                 <label
                   htmlFor="phone"
                   className="absolute left-4 top-3 text-sm text-gray-500 transition-all duration-200 ease-in-out origin-left transform scale-75 -translate-y-3 pointer-events-none"
@@ -108,17 +128,39 @@ const ContactForm = () => {
                 rows={4}
                 {...register("message")}
                 className="w-full px-4 py-3 bg-gray-100 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-900"
-                placeholder="Enter your message"
               ></textarea>
+              {errors.message && (
+                <span className="text-red-500 text-xs line-clamp-1">
+                  {errors.message.message}
+                </span>
+              )}
+              <label
+                htmlFor="message"
+                className="absolute  left-4 top-3 text-sm text-gray-500 transition-all duration-200 ease-in-out origin-left transform scale-75 -translate-y-3 pointer-events-none"
+              >
+                Message
+              </label>
             </div>
           </div>
 
-          <div>
+          <div className="text-center">
             <button
               type="submit"
-              className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-800 hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-100 transition duration-150 ease-in-out"
+              disabled={isSubmitting}
+              className={`rounded px-6 py-2 text-white ${
+                isSubmitting
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
             >
-              Send Message Now
+              {isSubmitting ? (
+                <>
+                  <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></span>
+                  Submitting...
+                </>
+              ) : (
+                "Submit Application"
+              )}
             </button>
           </div>
         </form>

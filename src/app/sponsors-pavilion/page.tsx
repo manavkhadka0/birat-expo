@@ -13,7 +13,7 @@ const SponsorsPage = () => {
 
   const legendItemsFood = [
     { color: "#6fbe49", label: "Food Stalls" },
-    { color: "#fb2e01", label: "Not Available" },
+    { color: "#fb2e01", label: "Booked" },
     { color: "#00ff00", label: "Selected" },
   ];
 

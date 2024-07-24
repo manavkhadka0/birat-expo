@@ -90,8 +90,10 @@ const AutoBDSPavilion: React.FC<AutoBDSPavilionProps> = ({
           : stallId.startsWith("E")
           ? "BDS Provider"
           : "Other";
-        const tooltipContent = `${stallType} - Rs. ${stallPrice.toLocaleString()}${
-          companyName ? ` - ${companyName}` : ""
+        const tooltipContent = `${
+          companyName
+            ? `${companyName}`
+            : `${stallType}- Rs. ${stallPrice.toLocaleString()}`
         }`;
 
         const isBookedOrReserved =

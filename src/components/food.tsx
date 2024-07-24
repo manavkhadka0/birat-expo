@@ -104,12 +104,10 @@ const Food: React.FC<FoodProps> = ({
               : selectedStalls.includes(clipPathId)
               ? "Selected"
               : "Available");
-          tooltip = showTooltip(
-            `Food Stall ${clipPathId} - Rs. ${stallPrice.toLocaleString()} - ${stallStatus}${
-              companyName ? ` by ${companyName}` : ""
-            }`,
-            parentG
-          );
+          const tooltipContent = `${
+            companyName ? `${companyName}` : `Food Stall ${clipPathId}`
+          } - Rs. ${stallPrice.toLocaleString()}`;
+          tooltip = showTooltip(tooltipContent, parentG);
         };
 
         parentG.onmouseleave = () => {

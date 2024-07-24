@@ -25,22 +25,8 @@ export const navItems = [
     ],
   },
   {
-    title: "Sponsorship",
-    items: [
-      { title: "Main Sponsor", href: "/sponsorship#main-sponsor" },
-      {
-        title: "Powered By Sponsor",
-        href: "/sponsorship#powered-by-sponsor",
-      },
-      { title: "Platinum Sponsor", href: "/sponsorship#platinum-sponsor" },
-      { title: "Diamond Sponsor", href: "/sponsorship#diamond-sponsor" },
-      { title: "Gold Sponsor", href: "/sponsorship#gold-sponsor" },
-      {
-        title: "Partner (Bank, Insurance, Telecom,etc)",
-        href: "/sponsorship#partner-(bank,-insurance,-digital-and-others)",
-      },
-      { title: "Silver Sponsor", href: "/sponsorship#silver-sponsor" },
-    ],
+    title: "Sponsorship Opportunities",
+    href: "/sponsorship",
   },
   {
     title: "Birat Expo'24",
