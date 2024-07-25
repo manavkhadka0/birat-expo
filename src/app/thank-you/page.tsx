@@ -9,6 +9,7 @@ const ThankYouPage = () => {
         <p className="text-xl mb-6">
           Your application has been successfully submitted.
         </p>
+        <p className="text-xl mb-6">We will get back to you soon.</p>
         <Link
           href="/"
           className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"

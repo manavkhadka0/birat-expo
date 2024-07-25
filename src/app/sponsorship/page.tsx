@@ -23,6 +23,7 @@ type StallInfo = {
 };
 export default function Sponsorship() {
   const pathname = usePathname();
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   useEffect(() => {
     if (pathname.includes("#")) {
@@ -119,7 +120,15 @@ export default function Sponsorship() {
 
   const handleProceed = () => {
     if (selectedStalls.length > 0) {
-      router.push(`/book-stalls?stalls=${selectedStalls.join(",")}`);
+      const sponsorStalls = sponsorStallProps.filter((stall) =>
+        selectedStalls.includes(stall.stallid[0])
+      );
+      console.log(sponsorStalls);
+      router.push(
+        `/sponsor-booking?stall_id=${selectedStalls.join(",")}&sponsor_type=${
+          sponsorStalls[0].sponsor_type
+        }`
+      );
     }
   };
 
@@ -134,6 +143,8 @@ export default function Sponsorship() {
             sponsorStallProps: sponsorStallProps,
             bookedStalls: bookedStalls,
             reservedStalls: reservedStalls,
+            totalPrice: totalPrice,
+            setTotalPrice: setTotalPrice,
             onAvailableStallClick: onAvailableStallClick,
             selectedStalls: selectedStalls,
           }}

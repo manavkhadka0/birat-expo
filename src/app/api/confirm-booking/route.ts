@@ -1,5 +1,4 @@
 import StallBookingTemplate from "@/components/confirmed-booking-mail";
-import EmailTemplate from "@/components/email-template";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API);

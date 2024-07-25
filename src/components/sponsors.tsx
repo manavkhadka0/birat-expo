@@ -18,6 +18,8 @@ type SponsorsProps = {
   sponsorStallProps: SponsorStallPropsType[];
   bookedStalls: StallInfo[];
   reservedStalls: StallInfo[];
+  totalPrice: number;
+  setTotalPrice: (price: number) => void;
   selectedStalls: string[];
   onAvailableStallClick: (stallId: string) => void;
 };
@@ -26,6 +28,8 @@ const Sponsors = ({
   sponsorStallProps,
   bookedStalls,
   reservedStalls,
+  setTotalPrice,
+  totalPrice,
   selectedStalls,
   onAvailableStallClick,
 }: SponsorsProps) => {
@@ -77,7 +81,7 @@ const Sponsors = ({
             const rect = parentG.getBoundingClientRect();
             let content = "";
             if ("sponsor_type" in stallInfo) {
-              content = `Type: ${stallInfo.sponsor_type}<br>Price: $${stallInfo.price}`;
+              content = `Type: ${stallInfo.sponsor_type}<br>Price: Rs.${stallInfo.price}`;
             } else {
               content = `Company: ${stallInfo.companyName}`;
             }
@@ -138,16 +142,30 @@ const Sponsors = ({
         }
       });
     });
+
+    const newTotalPrice = selectedStalls.reduce((total, stallId) => {
+      const sponsorType = sponsorStallProps.find((sp) =>
+        sp.stallid.includes(stallId)
+      );
+      return total + (sponsorType ? sponsorType.price : 0);
+    }, 0);
+    setTotalPrice(newTotalPrice);
   }, [
     bookedStalls,
     reservedStalls,
     selectedStalls,
     onAvailableStallClick,
     sponsorStallProps,
+    setTotalPrice,
   ]);
 
   return (
     <>
+      <div className="">
+        <p className="text-lg text-center my-2 font-semibold">
+          Total Price: Rs. {totalPrice.toLocaleString()}
+        </p>
+      </div>
       <svg
         version="1.0"
         preserveAspectRatio="xMidYMid meet"

@@ -17,8 +17,6 @@ const StallArea = ({
   StallComponent,
   stallProps,
 }: StallAreaProps) => {
-  const router = useRouter();
-
   return (
     <main className=" bg-gradient-to-b from-gray-50 to-gray-100 pb-40">
       <div className="container mx-auto px-4 py-5 sm:px-6 lg:px-8">
