@@ -6,7 +6,6 @@ import StallLegend from "@/components/stall-legend";
 
 type StallAreaProps = {
   title: string;
-  subtitle: string;
   legendItems: { color: string; label: string }[];
   StallComponent: React.FC<any>;
   stallProps: any;
@@ -14,7 +13,6 @@ type StallAreaProps = {
 
 const StallArea = ({
   title,
-  subtitle,
   legendItems,
   StallComponent,
   stallProps,
@@ -22,7 +20,7 @@ const StallArea = ({
   const router = useRouter();
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 pb-40">
+    <main className=" bg-gradient-to-b from-gray-50 to-gray-100 pb-40">
       <div className="container mx-auto px-4 py-5 sm:px-6 lg:px-8">
         <nav className="mb-12 mt-3 flex items-center justify-start gap-4">
           <Link

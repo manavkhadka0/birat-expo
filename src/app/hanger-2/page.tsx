@@ -117,7 +117,6 @@ const Hanger2Page = () => {
     <div className="relative">
       <StallArea
         title="Hanger 2 : Industrial and Corporate Stalls"
-        subtitle="Industrial and Corporate Stalls"
         legendItems={legendItemsHangers}
         StallComponent={Hanger2}
         stallProps={{

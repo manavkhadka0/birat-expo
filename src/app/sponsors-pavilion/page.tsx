@@ -5,14 +5,88 @@ import StallArea from "@/components/stall-area";
 import { useRouter } from "next/navigation";
 import Sponsors from "@/components/sponsors";
 
+type SponsorStallPropsType = {
+  sponsor_type: string;
+  price: number;
+  color: string;
+  stallid: string[];
+};
+
+type StallInfo = {
+  id: string;
+  companyName: string;
+};
+
 const SponsorsPage = () => {
   const router = useRouter();
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
 
-  const legendItemsFood = [
-    { color: "#6fbe49", label: "Food Stalls" },
-    { color: "#fb2e01", label: "Booked" },
-    { color: "#00ff00", label: "Selected" },
+  const legendItemsSponsors = [
+    { color: "#3498DB", label: "Main Sponsor" },
+    { color: "#E67E22", label: "Powered By Sponsor" },
+    { color: "#95A5A6", label: "Platinum" },
+    { color: "#1ABC9C", label: "Diamond" },
+    { color: "#F1C40F", label: "Gold" },
+    { color: "#9B59B6", label: "Partner Sponsor" },
+    { color: "#BDC3C7", label: "Silver" },
+    { color: "#E74C3C", label: "Booked" },
+    { color: "#ffff00", label: "Reserved" },
+    { color: "#2ECC71", label: "Selected" },
+  ];
+
+  const sponsorStallProps: SponsorStallPropsType[] = [
+    {
+      sponsor_type: "Main Sponsor",
+      price: 7500000,
+      color: "#3498DB",
+      stallid: ["S1"],
+    },
+    {
+      sponsor_type: "Powered By Sponsor",
+      price: 3500000,
+      color: "#E67E22",
+      stallid: ["S2"],
+    },
+    {
+      sponsor_type: "Platinum",
+      price: 200000,
+      color: "#95A5A6",
+      stallid: ["S3"],
+    },
+    {
+      sponsor_type: "Diamond",
+      price: 1500000,
+      color: "#1ABC9C",
+      stallid: ["S4"],
+    },
+    {
+      sponsor_type: "Gold",
+      price: 1000000,
+      color: "#F1C40F",
+      stallid: ["S5"],
+    },
+    {
+      sponsor_type: "Partner Sponsor",
+      price: 1000000,
+      color: "#9B59B6",
+      stallid: ["S6", "S7", "S8"],
+    },
+    {
+      sponsor_type: "Silver",
+      price: 500000,
+      color: "#BDC3C7",
+      stallid: ["S9", "S10", "S11", "S12"],
+    },
+  ];
+
+  const bookedStalls: StallInfo[] = [
+    // { id: "S1", companyName: "Company A" },
+    // // Add more as needed
+  ];
+
+  const reservedStalls: StallInfo[] = [
+    // { id: "S6", companyName: "Company B" },
+    // // Add more as needed
   ];
 
   const onAvailableStallClick = useCallback((stallId: string) => {
@@ -20,7 +94,12 @@ const SponsorsPage = () => {
       if (prevSelected.includes(stallId)) {
         return prevSelected.filter((id) => id !== stallId);
       } else {
-        return [...prevSelected, stallId];
+        if (prevSelected.length === 0) {
+          return [stallId];
+        } else {
+          alert("You can only select one stall.");
+          return prevSelected;
+        }
       }
     });
   }, []);
@@ -35,11 +114,12 @@ const SponsorsPage = () => {
     <div className="relative">
       <StallArea
         title="Sponsors Pavilion"
-        subtitle="Sponsor Stalls"
-        legendItems={legendItemsFood}
+        legendItems={legendItemsSponsors}
         StallComponent={Sponsors}
         stallProps={{
-          bookedStalls: [""],
+          sponsorStallProps: sponsorStallProps,
+          bookedStalls: bookedStalls,
+          reservedStalls: reservedStalls,
           onAvailableStallClick: onAvailableStallClick,
           selectedStalls: selectedStalls,
         }}

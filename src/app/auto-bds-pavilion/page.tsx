@@ -134,7 +134,6 @@ const AutoPage = () => {
       )}
       <StallArea
         title="Automobiles and Business Development Service Pavilion"
-        subtitle="Auto and BDS Stalls"
         legendItems={legendItems}
         StallComponent={AutoBDSPavilion}
         stallProps={{
