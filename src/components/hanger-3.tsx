@@ -214,7 +214,7 @@ const Hanger3: React.FC<HangerOneProps> = ({
         primeStallsSet.has(stall)
       ).length;
       const regularStallCount = selectedStalls.length - primeStallCount;
-      return primeStallCount * 60000 + regularStallCount * 50000;
+      return primeStallCount * 30000 + regularStallCount * 25000;
     };
 
     setTotalPrice(calculateTotalPrice());

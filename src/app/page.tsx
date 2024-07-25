@@ -39,6 +39,13 @@ export default function Home() {
             <p className="tracking-[0.2rem]">
               Digital KOSHI: Bridging Innovation and Investment
             </p>
+            <div className="border-t-4 border-blue-500 my-2"></div>
+            <p className="tracking-[0.2rem] ">
+              Date: 22<sup>nd</sup> - 31<sup>st</sup> December 2024
+            </p>
+            <p className="tracking-[0.2rem]">
+              Venue: Degree Campus, Biratnagar
+            </p>
           </div>
 
           <StallsList />

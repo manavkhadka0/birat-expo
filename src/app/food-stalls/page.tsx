@@ -151,7 +151,7 @@ const FoodPage = () => {
             onClick={handleProceed}
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 text-lg rounded-full shadow-lg transition duration-300"
           >
-            Proceed with Selected Stalls
+            Book Now
           </button>
         </div>
       )}
