@@ -1,9 +1,12 @@
 import SponsorBookingForm from "@/components/sponsor-booking";
+import { Suspense } from "react";
 
 const BookStallPage = () => {
   return (
     <div>
-      <SponsorBookingForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <SponsorBookingForm />
+      </Suspense>
     </div>
   );
 };
