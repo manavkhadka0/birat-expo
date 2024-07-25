@@ -61,7 +61,7 @@ const Hanger1Page = () => {
   const legendItemsHangers = [
     { color: "#f5aeae", label: "Prime" },
     { color: "#f3efa3", label: "Prime" },
-    { color: "#fffa00", label: "Pending" },
+    { color: "#fffa00", label: "Reserved" },
     { color: "#fb2e01", label: "Booked" },
     { color: "#00ff00", label: "Selected" },
   ];

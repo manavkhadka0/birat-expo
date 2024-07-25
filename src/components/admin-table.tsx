@@ -4,6 +4,9 @@ import { useGetStallData } from "@/api/admin-data";
 import axios from "axios";
 import { mutate } from "swr";
 import { set } from "react-hook-form";
+import { ArrowDownFromLine, DownloadCloud, Loader } from "lucide-react";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import MyDocument from "./form-pdf";
 
 interface Stall {
   id: number;
@@ -62,6 +65,12 @@ const AdminTable: React.FC = () => {
   const [selectedStall, setSelectedStall] = useState<Stall | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingStallId, setLoadingStallId] = useState<number | null>(null);
+
+  const [pdfData, setPdfData] = useState<Stall | null>(null);
+
+  const handlePdfGeneration = (item: Stall) => {
+    setPdfData(item);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -321,12 +330,32 @@ const AdminTable: React.FC = () => {
                   )}
                 </td>
                 <td className="py-4 px-6">
-                  <button
-                    onClick={() => handleViewDetails(item.id)}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs"
-                  >
-                    View Details
-                  </button>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleViewDetails(item.id)}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs"
+                    >
+                      View Details
+                    </button>
+                    {pdfData && pdfData.id === item.id ? (
+                      <PDFDownloadLink
+                        document={<MyDocument data={pdfData} />}
+                        fileName={`${pdfData.company} Application.pdf`}
+                        className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition duration-300"
+                      >
+                        {({ loading }) =>
+                          loading ? <Loader /> : <ArrowDownFromLine />
+                        }
+                      </PDFDownloadLink>
+                    ) : (
+                      <button
+                        onClick={() => handlePdfGeneration(item)}
+                        className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition duration-300"
+                      >
+                        <DownloadCloud />
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
