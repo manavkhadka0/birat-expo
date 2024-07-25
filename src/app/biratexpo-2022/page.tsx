@@ -54,6 +54,14 @@ export default function BiratExpo22() {
           </div>
         </div>
       </div>
+
+      {/* https://kantipurtv.com/business/2022/12/25/1671949170.html */}
+      {/* embed this link  with proper ui*/}
+
+      <embed
+        src="https://kantipurtv.com/business/2022/12/25/1671949170.html"
+        className="container h-screen"
+      />
     </>
   );
 }

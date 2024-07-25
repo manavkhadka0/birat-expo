@@ -70,8 +70,8 @@ export default function Home() {
       {/* <IntroSection /> */}
       <div className="py-10"></div>
       <ObjectivesSection />
-      <div className="py-10"></div>
-      <SponsorshipSection />
+      {/* <div className="py-10"></div> */}
+      {/* <SponsorshipSection /> */}
       <div className="py-10">
         {/* <img src="/12.jpg" alt="Birat Expo 2024" className="mx-w-100 my-20" /> */}
         <img src="/13.png" alt="Birat Expo 2024" className="mx-w-100 my-20" />
@@ -81,6 +81,8 @@ export default function Home() {
       </div>
       <div className="py-10"></div>
       <AttractionsSection />
+      <div className="py-10"></div>
+      <DayPlans />
       <div className="py-10"></div>
       <div className="flex flex-col justify-center items-center">
         <h2 className="text-4xl text-center font-black  justify-center flex items-center mb-5  ps-2 text-gray-800">
@@ -102,3 +104,21 @@ export default function Home() {
     </div>
   );
 }
+
+const DayPlans = () => (
+  <section className="mb-16 container">
+    <h2 className="text-4xl font-black text-start mb-5 border-l-[5px] ps-2 border-blue-800 text-gray-800">
+      Proposed 10 Days Plan
+    </h2>
+    <img
+      src="/day-plan-1.png"
+      alt="Birat Expo 2024"
+      className="w-full mx-auto"
+    />
+    <img
+      src="/day-plan-2.png"
+      alt="Birat Expo 2024"
+      className="w-full mx-auto"
+    />
+  </section>
+);
