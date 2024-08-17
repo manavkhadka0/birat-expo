@@ -9,7 +9,6 @@ import { AnimatedModalDemo } from "./terms-and-conditions";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import ReviewAndDownload from "./review-form";
-import { headers } from "next/headers";
 import { formatNumberInternational } from "@/lib/formatNumber";
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
@@ -44,6 +43,14 @@ const schema = yup.object().shape({
   advance_amount: yup
     .number()
     .positive("Amount must be positive")
+    .test(
+      "is-minimum-30-percent",
+      "Advance amount must be at least 30% of the total amount",
+      function (value) {
+        const totalAmount = this.parent.total_amount;
+        return (value as number) >= totalAmount * 0.3;
+      }
+    )
     .required("Advance amount is required"),
   remaining_amount: yup.number().required("Remaining amount is required"),
   amount_in_words: yup.string().required("Amount in words is required"),
@@ -51,18 +58,6 @@ const schema = yup.object().shape({
     .boolean()
     .oneOf([true], "Please accept terms and conditions"),
 });
-
-// function convertCamelToSnake(camelCaseString: string) {
-//   // Insert underscore before each uppercase letter and convert to lowercase
-//   let snakeCaseString = camelCaseString
-//     .replace(/([A-Z])/g, "_$1")
-//     .toLowerCase();
-//   // Remove leading underscore if it exists
-//   if (snakeCaseString.startsWith("_")) {
-//     snakeCaseString = snakeCaseString.slice(1);
-//   }
-//   return snakeCaseString;
-// }
 
 const ExhibitionForm = () => {
   const searchParams = useSearchParams();
@@ -451,14 +446,14 @@ const ExhibitionForm = () => {
                 )}
               </div>
               <div className="flex items-center gap-2">
-                <label className="mb-1 ">Advance Amount:</label>
+                <label className="mb-1">Advance Amount (min 30%):</label>
                 <input
                   {...register("advance_amount")}
                   type="number"
                   className=" rounded border p-2"
                 />
                 {errors.advance_amount && (
-                  <p className="text-red-500 text-sm">
+                  <p className="text-red-500  text-sm">
                     {errors.advance_amount.message}
                   </p>
                 )}
