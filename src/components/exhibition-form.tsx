@@ -93,6 +93,8 @@ const ExhibitionForm = () => {
   const total_amount = watch("total_amount");
 
   useEffect(() => {
+    // Calculate remaining amount when advance amount changes
+    if (!advance_amount) return;
     setValue("remaining_amount", total_amount - advance_amount);
   }, [advance_amount, setValue, total_amount]);
 
