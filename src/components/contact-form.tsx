@@ -46,11 +46,11 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="lg:p-8">
       <div className="w-full container mx-auto p-8 flex flex-col items-center justify-center md:flex-row gap-8">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-1/2 space-y-6 mb-20"
+          className="lg:w-2/3 space-y-6 mb-20"
         >
           <div>
             <h2 className="text-3xl font-extrabold text-gray-800 mb-10 text-center">
