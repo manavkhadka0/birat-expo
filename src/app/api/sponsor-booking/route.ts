@@ -16,9 +16,9 @@ export async function POST(request: Request) {
     const body: BookingData = await request.json();
 
     const { data, error } = await resend.emails.send({
-      from: "Birat Expo 2024 Booking <info@baliyoventures.com>",
+      from: "Birat Expo 2025 Booking <info@baliyoventures.com>",
       to: ["biratexpo2024@gmail.com", body.companyEmail],
-      subject: `New Stall Booking for Birat Expo 2024`,
+      subject: `New Stall Booking for Birat Expo 2025`,
       react: SponsorEmailTemplate(body),
     });
 

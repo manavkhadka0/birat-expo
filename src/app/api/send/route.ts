@@ -23,9 +23,9 @@ export async function POST(request: Request) {
     };
 
     const { data, error } = await resend.emails.send({
-      from: "Birat Expo 2024 Contact <info@baliyoventures.com>",
+      from: "Birat Expo 2025 Contact <info@baliyoventures.com>",
       to: ["biratexpo2024@gmail.com"],
-      subject: `Contact Enquiry for Birat Expo 2024`,
+      subject: `Contact Enquiry for Birat Expo 2025`,
       react: EmailTemplate(templateProps),
     });
 

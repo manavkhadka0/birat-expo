@@ -182,11 +182,13 @@ const ExhibitionForm = () => {
     <div className="bg-gray-100 p-6  pb-40 pt-20">
       <div className="mx-auto max-w-4xl overflow-hidden rounded-lg bg-white shadow-md">
         <div className="bg-blue-800 p-6 text-center text-white">
-          <h1 className="text-3xl font-bold ">BIRAT EXPO-2024</h1>
+          <h1 className="text-3xl font-bold ">BIRAT EXPO-2025</h1>
           <p className="mt-2 text-xl">
             Digital Koshi : Bridging Innovation and Investment
           </p>
-          <p className="mt-2">22 to 31 December, 2024</p>
+          <p className="mt-2">
+            24<sup>th</sup> Jan - 2<sup>nd</sup> Feb 2025
+          </p>
           <p>Biratnagar, Nepal</p>
         </div>
 
@@ -310,8 +312,8 @@ const ExhibitionForm = () => {
               </tr>
               <tr>
                 <td className="border p-2">Degree Campus, Biratnagar, Nepal</td>
-                <td className="border p-2">20 & 21st December 2024</td>
-                <td className="border p-2">22-31 December 2024</td>
+                <td className="border p-2">22nd & 23rd December 2025</td>
+                <td className="border p-2">24th Jan - 2nd Feb 2025</td>
                 <td className="border p-2">10 A.M to 8 P.M</td>
               </tr>
             </table>

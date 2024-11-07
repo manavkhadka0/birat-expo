@@ -34,14 +34,14 @@ export default function Home() {
           </div>
           <div>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 uppercase">
-              Birat Expo 2024
+              Birat Expo 2025
             </h2>
             <p className="tracking-[0.2rem]">
               Digital KOSHI: Bridging Innovation and Investment
             </p>
             <div className="border-t-4 border-blue-500 my-2"></div>
             <p className="tracking-[0.2rem] ">
-              Date: 22<sup>nd</sup> - 31<sup>st</sup> December 2024
+              Date: 24<sup>th</sup> Jan - 2<sup>nd</sup> Feb 2025
             </p>
             <p className="tracking-[0.2rem]">
               Venue: Degree Campus, Biratnagar
@@ -62,7 +62,7 @@ export default function Home() {
         <div className="w-full md:w-1/2 flex justify-center md:justify-end">
           <Image
             src="/mascot.svg"
-            alt="Birat Expo 2024"
+            alt="Birat Expo 2025"
             width={500}
             height={600}
             className="max-w-full h-auto"
@@ -80,11 +80,11 @@ export default function Home() {
       {/* <div className="py-10"></div> */}
       {/* <SponsorshipSection /> */}
       <div className="py-10">
-        {/* <img src="/12.jpg" alt="Birat Expo 2024" className="mx-w-100 my-20" /> */}
-        <img src="/13.png" alt="Birat Expo 2024" className="mx-w-100 my-20" />
-        <img src="/14.png" alt="Birat Expo 2024" className="mx-w-100 my-20" />
-        <img src="/15.png" alt="Birat Expo 2024" className="mx-w-100 my-20" />
-        <img src="/16.png" alt="Birat Expo 2024" className="mx-w-100 my-20" />
+        {/* <img src="/12.jpg" alt="Birat Expo 2025" className="mx-w-100 my-20" /> */}
+        <img src="/13.png" alt="Birat Expo 2025" className="mx-w-100 my-20" />
+        <img src="/14.png" alt="Birat Expo 2025" className="mx-w-100 my-20" />
+        <img src="/15.png" alt="Birat Expo 2025" className="mx-w-100 my-20" />
+        <img src="/16.png" alt="Birat Expo 2025" className="mx-w-100 my-20" />
       </div>
       <div className="py-10"></div>
       <AttractionsSection />
@@ -119,12 +119,12 @@ const DayPlans = () => (
     </h2>
     <img
       src="/day-plan-1.png"
-      alt="Birat Expo 2024"
+      alt="Birat Expo 2025"
       className="w-full mx-auto"
     />
     <img
       src="/day-plan-2.png"
-      alt="Birat Expo 2024"
+      alt="Birat Expo 2025"
       className="w-full mx-auto"
     />
   </section>

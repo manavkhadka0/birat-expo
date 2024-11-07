@@ -34,7 +34,7 @@ export function AnimatedModalDemo() {
                     </li>
                     <li>
                       The term &quot;exhibition&quot; shall mean (BIRAT
-                      EXPO-2024) Digital Koshi : Bridging Innovation and
+                      EXPO-2025) Digital Koshi : Bridging Innovation and
                       Investment
                     </li>
                     <li>
@@ -220,13 +220,13 @@ export function AnimatedModalDemo() {
                     <li>
                       Whenever necessary, the organizer shall have the right to
                       take supplementary regulations in addition to those in the
-                      regulations for participation in (Birat Expo 2024) to
+                      regulations for participation in (Birat Expo 2025) to
                       ensure the smooth management of the exhibition.
                     </li>
                     <li>
                       Any additional written regulation instructions shall form
                       part of the terms and regulations for participating in
-                      (Birat Expo 2024) and they shall be binding on the
+                      (Birat Expo 2025) and they shall be binding on the
                       exhibitors.
                     </li>
                   </ol>

@@ -20,7 +20,7 @@ const ReviewAndDownload = ({
       <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="bg-blue-600 text-white p-6">
           <h2 className="text-3xl font-bold">Review Your Application</h2>
-          <p className="mt-2 text-blue-100">BIRAT EXPO-2024</p>
+          <p className="mt-2 text-blue-100">BIRAT EXPO-2025</p>
         </div>
 
         <div className="p-6 space-y-6">

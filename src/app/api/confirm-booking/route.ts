@@ -88,9 +88,9 @@ export async function POST(request: Request) {
     };
 
     const { data, error } = await resend.emails.send({
-      from: "Birat Expo 2024 Contact <info@baliyoventures.com>",
+      from: "Birat Expo 2025 Contact <info@baliyoventures.com>",
       to: [templateProps.email.toString(), "biratexpo2024@gmail.com"], // Replace with actual admin email
-      subject: `Your Stall Booking for Birat Expo 2024`,
+      subject: `Your Stall Booking for Birat Expo 2025`,
       react: StallBookingTemplate({ data: templateProps }),
     });
 

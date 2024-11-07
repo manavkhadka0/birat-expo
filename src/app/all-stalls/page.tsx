@@ -90,7 +90,7 @@ export default function ElegantExpoLayout() {
         </nav>
         <header className="mb-16 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-4">
-            Birat Expo 2024
+            Birat Expo 2025
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Explore our innovative stall layouts and secure your space at this

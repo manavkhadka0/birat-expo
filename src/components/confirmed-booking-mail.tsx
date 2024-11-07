@@ -70,7 +70,7 @@ const StallBookingTemplate = ({ data }: { data: any }) => {
             Your Application has been submitted
           </h2>
           <p style={{ marginTop: "0.5rem", color: "#bfdbfe" }}>
-            BIRAT EXPO-2024
+            BIRAT EXPO-2025
           </p>
         </div>
         <div style={{ padding: "1.5rem" }}>

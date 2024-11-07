@@ -94,12 +94,12 @@ const MyDocument = ({ data }: { data: any }) => (
         <Image src="/baliyo-logo.svg" style={styles.logo} />
       </View>
 
-      <Text style={styles.title}>BIRAT EXPO-2024</Text>
+      <Text style={styles.title}>BIRAT EXPO-2025</Text>
       <Text style={styles.subtitle}>
         Digital Koshi : Bridging Innovation and Investment
       </Text>
       <Text style={styles.subtitle}>
-        22 to 31 December, 2024 • Biratnagar, Nepal
+        24<sup>th</sup> Jan - 2<sup>nd</sup> Feb, 2025 • Biratnagar, Nepal
       </Text>
 
       <Text style={[styles.sectionTitle, { marginTop: 20 }]}>
@@ -157,10 +157,14 @@ const MyDocument = ({ data }: { data: any }) => (
               </Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>20 & 21st December 2024</Text>
+              <Text style={styles.tableCell}>
+                22<sup>nd</sup> & 23<sup>rd</sup> Jan 2025
+              </Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>22-31 December 2024</Text>
+              <Text style={styles.tableCell}>
+                24<sup>th</sup> Jan - 2<sup>nd</sup> Feb 2025
+              </Text>
             </View>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>10 A.M to 8 P.M</Text>

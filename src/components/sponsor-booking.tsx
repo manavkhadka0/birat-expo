@@ -61,7 +61,7 @@ const SponsorBookingForm = () => {
     <div className="bg-gray-100 p-6 pb-40 pt-20">
       <div className="mx-auto max-w-2xl overflow-hidden rounded-lg bg-white shadow-md">
         <div className="bg-blue-800 p-6 text-center text-white">
-          <h1 className="text-3xl font-bold">BIRAT EXPO-2024 Stall Booking</h1>
+          <h1 className="text-3xl font-bold">BIRAT EXPO-2025 Stall Booking</h1>
           <p className="mt-2 text-xl">Confirm Your Stall Reservation</p>
         </div>
 

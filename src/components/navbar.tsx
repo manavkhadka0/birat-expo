@@ -68,7 +68,7 @@ const Navbar = () => {
         <Link href="/">
           <Image
             src="/logo.png"
-            alt="Birat Expo 2024"
+            alt="Birat Expo 2025"
             width={200}
             height={60}
           />

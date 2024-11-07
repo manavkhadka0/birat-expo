@@ -7,9 +7,9 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Birat Expo 2024",
+  title: "Birat Expo 2025",
   description:
-    "Birat Expo 2024 - Join us in bridging innovation and investment in Biratnagar, Nepal.",
+    "Birat Expo 2025 - Join us in bridging innovation and investment in Biratnagar, Nepal.",
 };
 
 export default function RootLayout({

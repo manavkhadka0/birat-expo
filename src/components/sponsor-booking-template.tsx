@@ -49,7 +49,7 @@ const SponsorEmailTemplate = ({
         </h1>
 
         <p style={{ color: "#4b5563", lineHeight: "1.6" }}>
-          A new stall booking has been received for BIRAT EXPO 2024. Please
+          A new stall booking has been received for BIRAT EXPO 2025. Please
           review the details below and process the booking accordingly.
         </p>
 
@@ -99,7 +99,7 @@ const SponsorEmailTemplate = ({
           fontSize: "14px",
         }}
       >
-        <p>&copy; 2024 BIRAT EXPO. All rights reserved.</p>
+        <p>&copy; 2025 BIRAT EXPO. All rights reserved.</p>
         <p>
           This is an automated notification. Please do not reply directly to
           this email.

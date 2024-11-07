@@ -32,12 +32,12 @@ const EmailTemplate = ({ email, name, message, phone }: EmailTemplateProps) => {
             marginBottom: "20px",
           }}
         >
-          New Contact Inquiry for BIRAT EXPO 2024
+          New Contact Inquiry for BIRAT EXPO 2025
         </h1>
 
         <p style={{ color: "#4b5563", lineHeight: "1.6" }}>
           You have received a new contact inquiry from a potential participant
-          or visitor for BIRAT EXPO 2024. Please review the details below and
+          or visitor for BIRAT EXPO 2025. Please review the details below and
           respond promptly.
         </p>
 
@@ -84,7 +84,7 @@ const EmailTemplate = ({ email, name, message, phone }: EmailTemplateProps) => {
           fontSize: "14px",
         }}
       >
-        <p>&copy; 2024 BIRAT EXPO. All rights reserved.</p>
+        <p>&copy; 2025 BIRAT EXPO. All rights reserved.</p>
         <p>
           This is an automated notification. Please do not reply directly to
           this email.
