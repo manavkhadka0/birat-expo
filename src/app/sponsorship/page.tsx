@@ -214,7 +214,7 @@ export default function Sponsorship() {
           </div>
           <object
             className="pdf"
-            data="/Birat Expo 2024 - Proposal.pdf"
+            data="/Birat Expo 2025 - Proposal.pdf"
             width="800"
             height="750"
           ></object>
