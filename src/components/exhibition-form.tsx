@@ -312,7 +312,7 @@ const ExhibitionForm = () => {
               </tr>
               <tr>
                 <td className="border p-2">Degree Campus, Biratnagar, Nepal</td>
-                <td className="border p-2">22nd & 23rd December 2025</td>
+                <td className="border p-2">22nd & 23rd Jan 2025</td>
                 <td className="border p-2">24th Jan - 2nd Feb 2025</td>
                 <td className="border p-2">10 A.M to 8 P.M</td>
               </tr>
