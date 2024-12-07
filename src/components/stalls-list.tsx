@@ -13,7 +13,6 @@ const stalls = [
     name: "Hanger 2 : Industrial and Corporate Stalls",
     href: "/hanger-2",
   },
-  { emoji: "🎪", name: "Agro and SME Stalls", href: "/hanger-3" },
   { emoji: "🎪", name: "Food Stalls", href: "/food-stalls" },
 ];
 
