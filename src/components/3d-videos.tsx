@@ -27,7 +27,7 @@ const ThreeDVideos = () => {
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="aspect-w-16 aspect-h-9">
             <iframe
-              src="https://www.youtube.com/embed/8b7Y2vuB9jE?si=IUDS-AAPtV_a04iK"
+              src="https://www.youtube.com/embed/Dq4A1GCVpy0"
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
@@ -36,7 +36,7 @@ const ThreeDVideos = () => {
           </div>
           <div className="p-6">
             <h3 className="text-2xl font-bold text-gray-800 mb-2">
-              3D Video Birat Expo&apos;24
+              3D Video Birat Expo&apos;25
             </h3>
           </div>
         </div>
