@@ -10,7 +10,7 @@ export default function Proposal() {
           Birat Expo 2025 Floor Plan
         </h2>
         <Image
-          src="/floor-plan.png"
+          src="/floor-plan.jpg"
           alt="biratexpo floor plan"
           className="max-w-100 border  rounded-r-md"
           width={1000}
