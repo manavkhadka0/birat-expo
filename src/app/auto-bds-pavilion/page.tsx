@@ -8,7 +8,6 @@ import { StallTypeData } from "@/types/stall";
 
 const legendItems = [
   { color: "#fccc65", label: "Auto Pavilion (A)" },
-  { color: "#ffff", label: "BDS Pavilion(E)" },
   { color: "#fb2e01", label: "Booked" },
   { color: "#fffa00", label: "Reserved" },
   { color: "#00ff00", label: "Selected" },
@@ -25,11 +24,9 @@ const AutoPage = () => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const autoData = useGetStallTypeData("Automobiles");
-  const bdsData = useGetStallTypeData("BDS Providers Stall");
 
-  const isLoading =
-    autoData.stallTypeDataLoading || bdsData.stallTypeDataLoading;
-  const isError = autoData.stallTypeDataError || bdsData.stallTypeDataError;
+  const isLoading = autoData.stallTypeDataLoading;
+  const isError = autoData.stallTypeDataError;
 
   const { bookedStalls, reservedStalls } = useMemo(() => {
     if (isLoading || isError) return { bookedStalls: [], reservedStalls: [] };
@@ -53,17 +50,12 @@ const AutoPage = () => {
         ? autoData.stallTypeData
         : { booked: [], pending: [], stall_no_booked: [], stall_no_pending: [] }
     );
-    const bdsProcessed = processData(
-      bdsData.stallTypeData
-        ? bdsData.stallTypeData
-        : { booked: [], pending: [], stall_no_booked: [], stall_no_pending: [] }
-    );
 
     return {
-      bookedStalls: [...autoProcessed.booked, ...bdsProcessed.booked],
-      reservedStalls: [...autoProcessed.reserved, ...bdsProcessed.reserved],
+      bookedStalls: autoProcessed.booked,
+      reservedStalls: autoProcessed.reserved,
     };
-  }, [isLoading, isError, autoData.stallTypeData, bdsData.stallTypeData]);
+  }, [isLoading, isError, autoData.stallTypeData]);
 
   const onAvailableStallClick = useCallback((stallId: string) => {
     setSelectedStalls((prevSelected) =>

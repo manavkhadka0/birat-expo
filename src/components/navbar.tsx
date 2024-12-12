@@ -10,7 +10,7 @@ export const navItems = [
       { title: "Automobiles Stalls", href: "/auto-bds-pavilion" },
       {
         title: "Business Development Service Providers",
-        href: "/auto-bds-pavilion",
+        href: "/bds-pavilion",
       },
       {
         title: "Hanger 1 : Industrial and Corporate Stalls",

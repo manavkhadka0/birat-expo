@@ -27,8 +27,11 @@ const ThreeDVideos = () => {
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="aspect-w-16 aspect-h-9">
             <iframe
-              src="https://www.youtube.com/embed/Dq4A1GCVpy0"
-              title="YouTube video player"
+              width="966"
+              height="543"
+              src="https://www.youtube.com/embed/NCKtCJ_vQcs"
+              title="3D Video Birat Expo 2025"
+              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
               className="w-full h-[340px]"
