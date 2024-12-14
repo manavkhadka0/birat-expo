@@ -13,15 +13,15 @@ type StallInfo = {
   companyName: string;
 };
 
-const BDSPage = () => {
+const Hanger1Page = () => {
   const router = useRouter();
   const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  const autoData = useGetStallTypeData("BDS Providers Stall");
+  const bdsData = useGetStallTypeData("BDS Providers Stall");
 
-  const isLoading = autoData.stallTypeDataLoading;
-  const isError = autoData.stallTypeDataError;
+  const isLoading = bdsData.stallTypeDataLoading;
+  const isError = bdsData.stallTypeDataError;
 
   const { bookedStalls, reservedStalls } = useMemo(() => {
     if (isLoading || isError) return { bookedStalls: [], reservedStalls: [] };
@@ -40,17 +40,17 @@ const BDSPage = () => {
       return { booked, reserved };
     };
 
-    const autoProcessed = processData(
-      autoData.stallTypeData
-        ? autoData.stallTypeData
+    const bdsProcessed = processData(
+      bdsData.stallTypeData
+        ? bdsData.stallTypeData
         : { booked: [], pending: [], stall_no_booked: [], stall_no_pending: [] }
     );
 
     return {
-      bookedStalls: autoProcessed.booked,
-      reservedStalls: autoProcessed.reserved,
+      bookedStalls: bdsProcessed.booked,
+      reservedStalls: bdsProcessed.reserved,
     };
-  }, [isLoading, isError, autoData.stallTypeData]);
+  }, [isLoading, isError, bdsData.stallTypeData]);
 
   const legendItemsHangers = [
     { color: "#f5aeae", label: "Prime" },
@@ -73,16 +73,16 @@ const BDSPage = () => {
   const primeStallsType1 = ["E1", "E2", "E35", "E36"];
 
   const primeStallsType2 = [
-    "B37",
-    "B38",
-    "B39",
-    "B40",
-    "B22",
-    "B23",
-    "B54",
-    "B55",
-    "B20",
-    "B57",
+    "E10",
+    "E27",
+    "E17",
+    "E18",
+    "E19",
+    "E20",
+    "E12",
+    "E13",
+    "E24",
+    "E25",
   ];
 
   const notAvailableStalls = ["ca2ada087c"];
@@ -146,4 +146,4 @@ const BDSPage = () => {
   );
 };
 
-export default BDSPage;
+export default Hanger1Page;

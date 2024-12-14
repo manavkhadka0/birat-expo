@@ -45,6 +45,7 @@ const BDSPavilion: React.FC<BDSPRops> = ({
       const stall = svg.querySelector(
         `g[clip-path="url(#${clipPathId})"] path`
       );
+      console.log(stall);
       if (stall) {
         stall.setAttribute("fill", color);
         stall.setAttribute("fill-opacity", opacity.toString());
@@ -240,6 +241,7 @@ const BDSPavilion: React.FC<BDSPRops> = ({
           xmlnsXlink="http://www.w3.org/1999/xlink"
           width="100%"
           height="100%"
+          ref={svgRef}
           viewBox="0 0 1138.5 683.999997"
           preserveAspectRatio="xMidYMid meet"
           version="1.0"
