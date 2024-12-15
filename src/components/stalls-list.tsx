@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const stalls = [
   { emoji: "🎪", name: "Automobiles Stalls", href: "/auto-bds-pavilion" },
-  { emoji: "🎪", name: "BDS Stalls", href: "/auto-bds-pavilion" },
+  { emoji: "🎪", name: "BDS Stalls", href: "/bds-pavilion" },
   {
     emoji: "🎪",
     name: "Hanger 1 : Industrial and Corporate Stalls",
