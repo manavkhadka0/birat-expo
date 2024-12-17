@@ -20,6 +20,10 @@ export const navItems = [
         title: "Hanger 2 : Industrial and Corporate Stalls",
         href: "/hanger-2",
       },
+      {
+        title: "Food Stalls",
+        href: "/food-stalls",
+      },
     ],
   },
   {
