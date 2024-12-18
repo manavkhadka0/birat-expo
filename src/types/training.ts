@@ -22,18 +22,18 @@ export interface TimeSlot {
 export interface Registration {
   id?: number;
   time_slot: number;
-  registration_type: 'SINGLE' | 'GROUP' | 'EXPO_ACCESS';
-  status?: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+  registration_type: "SINGLE" | "GROUP" | "EXPO_ACCESS";
+  status?: "PENDING" | "CONFIRMED" | "CANCELLED";
   full_name: string;
-  qualification: 'Under SEE' | '10+2' | 'Graduate' | 'Post Graduate';
-  gender: 'Male' | 'Female' | 'Other';
+  qualification: "Under SEE" | "10+2" | "Graduate" | "Post Graduate";
+  gender: "Male" | "Female" | "Other";
   age: number;
   address: string;
   mobile_number: string;
   email: string;
   total_participants: number;
   total_price?: number;
-  payment_method: 'Nabil_Bank';
+  payment_method: "Nabil_Bank";
   payment_screenshot?: File;
   agreed_to_no_refund: boolean;
   is_early_bird?: boolean;
@@ -42,4 +42,4 @@ export interface Registration {
   qr_code?: string;
   created_at?: string;
   updated_at?: string;
-} 
+}

@@ -4,9 +4,13 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 export function useGetAvailableSessions() {
-  const URL = "https://yachu.baliyoventures.com/api/registrations/available-sessions/";
+  const URL =
+    "https://yachu.baliyoventures.com/api/registrations/available-sessions/";
 
-  const { data, error, isLoading, isValidating } = useSWR<Topic[]>(URL, fetcher);
+  const { data, error, isLoading, isValidating } = useSWR<Topic[]>(
+    URL,
+    fetcher
+  );
 
   const memoizedValue = useMemo(
     () => ({
@@ -35,20 +39,34 @@ export async function registerForTraining(formData: FormData) {
     const data = await response.json();
 
     if (!response.ok) {
-      // Handle specific error messages from the backend
       if (data.error) {
         throw new Error(data.error);
       }
       throw new Error("Registration failed. Please try again.");
     }
 
+    // After successful registration, send confirmation email
+    try {
+      const emailResponse = await fetch("/api/training-registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!emailResponse.ok) {
+        console.error("Failed to send confirmation email");
+      }
+    } catch (emailError) {
+      console.error("Error sending confirmation email:", emailError);
+    }
+
     return data;
   } catch (error) {
     if (error instanceof Error) {
-      // If it's an error we threw above or a network error
       throw error;
     }
-    // For any other type of error
     throw new Error("An unexpected error occurred. Please try again.");
   }
-} 
+}

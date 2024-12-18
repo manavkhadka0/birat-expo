@@ -6,13 +6,77 @@ import { useState, useEffect } from "react";
 import { registerForTraining } from "@/api/training";
 import SessionCard from "./session-card";
 import PaymentQR from "./payment-qr";
+import { format } from "date-fns";
+import {
+  UserIcon,
+  UsersIcon,
+  TicketIcon,
+  UserPlusIcon,
+  CalendarIcon,
+  GiftIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
+
+interface Props {
+  topics: Topic[];
+}
+
+interface TrainingFormData {
+  time_slot: number;
+  registration_type: "SINGLE" | "GROUP" | "EXPO_ACCESS";
+  full_name: string;
+  qualification: "Under SEE" | "10+2" | "Graduate" | "Post Graduate";
+  gender: "Male" | "Female" | "Other";
+  age: number;
+  address: string;
+  mobile_number: string;
+  email: string;
+  total_participants: number;
+  payment_method: "Nabil_Bank";
+  payment_screenshot: File | undefined;
+  agreed_to_no_refund: boolean;
+}
+
+const PRICE_CONFIG = {
+  SINGLE: {
+    price: 300,
+    participants: 1,
+    icon: UserIcon,
+    description: "Individual registration for one participant",
+  },
+  GROUP: {
+    price: 1500,
+    participants: 6,
+    icon: UsersIcon,
+    description: "Group registration with 5 paid participants plus 1 free",
+  },
+  EXPO_ACCESS: {
+    price: 2100,
+    participants: 1,
+    icon: TicketIcon,
+    description: "10 days expo access with training for one participant",
+  },
+};
+
+interface FileWithPreview extends File {
+  preview?: string;
+}
 
 const schema = yup.object().shape({
   time_slot: yup.number().required("Please select a time slot"),
-  registration_type: yup.string().required("Registration type is required"),
+  registration_type: yup
+    .string()
+    .oneOf(["SINGLE", "GROUP", "EXPO_ACCESS"] as const)
+    .required("Registration type is required"),
   full_name: yup.string().required("Full name is required"),
-  qualification: yup.string().required("Qualification is required"),
-  gender: yup.string().required("Gender is required"),
+  qualification: yup
+    .string()
+    .oneOf(["Under SEE", "10+2", "Graduate", "Post Graduate"] as const)
+    .required("Qualification is required"),
+  gender: yup
+    .string()
+    .oneOf(["Male", "Female", "Other"] as const)
+    .required("Gender is required"),
   age: yup
     .number()
     .min(14, "Must be at least 14 years old")
@@ -27,28 +91,31 @@ const schema = yup.object().shape({
     .number()
     .min(1)
     .required("Number of participants is required"),
-  payment_method: yup.string().required("Payment method is required"),
-  payment_screenshot: yup.mixed().required("Payment screenshot is required"),
+  payment_method: yup
+    .string()
+    .oneOf(["Nabil_Bank"] as const)
+    .required("Payment method is required"),
+  payment_screenshot: yup
+    .mixed()
+    .test(
+      "fileRequired",
+      "Payment screenshot is required",
+      (value) => value instanceof File || value === undefined
+    ),
   agreed_to_no_refund: yup
     .boolean()
     .oneOf([true], "You must agree to the no-refund policy"),
 });
-
-interface Props {
-  topics: Topic[];
-}
-
-const PRICE_CONFIG = {
-  SINGLE: 300,
-  GROUP: 1500,
-  EXPO_ACCESS: 2100,
-};
 
 export default function TrainingRegistrationForm({ topics }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<FileWithPreview | null>(
+    null
+  );
 
   const {
     register,
@@ -56,24 +123,45 @@ export default function TrainingRegistrationForm({ topics }: Props) {
     formState: { errors },
     watch,
     setValue,
-  } = useForm<Registration>({
+  } = useForm<TrainingFormData>({
     resolver: yupResolver(schema),
   });
 
   const selectedTimeSlot = watch("time_slot");
   const registrationType = watch("registration_type");
-  const totalParticipants = watch("total_participants");
 
-  // Calculate total amount when registration type or participants change
   useEffect(() => {
     if (registrationType) {
-      const basePrice =
+      const config =
         PRICE_CONFIG[registrationType as keyof typeof PRICE_CONFIG];
-      setTotalAmount(basePrice * (totalParticipants || 1));
+      const participants = config.participants;
+      setValue("total_participants", participants);
+      setTotalAmount(config.price);
     }
-  }, [registrationType, totalParticipants]);
+  }, [registrationType, setValue]);
 
-  const onSubmit = async (data: Registration) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const fileWithPreview = Object.assign(file, {
+        preview: URL.createObjectURL(file),
+      });
+      setUploadedFile(fileWithPreview);
+      setPreviewImage(fileWithPreview.preview);
+      setValue("payment_screenshot", file);
+    }
+  };
+
+  const removeFile = () => {
+    if (uploadedFile?.preview) {
+      URL.revokeObjectURL(uploadedFile.preview);
+    }
+    setUploadedFile(null);
+    setPreviewImage(null);
+    setValue("payment_screenshot", undefined);
+  };
+
+  const onSubmit = async (data: TrainingFormData) => {
     try {
       setIsSubmitting(true);
       setError(null);
@@ -84,8 +172,8 @@ export default function TrainingRegistrationForm({ topics }: Props) {
       formData.append("registration_type", data.registration_type);
 
       // Handle file separately
-      if (data.payment_screenshot instanceof FileList) {
-        formData.append("payment_screenshot", data.payment_screenshot[0]);
+      if (uploadedFile) {
+        formData.append("payment_screenshot", uploadedFile);
       }
 
       // Add all other fields
@@ -176,19 +264,64 @@ export default function TrainingRegistrationForm({ topics }: Props) {
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Select Training Session
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {topics.map((topic) =>
-              topic.time_slots.map((slot) => (
-                <SessionCard
-                  key={slot.id}
-                  topic={topic}
-                  slot={slot}
-                  isSelected={selectedTimeSlot === slot.id}
-                  onSelect={(slotId) => setValue("time_slot", slotId)}
-                  disabled={slot.available_spots === 0}
-                />
-              ))
-            )}
+          <div className="space-y-8">
+            {topics.map((topic, index) => (
+              <div
+                key={topic.id}
+                className={`space-y-4 ${
+                  index !== 0 ? "pt-8 border-t-2 border-gray-100" : ""
+                }`}
+              >
+                <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                    <div className="space-y-3">
+                      <div className="space-y-1">
+                        <span className="text-3xl font-bold text-blue-600 leading-none block">
+                          {(index + 1).toString().padStart(2, "0")}.
+                        </span>
+                        <h3 className="text-2xl font-bold text-gray-900 leading-tight">
+                          {topic.name}
+                        </h3>
+                      </div>
+                      <p className="text-sm text-gray-600 flex items-center gap-2">
+                        <svg
+                          className="w-4 h-4 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        {format(new Date(topic.start_date), "MMMM d, yyyy")} -{" "}
+                        {format(new Date(topic.end_date), "MMMM d, yyyy")}
+                      </p>
+                    </div>
+                    <div className="md:max-w-md md:border-l md:border-gray-200 md:pl-6">
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {topic.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {topic.time_slots.map((slot) => (
+                    <SessionCard
+                      key={slot.id}
+                      topic={topic}
+                      slot={slot}
+                      isSelected={selectedTimeSlot === slot.id}
+                      onSelect={(slotId) => setValue("time_slot", slotId)}
+                      disabled={slot.available_spots === 0}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -197,20 +330,57 @@ export default function TrainingRegistrationForm({ topics }: Props) {
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Registration Details
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-4">
                 Registration Type
               </label>
-              <select
-                {...register("registration_type")}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              >
-                <option value="">Select type</option>
-                <option value="SINGLE">Single Person (Rs. 300)</option>
-                <option value="GROUP">Group (Rs. 1500)</option>
-                <option value="EXPO_ACCESS">Expo Access (Rs. 2100)</option>
-              </select>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {Object.entries(PRICE_CONFIG).map(([type, config]) => {
+                  const Icon = config.icon;
+                  return (
+                    <label
+                      key={type}
+                      className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all
+                        ${
+                          registrationType === type
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 hover:border-blue-200 hover:bg-gray-50"
+                        }
+                      `}
+                    >
+                      <input
+                        type="radio"
+                        {...register("registration_type")}
+                        value={type}
+                        className="sr-only"
+                      />
+                      <div className="flex items-center gap-3 mb-3">
+                        <div
+                          className={`p-2 rounded-lg ${
+                            registrationType === type
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-100 text-gray-600"
+                          }`}
+                        >
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        <span className="font-medium text-gray-900">
+                          {type.replace("_", " ")}
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-2xl font-bold text-gray-900">
+                          Rs. {config.price}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {config.description}
+                        </p>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
               {errors.registration_type && (
                 <p className="mt-2 text-sm text-red-600">
                   {errors.registration_type.message}
@@ -218,24 +388,57 @@ export default function TrainingRegistrationForm({ topics }: Props) {
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Number of Participants
-              </label>
-              <input
-                type="number"
-                min="1"
-                {...register("total_participants", {
-                  setValueAs: (value) => parseInt(value, 10),
-                })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              />
-              {errors.total_participants && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.total_participants.message}
-                </p>
-              )}
-            </div>
+            {registrationType && (
+              <div className="mt-8">
+                <label className="block text-sm font-semibold text-gray-700 mb-4">
+                  Participant Details
+                </label>
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-blue-100 rounded-lg text-blue-600">
+                      {registrationType === "GROUP" ? (
+                        <UsersIcon className="w-6 h-6" />
+                      ) : (
+                        <UserIcon className="w-6 h-6" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-2xl font-bold text-gray-900">
+                          {
+                            PRICE_CONFIG[
+                              registrationType as keyof typeof PRICE_CONFIG
+                            ].participants
+                          }
+                        </span>
+                        <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                          {registrationType === "GROUP"
+                            ? "Participants"
+                            : "Participant"}
+                        </span>
+                      </div>
+                      {registrationType === "GROUP" && (
+                        <div className="flex items-center gap-2 text-gray-600 mt-3">
+                          <UserPlusIcon className="w-5 h-5" />
+                          <span className="text-sm">5 paid participants</span>
+                          <GiftIcon className="w-5 h-5 ml-3" />
+                          <span className="text-sm">1 free participant</span>
+                        </div>
+                      )}
+                      {registrationType === "EXPO_ACCESS" && (
+                        <div className="flex items-center gap-2 text-gray-600 mt-3">
+                          <CalendarIcon className="w-5 h-5" />
+                          <span className="text-sm">
+                            10 days expo access included
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" {...register("total_participants")} />
+              </div>
+            )}
           </div>
         </section>
 
@@ -408,33 +611,56 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                     Payment Screenshot
                   </label>
                   <div className="flex items-center justify-center w-full">
-                    <label className="flex flex-col w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-all">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg
-                          className="w-8 h-8 mb-4 text-gray-500"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    <label
+                      className={`flex flex-col w-full ${
+                        previewImage ? "h-64" : "h-32"
+                      } border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-all relative`}
+                    >
+                      {previewImage ? (
+                        <div className="relative w-full h-full">
+                          <img
+                            src={previewImage}
+                            alt="Payment Screenshot"
+                            className="w-full h-full object-contain p-2"
                           />
-                        </svg>
-                        <p className="mb-2 text-sm text-gray-500">
-                          <span className="font-semibold">Click to upload</span>{" "}
-                          or drag and drop
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          PNG, JPG up to 10MB
-                        </p>
-                      </div>
+                          <button
+                            type="button"
+                            onClick={removeFile}
+                            className="absolute top-2 right-2 text-gray-600 hover:text-red-500 transition-colors"
+                          >
+                            <XCircleIcon className="w-6 h-6" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <svg
+                            className="w-8 h-8 mb-4 text-gray-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                            />
+                          </svg>
+                          <p className="mb-2 text-sm text-gray-500">
+                            <span className="font-semibold">
+                              Click to upload
+                            </span>{" "}
+                            or drag and drop
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            PNG, JPG up to 10MB
+                          </p>
+                        </div>
+                      )}
                       <input
                         type="file"
                         accept="image/*"
-                        {...register("payment_screenshot")}
+                        onChange={handleFileUpload}
                         className="hidden"
                       />
                     </label>

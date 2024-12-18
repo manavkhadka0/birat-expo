@@ -19,35 +19,68 @@ export default function SessionCard({
   return (
     <div
       onClick={() => !disabled && onSelect(slot.id)}
-      className={`cursor-pointer p-6 rounded-lg shadow-md transition-all ${
+      className={`cursor-pointer p-6 rounded-lg transition-all duration-200 ${
         isSelected
-          ? "border-2 border-blue-500 bg-blue-50"
+          ? "bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-500 shadow-blue-100"
           : disabled
-          ? "border border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed"
-          : "border border-gray-200 bg-white hover:shadow-lg"
+          ? "bg-gray-50 border border-gray-200 opacity-60 cursor-not-allowed"
+          : "bg-white border border-gray-200 hover:shadow-lg hover:border-blue-200"
       }`}
     >
-      <h3 className="text-xl font-semibold text-gray-800 mb-2">{topic.name}</h3>
-      <div className="space-y-2 text-gray-600">
-        <p className="flex items-center gap-2">
-          <span className="font-medium">Date:</span>
-          {format(new Date(topic.start_date), "MMMM d, yyyy")}
-        </p>
-        <p className="flex items-center gap-2">
-          <span className="font-medium">Time:</span>
-          {format(new Date(`2000-01-01T${slot.start_time}`), "h:mm a")} -
-          {format(new Date(`2000-01-01T${slot.end_time}`), "h:mm a")}
-        </p>
-        <p className="flex items-center gap-2">
-          <span className="font-medium">Venue:</span>
-          {topic.venue}
-        </p>
-        <p className="flex items-center gap-2">
-          <span className="font-medium">Available Spots:</span>
-          {slot.available_spots}
-        </p>
-        <p className="text-sm">{topic.description}</p>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <svg
+              className={`w-5 h-5 ${
+                isSelected ? "text-blue-500" : "text-gray-400"
+              }`}
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p className="text-sm font-bold text-gray-600">
+              {format(new Date(`2000-01-01T${slot.start_time}`), "h:mm a")} -
+              {format(new Date(`2000-01-01T${slot.end_time}`), "h:mm a")}
+            </p>
+          </div>
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium
+            ${
+              slot.available_spots > 5
+                ? "bg-green-100 text-green-800"
+                : slot.available_spots > 0
+                ? "bg-yellow-100 text-yellow-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {slot.available_spots} spots left
+          </span>
+        </div>
+
+        <div className="space-y-1">
+          <div className="flex items-center space-x-2">
+            <svg
+              className="w-4 h-4 text-gray-400"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <p className="text-sm text-gray-600">{topic.venue}</p>
+          </div>
+        </div>
       </div>
+
       {isSelected && (
         <div className="mt-4 text-blue-600 font-medium flex items-center gap-2">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
