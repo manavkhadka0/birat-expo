@@ -10,6 +10,12 @@ interface TrainingRegistrationTemplateProps {
     age: number;
     address: string;
     mobile_number: string;
+    group_members: {
+      name: string;
+      email: string;
+      address: string;
+      age: number;
+    }[];
     email: string;
     total_participants: number;
     total_price: number | null;
@@ -29,9 +35,9 @@ const TrainingRegistrationTemplate = ({
   data,
 }: TrainingRegistrationTemplateProps) => {
   const registrationTypeDisplay = {
-    SINGLE: "Single Person Registration",
-    GROUP: "Group Registration (5 paid + 1 free)",
-    EXPO_ACCESS: "Expo Access with Training",
+    "Single Person": "Single Person Registration",
+    Group: "Group Registration (5 paid + 1 free)",
+    "Expo Access": "Expo Access with Training",
   };
 
   // Format date for better display
@@ -123,6 +129,39 @@ const TrainingRegistrationTemplate = ({
             <p style={{ margin: "10px 0", color: "#4b5563" }}>
               <strong>Total Amount:</strong> Rs. {data.total_price}
             </p>
+          )}
+
+          {data.group_members && data.group_members.length > 0 && (
+            <>
+              <div>
+                <h2
+                  style={{
+                    color: "#3730a3",
+                    fontSize: "18px",
+                    marginTop: "20px",
+                    marginBottom: "15px",
+                  }}
+                >
+                  Group Members
+                </h2>
+              </div>
+              {data.group_members.map((member, index) => (
+                <div key={index}>
+                  <p style={{ margin: "10px 0", color: "#4b5563" }}>
+                    <strong>Name:</strong> {member.name}
+                  </p>
+                  <p style={{ margin: "10px 0", color: "#4b5563" }}>
+                    <strong>Email:</strong> {member.email}
+                  </p>
+                  <p style={{ margin: "10px 0", color: "#4b5563" }}>
+                    <strong>Address:</strong> {member.address}
+                  </p>
+                  <p style={{ margin: "10px 0", color: "#4b5563" }}>
+                    <strong>Age:</strong> {member.age}
+                  </p>
+                </div>
+              ))}
+            </>
           )}
 
           <h2

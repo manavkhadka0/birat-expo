@@ -21,9 +21,16 @@ interface Props {
   topics: Topic[];
 }
 
+interface GroupMember {
+  name: string;
+  email: string;
+  address: string;
+  age: number;
+}
+
 interface TrainingFormData {
   time_slot: number;
-  registration_type: "SINGLE" | "GROUP" | "EXPO_ACCESS";
+  registration_type: "Single Person" | "Group" | "Expo Access";
   full_name: string;
   qualification: "Under SEE" | "10+2" | "Graduate" | "Post Graduate";
   gender: "Male" | "Female" | "Other";
@@ -32,25 +39,26 @@ interface TrainingFormData {
   mobile_number: string;
   email: string;
   total_participants: number;
-  payment_method: "Nabil_Bank";
+  payment_method: "Nabil Bank";
   payment_screenshot?: File;
   agreed_to_no_refund: boolean;
+  group_members?: GroupMember[];
 }
 
 const PRICE_CONFIG = {
-  SINGLE: {
+  "Single Person": {
     price: 300,
     participants: 1,
     icon: UserIcon,
     description: "Individual registration for one participant",
   },
-  GROUP: {
+  Group: {
     price: 1500,
     participants: 6,
     icon: UsersIcon,
     description: "Group registration with 5 paid participants plus 1 free",
   },
-  EXPO_ACCESS: {
+  "Expo Access": {
     price: 2100,
     participants: 1,
     icon: TicketIcon,
@@ -66,7 +74,7 @@ const schema = yup.object().shape({
   time_slot: yup.number().required("Please select a time slot"),
   registration_type: yup
     .string()
-    .oneOf(["SINGLE", "GROUP", "EXPO_ACCESS"] as const)
+    .oneOf(["Single Person", "Group", "Expo Access"] as const)
     .required("Registration type is required"),
   full_name: yup.string().required("Full name is required"),
   qualification: yup
@@ -79,7 +87,7 @@ const schema = yup.object().shape({
     .required("Gender is required"),
   age: yup
     .number()
-    .min(14, "Must be at least 14 years old")
+    .min(8, "Must be at least 8 years old")
     .required("Age is required"),
   address: yup.string().required("Address is required"),
   mobile_number: yup
@@ -93,7 +101,7 @@ const schema = yup.object().shape({
     .required("Number of participants is required"),
   payment_method: yup
     .string()
-    .oneOf(["Nabil_Bank"] as const)
+    .oneOf(["Nabil Bank"] as const)
     .required("Payment method is required"),
   payment_screenshot: yup
     .mixed()
@@ -105,6 +113,25 @@ const schema = yup.object().shape({
   agreed_to_no_refund: yup
     .boolean()
     .oneOf([true], "You must agree to the no-refund policy"),
+  group_members: yup.array().when("registration_type", {
+    is: "Group",
+    then: (schema) =>
+      schema.of(
+        yup.object().shape({
+          name: yup.string().required("Name is required"),
+          email: yup
+            .string()
+            .email("Invalid email")
+            .required("Email is required"),
+          address: yup.string().required("Address is required"),
+          age: yup
+            .number()
+            .min(8, "Must be at least 8 years old")
+            .required("Age is required"),
+        })
+      ),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });
 
 export default function TrainingRegistrationForm({ topics }: Props) {
@@ -116,6 +143,7 @@ export default function TrainingRegistrationForm({ topics }: Props) {
   const [uploadedFile, setUploadedFile] = useState<FileWithPreview | null>(
     null
   );
+  const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
 
   const {
     register,
@@ -128,9 +156,9 @@ export default function TrainingRegistrationForm({ topics }: Props) {
     // @ts-ignore - Known issue with yupResolver types
     resolver: yupResolver(schema),
     defaultValues: {
-      payment_method: "Nabil_Bank",
+      payment_method: "Nabil Bank",
       agreed_to_no_refund: false,
-      registration_type: "SINGLE",
+      registration_type: "Single Person",
       time_slot: 0,
       full_name: "",
       qualification: "Under SEE",
@@ -140,6 +168,7 @@ export default function TrainingRegistrationForm({ topics }: Props) {
       mobile_number: "",
       email: "",
       total_participants: 1,
+      group_members: [],
     },
   });
 
@@ -153,8 +182,16 @@ export default function TrainingRegistrationForm({ topics }: Props) {
       const participants = config.participants;
       setValue("total_participants", participants);
       setTotalAmount(config.price);
+
+      if (registrationType !== "Group") {
+        setValue("group_members", []);
+      } else if (!watch("group_members")?.length) {
+        setValue("group_members", [
+          { name: "", email: "", address: "", age: 0 },
+        ]);
+      }
     }
-  }, [registrationType, setValue]);
+  }, [registrationType, setValue, watch]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -184,9 +221,6 @@ export default function TrainingRegistrationForm({ topics }: Props) {
 
       const formData = new FormData();
 
-      // Add registration_type first
-      formData.append("registration_type", data.registration_type);
-
       // Handle file separately
       if (uploadedFile) {
         formData.append("payment_screenshot", uploadedFile);
@@ -194,7 +228,9 @@ export default function TrainingRegistrationForm({ topics }: Props) {
 
       // Add all other fields
       Object.entries(data).forEach(([key, value]) => {
-        if (key !== "payment_screenshot" && value !== undefined) {
+        if (key === "group_members" && value) {
+          formData.append(key, JSON.stringify(value));
+        } else if (key !== "payment_screenshot" && value !== undefined) {
           formData.append(key, String(value));
         }
       });
@@ -280,62 +316,67 @@ export default function TrainingRegistrationForm({ topics }: Props) {
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Select Training Session
           </h2>
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 gap-6">
             {topics.map((topic, index) => (
-              <div
-                key={topic.id}
-                className={`space-y-4 ${
-                  index !== 0 ? "pt-8 border-t-2 border-gray-100" : ""
-                }`}
-              >
-                <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                    <div className="space-y-3">
-                      <div className="space-y-1">
-                        <span className="text-3xl font-bold text-blue-600 leading-none block">
-                          {(index + 1).toString().padStart(2, "0")}.
-                        </span>
-                        <h3 className="text-2xl font-bold text-gray-900 leading-tight">
-                          {topic.name}
-                        </h3>
+              <div key={topic.id} className="space-y-4">
+                <div
+                  className={`cursor-pointer`}
+                  onClick={() =>
+                    setSelectedTopic(
+                      selectedTopic?.id === topic.id ? null : topic
+                    )
+                  }
+                >
+                  <div
+                    className={`bg-gradient-to-br from-white to-gray-50 p-6 rounded-lg border ${
+                      selectedTopic?.id === topic.id
+                        ? "border-blue-500 ring-2 ring-blue-200"
+                        : "border-gray-200"
+                    } shadow-sm transition-all hover:border-blue-300`}
+                  >
+                    <div className="flex items-start justify-between gap-6">
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <span className="text-3xl font-bold text-blue-600 leading-none block">
+                            {(index + 1).toString().padStart(2, "0")}.
+                          </span>
+                          <h3 className="text-2xl font-bold text-gray-900 leading-tight">
+                            {topic.name}
+                          </h3>
+                        </div>
+                        <p className="text-sm text-gray-600 flex items-center gap-2">
+                          <CalendarIcon className="w-4 h-4 text-gray-400" />
+                          {format(
+                            new Date(topic.start_date),
+                            "MMMM d, yyyy"
+                          )} -{" "}
+                          {format(new Date(topic.end_date), "MMMM d, yyyy")}
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-600 flex items-center gap-2">
-                        <svg
-                          className="w-4 h-4 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                        {format(new Date(topic.start_date), "MMMM d, yyyy")} -{" "}
-                        {format(new Date(topic.end_date), "MMMM d, yyyy")}
-                      </p>
-                    </div>
-                    <div className="md:max-w-md md:border-l md:border-gray-200 md:pl-6">
-                      <p className="text-gray-600 text-sm leading-relaxed">
-                        {topic.description}
-                      </p>
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {topic.time_slots.map((slot) => (
-                    <SessionCard
-                      key={slot.id}
-                      topic={topic}
-                      slot={slot}
-                      isSelected={selectedTimeSlot === slot.id}
-                      onSelect={(slotId) => setValue("time_slot", slotId)}
-                      disabled={slot.available_spots === 0}
-                    />
-                  ))}
-                </div>
+
+                {/* Time Slots */}
+                {selectedTopic?.id === topic.id && (
+                  <div className="pl-4 border-l-2 border-blue-200">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                      Available Time Slots
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {topic.time_slots.map((slot) => (
+                        <SessionCard
+                          key={slot.id}
+                          topic={topic}
+                          slot={slot}
+                          isSelected={selectedTimeSlot === slot.id}
+                          onSelect={(slotId) => setValue("time_slot", slotId)}
+                          disabled={slot.available_spots === 0}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -412,7 +453,7 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                   <div className="flex items-start gap-4">
                     <div className="p-3 bg-blue-100 rounded-lg text-blue-600">
-                      {registrationType === "GROUP" ? (
+                      {registrationType === "Group" ? (
                         <UsersIcon className="w-6 h-6" />
                       ) : (
                         <UserIcon className="w-6 h-6" />
@@ -428,12 +469,12 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                           }
                         </span>
                         <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                          {registrationType === "GROUP"
+                          {registrationType === "Group"
                             ? "Participants"
                             : "Participant"}
                         </span>
                       </div>
-                      {registrationType === "GROUP" && (
+                      {registrationType === "Group" && (
                         <div className="flex items-center gap-2 text-gray-600 mt-3">
                           <UserPlusIcon className="w-5 h-5" />
                           <span className="text-sm">5 paid participants</span>
@@ -441,7 +482,7 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                           <span className="text-sm">1 free participant</span>
                         </div>
                       )}
-                      {registrationType === "EXPO_ACCESS" && (
+                      {registrationType === "Expo Access" && (
                         <div className="flex items-center gap-2 text-gray-600 mt-3">
                           <CalendarIcon className="w-5 h-5" />
                           <span className="text-sm">
@@ -457,6 +498,136 @@ export default function TrainingRegistrationForm({ topics }: Props) {
             )}
           </div>
         </section>
+
+        {registrationType === "Group" && (
+          <div className="mt-8">
+            <div className="flex items-center justify-between mb-4">
+              <label className="block text-lg font-semibold text-gray-800">
+                Group Members
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  const currentMembers = watch("group_members") || [];
+                  if (currentMembers.length < 5) {
+                    setValue("group_members", [
+                      ...currentMembers,
+                      { name: "", email: "", address: "", age: 0 },
+                    ]);
+                  }
+                }}
+                disabled={(watch("group_members") || []).length >= 5}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Add Member
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {watch("group_members")?.map((_, index) => (
+                <div
+                  key={index}
+                  className="p-4 border border-gray-200 rounded-lg bg-gray-50"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="font-medium text-gray-700">
+                      Member {index + 1}
+                    </h4>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const currentMembers = [
+                          ...(watch("group_members") || []),
+                        ];
+                        currentMembers.splice(index, 1);
+                        setValue("group_members", currentMembers);
+                      }}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <XCircleIcon className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        {...register(`group_members.${index}.name`)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      {errors.group_members?.[index]?.name && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {errors.group_members[index]?.name?.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        {...register(`group_members.${index}.email`)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      {errors.group_members?.[index]?.email && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {errors.group_members[index]?.email?.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Age
+                      </label>
+                      <input
+                        type="number"
+                        min="14"
+                        {...register(`group_members.${index}.age`, {
+                          setValueAs: (value) => parseInt(value, 10),
+                        })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      {errors.group_members?.[index]?.age && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {errors.group_members[index]?.age?.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Address
+                      </label>
+                      <input
+                        type="text"
+                        {...register(`group_members.${index}.address`)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      {errors.group_members?.[index]?.address && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {errors.group_members[index]?.address?.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {errors.group_members &&
+              typeof errors.group_members === "string" && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.group_members}
+                </p>
+              )}
+          </div>
+        )}
 
         {/* Personal Information */}
         <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
@@ -613,7 +784,7 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   >
                     <option value="">Select payment method</option>
-                    <option value="Nabil_Bank">Nabil Bank</option>
+                    <option value="Nabil Bank">Nabil Bank</option>
                   </select>
                   {errors.payment_method && (
                     <p className="mt-2 text-sm text-red-600">
@@ -642,7 +813,7 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                           <button
                             type="button"
                             onClick={removeFile}
-                            className="absolute top-2 right-2 text-gray-600 hover:text-red-500 transition-colors"
+                            className="absolute top-2 z-10 right-2 text-gray-600 hover:text-red-500 transition-colors"
                           >
                             <XCircleIcon className="w-6 h-6" />
                           </button>

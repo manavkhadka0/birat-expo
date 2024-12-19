@@ -20,6 +20,12 @@ interface RegistrationResponse {
   payment_method: string;
   payment_screenshot: string;
   agreed_to_no_refund: boolean;
+  group_members: {
+    name: string;
+    email: string;
+    address: string;
+    age: number;
+  }[];
   is_early_bird: boolean;
   is_expo_access: boolean;
   is_free_entry: boolean;
