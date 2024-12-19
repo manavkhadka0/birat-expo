@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     // Send email to both the registrant and admin
     const { data, error } = await resend.emails.send({
       from: "Birat Expo 2025 Training <info@baliyoventures.com>",
-      to: [body.email, "manavkhadka0@gmail.com"],
+      to: [body.email, "biratexpo2024@gmail.com"],
       subject: `Training Registration #${body.id} Confirmation - Birat Expo 2025`,
       react: TrainingEmailRegistrationTemplate({ data: body }),
     });
