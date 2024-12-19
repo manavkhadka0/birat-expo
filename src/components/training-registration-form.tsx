@@ -24,8 +24,6 @@ interface Props {
 interface GroupMember {
   name: string;
   email: string;
-  address: string;
-  age: number;
 }
 
 interface TrainingFormData {
@@ -123,11 +121,6 @@ const schema = yup.object().shape({
             .string()
             .email("Invalid email")
             .required("Email is required"),
-          address: yup.string().required("Address is required"),
-          age: yup
-            .number()
-            .min(8, "Must be at least 8 years old")
-            .required("Age is required"),
         })
       ),
     otherwise: (schema) => schema.notRequired(),
@@ -183,15 +176,13 @@ export default function TrainingRegistrationForm({ topics }: Props) {
       setValue("total_participants", participants);
       setTotalAmount(config.price);
 
-      if (registrationType !== "Group") {
+      if (registrationType === "Group") {
+        setValue("group_members", Array(5).fill({ name: "", email: "" }));
+      } else {
         setValue("group_members", []);
-      } else if (!watch("group_members")?.length) {
-        setValue("group_members", [
-          { name: "", email: "", address: "", age: 0 },
-        ]);
       }
     }
-  }, [registrationType, setValue, watch]);
+  }, [registrationType, setValue]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -500,28 +491,14 @@ export default function TrainingRegistrationForm({ topics }: Props) {
         </section>
 
         {registrationType === "Group" && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <label className="block text-lg font-semibold text-gray-800">
-                Group Members
-              </label>
-              <button
-                type="button"
-                onClick={() => {
-                  const currentMembers = watch("group_members") || [];
-                  if (currentMembers.length < 5) {
-                    setValue("group_members", [
-                      ...currentMembers,
-                      { name: "", email: "", address: "", age: 0 },
-                    ]);
-                  }
-                }}
-                disabled={(watch("group_members") || []).length >= 5}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Add Member
-              </button>
-            </div>
+          <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              Group Members Details
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              Please provide details for all 5 paid participants. The 6th
+              participant is free.
+            </p>
 
             <div className="space-y-4">
               {watch("group_members")?.map((_, index) => (
@@ -529,24 +506,9 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                   key={index}
                   className="p-4 border border-gray-200 rounded-lg bg-gray-50"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="font-medium text-gray-700">
-                      Member {index + 1}
-                    </h4>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const currentMembers = [
-                          ...(watch("group_members") || []),
-                        ];
-                        currentMembers.splice(index, 1);
-                        setValue("group_members", currentMembers);
-                      }}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <XCircleIcon className="w-5 h-5" />
-                    </button>
-                  </div>
+                  <h4 className="font-medium text-gray-700 mb-4">
+                    Participant {index + 1}
+                  </h4>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -580,41 +542,6 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                         </p>
                       )}
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Age
-                      </label>
-                      <input
-                        type="number"
-                        min="14"
-                        {...register(`group_members.${index}.age`, {
-                          setValueAs: (value) => parseInt(value, 10),
-                        })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      {errors.group_members?.[index]?.age && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors.group_members[index]?.age?.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Address
-                      </label>
-                      <input
-                        type="text"
-                        {...register(`group_members.${index}.address`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      {errors.group_members?.[index]?.address && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors.group_members[index]?.address?.message}
-                        </p>
-                      )}
-                    </div>
                   </div>
                 </div>
               ))}
@@ -626,7 +553,7 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                   {errors.group_members}
                 </p>
               )}
-          </div>
+          </section>
         )}
 
         {/* Personal Information */}
