@@ -33,7 +33,7 @@ interface TrainingFormData {
   email: string;
   total_participants: number;
   payment_method: "Nabil_Bank";
-  payment_screenshot: File | undefined;
+  payment_screenshot?: File;
   agreed_to_no_refund: boolean;
 }
 
@@ -124,7 +124,23 @@ export default function TrainingRegistrationForm({ topics }: Props) {
     watch,
     setValue,
   } = useForm<TrainingFormData>({
+    mode: "onChange",
+    // @ts-ignore - Known issue with yupResolver types
     resolver: yupResolver(schema),
+    defaultValues: {
+      payment_method: "Nabil_Bank",
+      agreed_to_no_refund: false,
+      registration_type: "SINGLE",
+      time_slot: 0,
+      full_name: "",
+      qualification: "Under SEE",
+      gender: "Male",
+      age: 0,
+      address: "",
+      mobile_number: "",
+      email: "",
+      total_participants: 1,
+    },
   });
 
   const selectedTimeSlot = watch("time_slot");

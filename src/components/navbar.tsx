@@ -30,12 +30,12 @@ export const navItems = [
     title: "Sponsorships",
     href: "/sponsorship",
   },
-  // {
-  //   title: "Birat Expo'24",
-  //   subtitle: "Coming soon",
-  //   subtitleClass: "text-green-700",
-  //   href: "/biratexpo-2024",
-  // },
+  {
+    title: "Live Training",
+    href: "/live-training",
+    subtitle: "Offer till Magh 5",
+    subtitleClass: "text-green-700",
+  },
   {
     title: "Birat Expo'22",
     subtitle: "Past Event",

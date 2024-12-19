@@ -71,6 +71,53 @@ export default function Home() {
       </div>
 
       <ThreeDVideos />
+
+      <section className="mb-16">
+        <h2 className="text-4xl font-black text-start mb-8 border-l-[5px] ps-2 border-blue-800 text-gray-800">
+          Latest Updates
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="w-full flex justify-center">
+            <iframe
+              src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2FBIRATEXPO2025%2Fposts%2Fpfbid0KqgzcTtuGrUTjaePCsKp34EH3Y4hYh7rrz6h7nuw4ZAfu625d7TpUR9RnPLQeoFjl&show_text=true&width=500"
+              width="500"
+              height="680"
+              style={{ border: "none", overflow: "hidden" }}
+              scrolling="no"
+              frameBorder="0"
+              allowFullScreen={true}
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              className="w-full max-w-[500px]"
+            ></iframe>
+          </div>
+          <div className="w-full flex justify-center">
+            <iframe
+              src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2FBIRATEXPO2025%2Fposts%2Fpfbid029AgmQXA9qsNtUNUuB2Pfg7avcPpVqbXm8tE5tReppRNXDsuYeZiDWxP88yyyudm1l&show_text=true&width=500"
+              width="500"
+              height="250"
+              style={{ border: "none", overflow: "hidden" }}
+              scrolling="no"
+              frameBorder="0"
+              allowFullScreen={true}
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              className="w-full max-w-[500px]"
+            ></iframe>
+          </div>
+          <div className="w-full flex justify-center">
+            <iframe
+              src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2FBIRATEXPO2025%2Fvideos%2F912629077742738%2F&show_text=false&width=560&t=0"
+              width="560"
+              height="314"
+              style={{ border: "none", overflow: "hidden" }}
+              scrolling="no"
+              frameBorder="0"
+              allowFullScreen={true}
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              className="w-full max-w-[560px]"
+            ></iframe>
+          </div>
+        </div>
+      </section>
       {/* <div className="mb-12">
         <AboutEvent />
       </div> */}
@@ -90,6 +137,8 @@ export default function Home() {
       <AttractionsSection />
       <div className="py-10"></div>
       <DayPlans />
+      <div className="py-10"></div>
+
       <div className="py-10"></div>
       <div className="flex flex-col justify-center items-center">
         <h2 className="text-4xl text-center font-black  justify-center flex items-center mb-5  ps-2 text-gray-800">

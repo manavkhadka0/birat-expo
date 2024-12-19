@@ -9,15 +9,12 @@ export default function PaymentQR({ amount }: PaymentQRProps) {
       <div className="space-y-4">
         <div>
           <p className="text-gray-600">Bank: Nabil Bank</p>
-          <p className="text-gray-600">Account Name: Birat Expo</p>
-          <p className="text-gray-600">Account Number: XXXX-XXXX-XXXX</p>
+          <p className="text-gray-600">
+            Account Name: Udhyog Sangathan Morang Birat Expo
+          </p>
           <p className="font-semibold text-blue-600">Amount: Rs. {amount}</p>
         </div>
-        <img
-          src="/payment-qr.png"
-          alt="Payment QR Code"
-          className="w-48 h-48 mx-auto"
-        />
+        <img src="/scan.png" alt="Payment QR Code" />
         <p className="text-sm text-gray-500 text-center">
           Scan QR code to pay via mobile banking
         </p>
