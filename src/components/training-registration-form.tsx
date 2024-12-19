@@ -1,21 +1,18 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Registration, Topic } from "@/types/training";
+import { Topic } from "@/types/training";
 import { useState, useEffect } from "react";
 import { registerForTraining } from "@/api/training";
-import SessionCard from "./session-card";
-import PaymentQR from "./payment-qr";
-import { format } from "date-fns";
-import {
-  UserIcon,
-  UsersIcon,
-  TicketIcon,
-  UserPlusIcon,
-  CalendarIcon,
-  GiftIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/outline";
+import { eachDayOfInterval } from "date-fns";
+import { UserIcon, UsersIcon, TicketIcon } from "@heroicons/react/24/outline";
+import { motion } from "framer-motion";
+import { CheckIcon } from "@heroicons/react/24/solid";
+import { SessionSelectionStep } from "./steps/session-selection-step";
+import { RegistrationDetailsStep } from "./steps/registration-details-step";
+import { PaymentStep } from "./steps/payment-step";
+import { ReviewStep } from "./steps/review-step";
+import { PRICE_CONFIG } from "@/lib/constants";
 
 interface Props {
   topics: Topic[];
@@ -24,10 +21,16 @@ interface Props {
 interface GroupMember {
   name: string;
   email: string;
+  mobile_number: string;
+  address: string;
+  qualification: "Under SEE" | "10+2" | "Graduate" | "Post Graduate";
+  gender: "Male" | "Female" | "Other";
+  age: number;
 }
 
 interface TrainingFormData {
   time_slot: number;
+  date: string;
   registration_type: "Single Person" | "Group" | "Expo Access";
   full_name: string;
   qualification: "Under SEE" | "10+2" | "Graduate" | "Post Graduate";
@@ -43,33 +46,13 @@ interface TrainingFormData {
   group_members?: GroupMember[];
 }
 
-const PRICE_CONFIG = {
-  "Single Person": {
-    price: 300,
-    participants: 1,
-    icon: UserIcon,
-    description: "Individual registration for one participant",
-  },
-  Group: {
-    price: 1500,
-    participants: 6,
-    icon: UsersIcon,
-    description: "Group registration with 5 paid participants plus 1 free",
-  },
-  "Expo Access": {
-    price: 2100,
-    participants: 1,
-    icon: TicketIcon,
-    description: "10 days expo access with training for one participant",
-  },
-};
-
 interface FileWithPreview extends File {
   preview?: string;
 }
 
 const schema = yup.object().shape({
   time_slot: yup.number().required("Please select a time slot"),
+  date: yup.string().required("Please select a date"),
   registration_type: yup
     .string()
     .oneOf(["Single Person", "Group", "Expo Access"] as const)
@@ -85,7 +68,7 @@ const schema = yup.object().shape({
     .required("Gender is required"),
   age: yup
     .number()
-    .min(8, "Must be at least 8 years old")
+    .min(10, "Must be at least 10 years old")
     .required("Age is required"),
   address: yup.string().required("Address is required"),
   mobile_number: yup
@@ -121,11 +104,34 @@ const schema = yup.object().shape({
             .string()
             .email("Invalid email")
             .required("Email is required"),
+          mobile_number: yup
+            .string()
+            .matches(/^\+?1?\d{9,15}$/, "Invalid phone number")
+            .required("Mobile number is required"),
+          address: yup.string().required("Address is required"),
+          qualification: yup
+            .string()
+            .oneOf(["Under SEE", "10+2", "Graduate", "Post Graduate"] as const)
+            .required("Qualification is required"),
+          gender: yup
+            .string()
+            .oneOf(["Male", "Female", "Other"] as const)
+            .required("Gender is required"),
+          age: yup
+            .number()
+            .min(10, "Must be at least 10 years old")
+            .required("Age is required"),
         })
       ),
     otherwise: (schema) => schema.notRequired(),
   }),
 });
+
+type Step = {
+  id: number;
+  name: string;
+  status: "upcoming" | "current" | "complete";
+};
 
 export default function TrainingRegistrationForm({ topics }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -137,6 +143,14 @@ export default function TrainingRegistrationForm({ topics }: Props) {
     null
   );
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState<Partial<TrainingFormData>>({});
+  const [steps, setSteps] = useState<Step[]>([
+    { id: 1, name: "Session Selection", status: "current" },
+    { id: 2, name: "Registration Details", status: "upcoming" },
+    { id: 3, name: "Payment", status: "upcoming" },
+    { id: 4, name: "Review", status: "upcoming" },
+  ]);
 
   const {
     register,
@@ -165,7 +179,6 @@ export default function TrainingRegistrationForm({ topics }: Props) {
     },
   });
 
-  const selectedTimeSlot = watch("time_slot");
   const registrationType = watch("registration_type");
 
   useEffect(() => {
@@ -250,6 +263,231 @@ export default function TrainingRegistrationForm({ topics }: Props) {
     }
   };
 
+  const getDatesBetween = (startDate: string, endDate: string) => {
+    return eachDayOfInterval({
+      start: new Date(startDate),
+      end: new Date(endDate),
+    });
+  };
+
+  const handleNextStep = async (data: Partial<TrainingFormData>) => {
+    // Define validation schemas for each step
+    const stepValidationSchemas = {
+      1: yup.object().shape({
+        time_slot: yup.number().required("Please select a time slot"),
+        date: yup.string().required("Please select a date"),
+      }),
+      2: yup.object().shape({
+        registration_type: yup
+          .string()
+          .oneOf(["Single Person", "Group", "Expo Access"] as const)
+          .required("Registration type is required"),
+        full_name: yup.string().required("Full name is required"),
+        email: yup
+          .string()
+          .email("Invalid email")
+          .required("Email is required"),
+        mobile_number: yup
+          .string()
+          .matches(/^\+?1?\d{9,15}$/, "Invalid phone number")
+          .required("Mobile number is required"),
+        qualification: yup
+          .string()
+          .oneOf(["Under SEE", "10+2", "Graduate", "Post Graduate"] as const)
+          .required("Qualification is required"),
+        gender: yup
+          .string()
+          .oneOf(["Male", "Female", "Other"] as const)
+          .required("Gender is required"),
+        age: yup
+          .number()
+          .min(10, "Must be at least 10 years old")
+          .required("Age is required"),
+        address: yup.string().required("Address is required"),
+        group_members: yup.array().when("registration_type", {
+          is: "Group",
+          then: (schema) =>
+            schema.of(
+              yup.object().shape({
+                name: yup.string().required("Name is required"),
+                email: yup
+                  .string()
+                  .email("Invalid email")
+                  .required("Email is required"),
+                mobile_number: yup
+                  .string()
+                  .matches(/^\+?1?\d{9,15}$/, "Invalid phone number")
+                  .required("Mobile number is required"),
+                address: yup.string().required("Address is required"),
+                qualification: yup
+                  .string()
+                  .oneOf([
+                    "Under SEE",
+                    "10+2",
+                    "Graduate",
+                    "Post Graduate",
+                  ] as const)
+                  .required("Qualification is required"),
+                gender: yup
+                  .string()
+                  .oneOf(["Male", "Female", "Other"] as const)
+                  .required("Gender is required"),
+                age: yup
+                  .number()
+                  .min(10, "Must be at least 10 years old")
+                  .required("Age is required"),
+              })
+            ),
+        }),
+      }),
+      3: yup.object().shape({
+        payment_method: yup
+          .string()
+          .oneOf(["Nabil Bank"] as const)
+          .required("Payment method is required"),
+        payment_screenshot: yup
+          .mixed()
+          .test(
+            "fileRequired",
+            "Payment screenshot is required",
+            (value) => value instanceof File || value === undefined
+          ),
+        agreed_to_no_refund: yup
+          .boolean()
+          .oneOf([true], "You must agree to the no-refund policy"),
+      }),
+    };
+
+    try {
+      // Merge existing form data with new data
+      const updatedData = { ...formData, ...data };
+      setFormData(updatedData);
+
+      // If it's the final step, submit the form
+      if (currentStep === 4) {
+        const event = { preventDefault: () => {}, ...updatedData };
+        await handleSubmit(onSubmit)(event as any);
+        return;
+      }
+
+      // Validate current step
+      await stepValidationSchemas[
+        currentStep as keyof typeof stepValidationSchemas
+      ].validate(updatedData, { abortEarly: false });
+
+      // If validation passes, update steps and move to next step
+      setSteps((prevSteps) =>
+        prevSteps.map((step) => ({
+          ...step,
+          status:
+            step.id === currentStep
+              ? "complete"
+              : step.id === currentStep + 1
+              ? "current"
+              : step.status,
+        }))
+      );
+
+      setCurrentStep((prev) => prev + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        // Handle validation errors
+        const validationErrors: { [key: string]: string } = {};
+        err.inner.forEach((error) => {
+          if (error.path) {
+            validationErrors[error.path] = error.message;
+          }
+        });
+
+        // Set errors in the form
+        Object.keys(validationErrors).forEach((key) => {
+          setValue(key as any, (formData as any)[key], {
+            shouldValidate: true,
+            shouldDirty: true,
+          });
+        });
+      } else {
+        console.error("Validation error:", err);
+        setError("Please fill in all required fields correctly.");
+      }
+    }
+  };
+
+  const handlePreviousStep = () => {
+    // Update steps status
+    setSteps((prevSteps) =>
+      prevSteps.map((step) => ({
+        ...step,
+        status:
+          step.id === currentStep
+            ? "upcoming"
+            : step.id === currentStep - 1
+            ? "current"
+            : step.status,
+      }))
+    );
+
+    setCurrentStep((prev) => prev - 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const StepProgress = ({ steps }: { steps: Step[] }) => (
+    <div className="py-6 px-4">
+      <nav aria-label="Progress">
+        <ol className="flex items-center justify-center">
+          {steps.map((step, stepIdx) => (
+            <li
+              key={step.id}
+              className={`relative ${
+                stepIdx !== steps.length - 1 ? "pr-8 sm:pr-20" : ""
+              }`}
+            >
+              {stepIdx !== steps.length - 1 && (
+                <div
+                  className="absolute inset-0 flex items-center"
+                  aria-hidden="true"
+                >
+                  <div
+                    className={`h-0.5 w-full ${
+                      step.status === "complete" ? "bg-blue-600" : "bg-gray-200"
+                    }`}
+                  />
+                </div>
+              )}
+              <div className="relative flex items-center justify-center">
+                {step.status === "complete" ? (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center"
+                  >
+                    <CheckIcon className="w-5 h-5 text-white" />
+                  </motion.span>
+                ) : step.status === "current" ? (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="h-8 w-8 rounded-full border-2 border-blue-600 flex items-center justify-center"
+                  >
+                    <span className="text-blue-600 font-medium">{step.id}</span>
+                  </motion.span>
+                ) : (
+                  <span className="h-8 w-8 rounded-full border-2 border-gray-200 flex items-center justify-center">
+                    <span className="text-gray-500">{step.id}</span>
+                  </span>
+                )}
+                <span className="absolute -bottom-10 text-sm font-medium text-gray-500">
+                  {step.name}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </div>
+  );
+
   if (success) {
     return (
       <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-8 rounded text-center">
@@ -279,6 +517,8 @@ export default function TrainingRegistrationForm({ topics }: Props) {
 
   return (
     <div className="max-w-6xl mx-auto">
+      <StepProgress steps={steps} />
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg shadow-sm mb-8">
           <div className="flex items-center">
@@ -301,546 +541,54 @@ export default function TrainingRegistrationForm({ topics }: Props) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        {/* Session Selection */}
-        <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Select Training Session
-          </h2>
-          <div className="grid grid-cols-1 gap-6">
-            {topics.map((topic, index) => (
-              <div key={topic.id} className="space-y-4">
-                <div
-                  className={`cursor-pointer`}
-                  onClick={() =>
-                    setSelectedTopic(
-                      selectedTopic?.id === topic.id ? null : topic
-                    )
-                  }
-                >
-                  <div
-                    className={`bg-gradient-to-br from-white to-gray-50 p-6 rounded-lg border ${
-                      selectedTopic?.id === topic.id
-                        ? "border-blue-500 ring-2 ring-blue-200"
-                        : "border-gray-200"
-                    } shadow-sm transition-all hover:border-blue-300`}
-                  >
-                    <div className="flex items-start justify-between gap-6">
-                      <div className="space-y-3">
-                        <div className="space-y-1">
-                          <span className="text-3xl font-bold text-blue-600 leading-none block">
-                            {(index + 1).toString().padStart(2, "0")}.
-                          </span>
-                          <h3 className="text-2xl font-bold text-gray-900 leading-tight">
-                            {topic.name}
-                          </h3>
-                        </div>
-                        <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <CalendarIcon className="w-4 h-4 text-gray-400" />
-                          {format(
-                            new Date(topic.start_date),
-                            "MMMM d, yyyy"
-                          )} -{" "}
-                          {format(new Date(topic.end_date), "MMMM d, yyyy")}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Time Slots */}
-                {selectedTopic?.id === topic.id && (
-                  <div className="pl-4 border-l-2 border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                      Available Time Slots
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {topic.time_slots.map((slot) => (
-                        <SessionCard
-                          key={slot.id}
-                          topic={topic}
-                          slot={slot}
-                          isSelected={selectedTimeSlot === slot.id}
-                          onSelect={(slotId) => setValue("time_slot", slotId)}
-                          disabled={slot.available_spots === 0}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Registration Type */}
-        <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Registration Details
-          </h2>
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-4">
-                Registration Type
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {Object.entries(PRICE_CONFIG).map(([type, config]) => {
-                  const Icon = config.icon;
-                  return (
-                    <label
-                      key={type}
-                      className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all
-                        ${
-                          registrationType === type
-                            ? "border-blue-500 bg-blue-50"
-                            : "border-gray-200 hover:border-blue-200 hover:bg-gray-50"
-                        }
-                      `}
-                    >
-                      <input
-                        type="radio"
-                        {...register("registration_type")}
-                        value={type}
-                        className="sr-only"
-                      />
-                      <div className="flex items-center gap-3 mb-3">
-                        <div
-                          className={`p-2 rounded-lg ${
-                            registrationType === type
-                              ? "bg-blue-500 text-white"
-                              : "bg-gray-100 text-gray-600"
-                          }`}
-                        >
-                          <Icon className="w-6 h-6" />
-                        </div>
-                        <span className="font-medium text-gray-900">
-                          {type.replace("_", " ")}
-                        </span>
-                      </div>
-                      <div className="space-y-2">
-                        <p className="text-2xl font-bold text-gray-900">
-                          Rs. {config.price}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {config.description}
-                        </p>
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
-              {errors.registration_type && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.registration_type.message}
-                </p>
-              )}
-            </div>
-
-            {registrationType && (
-              <div className="mt-8">
-                <label className="block text-sm font-semibold text-gray-700 mb-4">
-                  Participant Details
-                </label>
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 bg-blue-100 rounded-lg text-blue-600">
-                      {registrationType === "Group" ? (
-                        <UsersIcon className="w-6 h-6" />
-                      ) : (
-                        <UserIcon className="w-6 h-6" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-2xl font-bold text-gray-900">
-                          {
-                            PRICE_CONFIG[
-                              registrationType as keyof typeof PRICE_CONFIG
-                            ].participants
-                          }
-                        </span>
-                        <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                          {registrationType === "Group"
-                            ? "Participants"
-                            : "Participant"}
-                        </span>
-                      </div>
-                      {registrationType === "Group" && (
-                        <div className="flex items-center gap-2 text-gray-600 mt-3">
-                          <UserPlusIcon className="w-5 h-5" />
-                          <span className="text-sm">5 paid participants</span>
-                          <GiftIcon className="w-5 h-5 ml-3" />
-                          <span className="text-sm">1 free participant</span>
-                        </div>
-                      )}
-                      {registrationType === "Expo Access" && (
-                        <div className="flex items-center gap-2 text-gray-600 mt-3">
-                          <CalendarIcon className="w-5 h-5" />
-                          <span className="text-sm">
-                            10 days expo access included
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <input type="hidden" {...register("total_participants")} />
-              </div>
-            )}
-          </div>
-        </section>
-
-        {registrationType === "Group" && (
-          <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              Group Members Details
-            </h2>
-            <p className="text-sm text-gray-600 mb-6">
-              Please provide details for all 5 paid participants. The 6th
-              participant is free.
-            </p>
-
-            <div className="space-y-4">
-              {watch("group_members")?.map((_, index) => (
-                <div
-                  key={index}
-                  className="p-4 border border-gray-200 rounded-lg bg-gray-50"
-                >
-                  <h4 className="font-medium text-gray-700 mb-4">
-                    Participant {index + 1}
-                  </h4>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        {...register(`group_members.${index}.name`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      {errors.group_members?.[index]?.name && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors.group_members[index]?.name?.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        {...register(`group_members.${index}.email`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      {errors.group_members?.[index]?.email && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors.group_members[index]?.email?.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {errors.group_members &&
-              typeof errors.group_members === "string" && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.group_members}
-                </p>
-              )}
-          </section>
+      <form className="space-y-8">
+        {currentStep === 1 && (
+          <SessionSelectionStep
+            topics={topics}
+            register={register}
+            errors={errors}
+            watch={watch}
+            setValue={setValue}
+            selectedTopic={selectedTopic}
+            setSelectedTopic={setSelectedTopic}
+            onNext={handleNextStep}
+          />
         )}
 
-        {/* Personal Information */}
-        <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Personal Information
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                {...register("full_name")}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="Enter your full name"
-              />
-              {errors.full_name && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.full_name.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Qualification
-              </label>
-              <select
-                {...register("qualification")}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              >
-                <option value="">Select qualification</option>
-                <option value="Under SEE">Under SEE</option>
-                <option value="10+2">10+2</option>
-                <option value="Graduate">Graduate</option>
-                <option value="Post Graduate">Post Graduate</option>
-              </select>
-              {errors.qualification && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.qualification.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Gender
-              </label>
-              <select
-                {...register("gender")}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              >
-                <option value="">Select gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-              {errors.gender && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.gender.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Age
-              </label>
-              <input
-                type="number"
-                min="14"
-                {...register("age", {
-                  setValueAs: (value) => parseInt(value, 10),
-                })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              />
-              {errors.age && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.age.message}
-                </p>
-              )}
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Address
-              </label>
-              <input
-                type="text"
-                {...register("address")}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="Enter your full address"
-              />
-              {errors.address && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.address.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Mobile Number
-              </label>
-              <input
-                type="tel"
-                {...register("mobile_number")}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="+977XXXXXXXXXX"
-              />
-              {errors.mobile_number && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.mobile_number.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                {...register("email")}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="your.email@example.com"
-              />
-              {errors.email && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* Payment Section */}
-        {registrationType && (
-          <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              Payment Details
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <PaymentQR amount={totalAmount} />
-
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Payment Method
-                  </label>
-                  <select
-                    {...register("payment_method")}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  >
-                    <option value="">Select payment method</option>
-                    <option value="Nabil Bank">Nabil Bank</option>
-                  </select>
-                  {errors.payment_method && (
-                    <p className="mt-2 text-sm text-red-600">
-                      {errors.payment_method.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Payment Screenshot
-                  </label>
-                  <div className="flex items-center justify-center w-full">
-                    <label
-                      className={`flex flex-col w-full ${
-                        previewImage ? "h-64" : "h-32"
-                      } border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-all relative`}
-                    >
-                      {previewImage ? (
-                        <div className="relative w-full h-full">
-                          <img
-                            src={previewImage}
-                            alt="Payment Screenshot"
-                            className="w-full h-full object-contain p-2"
-                          />
-                          <button
-                            type="button"
-                            onClick={removeFile}
-                            className="absolute top-2 z-10 right-2 text-gray-600 hover:text-red-500 transition-colors"
-                          >
-                            <XCircleIcon className="w-6 h-6" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <svg
-                            className="w-8 h-8 mb-4 text-gray-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                            />
-                          </svg>
-                          <p className="mb-2 text-sm text-gray-500">
-                            <span className="font-semibold">
-                              Click to upload
-                            </span>{" "}
-                            or drag and drop
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            PNG, JPG up to 10MB
-                          </p>
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileUpload}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                  {errors.payment_screenshot && (
-                    <p className="mt-2 text-sm text-red-600">
-                      {errors.payment_screenshot.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      {...register("agreed_to_no_refund")}
-                      className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-700">
-                      I understand and agree to the no-refund policy
-                    </span>
-                  </label>
-                  {errors.agreed_to_no_refund && (
-                    <p className="mt-2 text-sm text-red-600">
-                      {errors.agreed_to_no_refund.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
+        {currentStep === 2 && (
+          <RegistrationDetailsStep
+            register={register}
+            errors={errors}
+            watch={watch}
+            setValue={setValue}
+            onNext={handleNextStep}
+            onBack={handlePreviousStep}
+          />
         )}
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
-        >
-          {isSubmitting ? (
-            <div className="flex items-center justify-center gap-2">
-              <svg
-                className="animate-spin h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              Processing Registration...
-            </div>
-          ) : (
-            "Complete Registration"
-          )}
-        </button>
+        {currentStep === 3 && (
+          <PaymentStep
+            register={register}
+            errors={errors}
+            watch={watch}
+            setValue={setValue}
+            totalAmount={totalAmount}
+            handleFileUpload={handleFileUpload}
+            removeFile={removeFile}
+            previewImage={previewImage}
+            onNext={handleNextStep}
+            onBack={handlePreviousStep}
+          />
+        )}
+
+        {currentStep === 4 && (
+          <ReviewStep
+            data={formData}
+            isSubmitting={isSubmitting}
+            onSubmit={() => handleNextStep(formData)}
+            onBack={handlePreviousStep}
+          />
+        )}
       </form>
     </div>
   );

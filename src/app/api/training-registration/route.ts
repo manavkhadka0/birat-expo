@@ -1,4 +1,5 @@
-import TrainingRegistrationTemplate from "@/components/training-registration-template";
+import TrainingEmailRegistrationTemplate from "@/components/training-email-template";
+import { TrainingRegistrationTemplate } from "@/components/training-registration-template";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API);
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
       from: "Birat Expo 2025 Training <info@baliyoventures.com>",
       to: [body.email, "manavkhadka0@gmail.com"],
       subject: `Training Registration #${body.id} Confirmation - Birat Expo 2025`,
-      react: TrainingRegistrationTemplate({ data: body }),
+      react: TrainingEmailRegistrationTemplate({ data: body }),
     });
 
     if (error) {

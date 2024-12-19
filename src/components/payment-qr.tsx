@@ -14,7 +14,11 @@ export default function PaymentQR({ amount }: PaymentQRProps) {
           </p>
           <p className="font-semibold text-blue-600">Amount: Rs. {amount}</p>
         </div>
-        <img src="/scan.png" alt="Payment QR Code" />
+        <img
+          src="/scan.png"
+          alt="Payment QR Code"
+          className="w-full h-auto object-contain rounded-lg"
+        />
         <p className="text-sm text-gray-500 text-center">
           Scan QR code to pay via mobile banking
         </p>
