@@ -525,13 +525,22 @@ const ExhibitionForm = () => {
             </p>
             <h1 className="text-6xl mb-4">OR</h1>
             <h1>OR Scan the QR Below for Payment</h1>
-            <Image
-              src="/scan.png"
-              alt="scan qr for payment"
-              className="max-w-100"
-              width={300}
-              height={100}
-            />
+            <div className="flex mt-2 flex-col md:flex-row gap-2 items-center justify-between">
+              <Image
+                src="/scan.png"
+                alt="scan qr for payment"
+                className="max-w-100 rounded-lg"
+                width={300}
+                height={100}
+              />
+              <Image
+                src="/scan2.jpeg"
+                alt="scan qr for payment"
+                className="max-w-100 rounded-lg"
+                width={300}
+                height={100}
+              />
+            </div>
           </div>
 
           <div className="mb-6 rounded  p-4">
