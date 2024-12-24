@@ -2,7 +2,10 @@ import Link from "next/link";
 
 export default function ContactCard() {
   return (
-    <div className="max-w-sm mx-auto my-4 p-6 bg-white rounded-lg shadow-md">
+    <div
+      id="live-training-contact-card"
+      className="max-w-sm mx-auto my-4 p-6 bg-white rounded-lg shadow-md"
+    >
       <h3 className="text-xl font-semibold text-gray-800 mb-2">
         Contact Coordinator
       </h3>

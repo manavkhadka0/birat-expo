@@ -75,3 +75,19 @@
 html {
   scroll-behavior: smooth;
 }
+
+@layer utilities {
+  .bg-gradient-to-b {
+    background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+  }
+
+  .from-blue-50 {
+    --tw-gradient-from: #eff6ff;
+    --tw-gradient-stops: var(--tw-gradient-from),
+      var(--tw-gradient-to, rgb(239 246 255 / 0));
+  }
+
+  .to-white {
+    --tw-gradient-to: #ffffff;
+  }
+}

@@ -16,7 +16,6 @@ interface SessionSelectionStepProps {
 
 export function SessionSelectionStep({
   topics,
-  register,
   errors,
   watch,
   setValue,
