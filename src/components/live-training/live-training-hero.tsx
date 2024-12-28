@@ -81,7 +81,7 @@ export default function LiveTrainingHero() {
                 <div>
                   <h3 className="font-semibold">CCTV Setup</h3>
                   <p className="text-sm text-gray-500">
-                    5 May, 2024- 7 May, 2024
+                    22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
                   </p>
                 </div>
               </div>
@@ -94,7 +94,7 @@ export default function LiveTrainingHero() {
                 <div>
                   <h3 className="font-semibold">Coffee Making</h3>
                   <p className="text-sm text-gray-500">
-                    5 May, 2024- 7 May, 2024
+                    22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
                   </p>
                 </div>
               </div>
