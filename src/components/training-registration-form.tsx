@@ -447,20 +447,18 @@ export default function TrainingRegistrationForm({ topics }: Props) {
   };
 
   const StepProgress = ({ steps }: { steps: Step[] }) => (
-    <div className="py-12 px-4">
-      <h1 className="text-3xl font-semibold text-center text-[#4F46E5] mb-12">
+    <div className="py-8 md:py-12 px-4">
+      <h1 className="text-2xl md:text-3xl font-semibold text-center text-[#4F46E5] mb-8 md:mb-12">
         Register for the Session
       </h1>
       <nav aria-label="Progress" className="max-w-4xl mx-auto">
-        <ol className="flex items-center justify-between">
-          {/* Steps with connectors */}
+        {/* Desktop View */}
+        <ol className="hidden md:flex items-center justify-between">
           {steps.map((step, index) => (
             <li key={step.id} className="flex items-center flex-1">
-              {/* Step circle and content */}
+              {/* Existing desktop step layout */}
               <div className="flex flex-col items-center flex-1">
-                {/* Step circle */}
                 <div className="mb-4 relative flex items-center">
-                  {/* Connector line before the circle (except first step) */}
                   {index !== 0 && (
                     <div
                       className={`h-[2px] w-full absolute right-full mr-4 ${
@@ -499,7 +497,6 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                     </div>
                   )}
 
-                  {/* Connector line after the circle (except last step) */}
                   {index !== steps.length - 1 && (
                     <div
                       className={`h-[2px] w-full absolute left-full ml-4 ${
@@ -512,7 +509,6 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                   )}
                 </div>
 
-                {/* Labels */}
                 <div className="flex flex-col items-center text-center">
                   <span
                     className={`text-sm font-medium ${
@@ -533,6 +529,80 @@ export default function TrainingRegistrationForm({ topics }: Props) {
                     {step.description}
                   </span>
                 </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        {/* Mobile View */}
+        <ol className="md:hidden flex flex-col space-y-4">
+          {steps.map((step, index) => (
+            <li
+              key={step.id}
+              className={`flex items-start space-x-4 ${
+                step.status === "current" ? "opacity-100" : "opacity-70"
+              }`}
+            >
+              <div className="flex-shrink-0 relative">
+                {/* Vertical connector line */}
+                {index !== steps.length - 1 && (
+                  <div
+                    className={`absolute top-10 left-1/2 w-[2px] h-full -translate-x-1/2 ${
+                      step.status === "complete"
+                        ? "bg-[#4F46E5]"
+                        : "bg-gray-200"
+                    }`}
+                  />
+                )}
+
+                {/* Circle */}
+                {step.status === "complete" ? (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="h-8 w-8 rounded-full bg-[#4F46E5] flex items-center justify-center"
+                  >
+                    <CheckIcon className="w-5 h-5 text-white" />
+                  </motion.div>
+                ) : step.status === "current" ? (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="h-8 w-8 rounded-full bg-[#4F46E5] flex items-center justify-center"
+                  >
+                    <span className="text-white text-sm font-medium">
+                      {String(step.id).padStart(2, "0")}
+                    </span>
+                  </motion.div>
+                ) : (
+                  <div className="h-8 w-8 rounded-full border-2 border-gray-200 flex items-center justify-center bg-white">
+                    <span className="text-gray-500 text-sm font-medium">
+                      {String(step.id).padStart(2, "0")}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Step content */}
+              <div className="flex flex-col pt-1">
+                <span
+                  className={`text-sm font-medium ${
+                    step.status === "current"
+                      ? "text-[#4F46E5]"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {step.name}
+                </span>
+                <span
+                  className={`text-xs mt-1 ${
+                    step.status === "current"
+                      ? "text-gray-600"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {step.description}
+                </span>
               </div>
             </li>
           ))}
