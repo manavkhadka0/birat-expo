@@ -130,6 +130,7 @@ const schema = yup.object().shape({
 type Step = {
   id: number;
   name: string;
+  description: string;
   status: "upcoming" | "current" | "complete";
 };
 
@@ -146,10 +147,30 @@ export default function TrainingRegistrationForm({ topics }: Props) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<TrainingFormData>>({});
   const [steps, setSteps] = useState<Step[]>([
-    { id: 1, name: "Session Selection", status: "current" },
-    { id: 2, name: "Registration Details", status: "upcoming" },
-    { id: 3, name: "Payment", status: "upcoming" },
-    { id: 4, name: "Review", status: "upcoming" },
+    {
+      id: 1,
+      name: "Session Selection",
+      description: "Select Event you want to attend",
+      status: "current",
+    },
+    {
+      id: 2,
+      name: "Registration Details",
+      description: "Register your Personal Data",
+      status: "upcoming",
+    },
+    {
+      id: 3,
+      name: "Payment",
+      description: "Pay for the session digitally",
+      status: "upcoming",
+    },
+    {
+      id: 4,
+      name: "Review",
+      description: "Review your details and share/export if needed",
+      status: "upcoming",
+    },
   ]);
 
   const {
@@ -170,7 +191,7 @@ export default function TrainingRegistrationForm({ topics }: Props) {
       full_name: "",
       qualification: "Under SEE",
       gender: "Male",
-      age: 0,
+      age: 10,
       address: "",
       mobile_number: "",
       email: "",
@@ -261,13 +282,6 @@ export default function TrainingRegistrationForm({ topics }: Props) {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const getDatesBetween = (startDate: string, endDate: string) => {
-    return eachDayOfInterval({
-      start: new Date(startDate),
-      end: new Date(endDate),
-    });
   };
 
   const handleNextStep = async (data: Partial<TrainingFormData>) => {
@@ -433,53 +447,92 @@ export default function TrainingRegistrationForm({ topics }: Props) {
   };
 
   const StepProgress = ({ steps }: { steps: Step[] }) => (
-    <div className="py-6 px-4">
-      <nav aria-label="Progress">
-        <ol className="flex items-center justify-center">
-          {steps.map((step, stepIdx) => (
-            <li
-              key={step.id}
-              className={`relative ${
-                stepIdx !== steps.length - 1 ? "pr-8 sm:pr-20" : ""
-              }`}
-            >
-              {stepIdx !== steps.length - 1 && (
-                <div
-                  className="absolute inset-0 flex items-center"
-                  aria-hidden="true"
-                >
-                  <div
-                    className={`h-0.5 w-full ${
-                      step.status === "complete" ? "bg-blue-600" : "bg-gray-200"
-                    }`}
-                  />
+    <div className="py-12 px-4">
+      <h1 className="text-3xl font-semibold text-center text-[#4F46E5] mb-12">
+        Register for the Session
+      </h1>
+      <nav aria-label="Progress" className="max-w-4xl mx-auto">
+        <ol className="flex items-center justify-between">
+          {/* Steps with connectors */}
+          {steps.map((step, index) => (
+            <li key={step.id} className="flex items-center flex-1">
+              {/* Step circle and content */}
+              <div className="flex flex-col items-center flex-1">
+                {/* Step circle */}
+                <div className="mb-4 relative flex items-center">
+                  {/* Connector line before the circle (except first step) */}
+                  {index !== 0 && (
+                    <div
+                      className={`h-[2px] w-full absolute right-full mr-4 ${
+                        steps[index - 1].status === "complete"
+                          ? "bg-[#4F46E5]"
+                          : "bg-gray-200"
+                      }`}
+                      style={{ width: "100%" }}
+                    />
+                  )}
+
+                  {/* Circle with content */}
+                  {step.status === "complete" ? (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="h-10 w-10 rounded-full bg-[#4F46E5] flex items-center justify-center"
+                    >
+                      <CheckIcon className="w-6 h-6 text-white" />
+                    </motion.div>
+                  ) : step.status === "current" ? (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="h-10 w-10 rounded-full bg-[#4F46E5] flex items-center justify-center"
+                    >
+                      <span className="text-white font-medium">
+                        {String(step.id).padStart(2, "0")}
+                      </span>
+                    </motion.div>
+                  ) : (
+                    <div className="h-10 w-10 rounded-full border-2 border-gray-200 flex items-center justify-center bg-white">
+                      <span className="text-gray-500 font-medium">
+                        {String(step.id).padStart(2, "0")}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Connector line after the circle (except last step) */}
+                  {index !== steps.length - 1 && (
+                    <div
+                      className={`h-[2px] w-full absolute left-full ml-4 ${
+                        step.status === "complete"
+                          ? "bg-[#4F46E5]"
+                          : "bg-gray-200"
+                      }`}
+                      style={{ width: "100%" }}
+                    />
+                  )}
                 </div>
-              )}
-              <div className="relative flex items-center justify-center">
-                {step.status === "complete" ? (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center"
+
+                {/* Labels */}
+                <div className="flex flex-col items-center text-center">
+                  <span
+                    className={`text-sm font-medium ${
+                      step.status === "current"
+                        ? "text-[#4F46E5]"
+                        : "text-gray-500"
+                    }`}
                   >
-                    <CheckIcon className="w-5 h-5 text-white" />
-                  </motion.span>
-                ) : step.status === "current" ? (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="h-8 w-8 rounded-full border-2 border-blue-600 flex items-center justify-center"
-                  >
-                    <span className="text-blue-600 font-medium">{step.id}</span>
-                  </motion.span>
-                ) : (
-                  <span className="h-8 w-8 rounded-full border-2 border-gray-200 flex items-center justify-center">
-                    <span className="text-gray-500">{step.id}</span>
+                    {step.name}
                   </span>
-                )}
-                <span className="absolute -bottom-10 text-sm font-medium text-gray-500">
-                  {step.name}
-                </span>
+                  <span
+                    className={`text-xs mt-1 max-w-[180px] ${
+                      step.status === "current"
+                        ? "text-gray-600"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {step.description}
+                  </span>
+                </div>
               </div>
             </li>
           ))}
@@ -584,6 +637,7 @@ export default function TrainingRegistrationForm({ topics }: Props) {
         {currentStep === 4 && (
           <ReviewStep
             data={formData}
+            selectedTopic={selectedTopic}
             isSubmitting={isSubmitting}
             onSubmit={() => handleNextStep(formData)}
             onBack={handlePreviousStep}

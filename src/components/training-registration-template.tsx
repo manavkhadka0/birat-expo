@@ -1,4 +1,12 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Topic } from "@/types/training";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
 import { format } from "date-fns";
 
 const styles = StyleSheet.create({
@@ -10,51 +18,117 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
+  headerLogos: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    objectFit: "contain",
+  },
+  mainLogo: {
+    width: 120,
+    height: 60,
+    objectFit: "contain",
+  },
   title: {
     fontSize: 18,
     marginBottom: 10,
     fontWeight: "bold",
+    color: "#1a365d",
   },
   subtitle: {
     fontSize: 14,
     marginBottom: 5,
-    color: "#666",
+    color: "#4a5568",
   },
   section: {
-    marginBottom: 15,
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: "#ffffff",
+    borderRadius: 5,
   },
   sectionTitle: {
     fontSize: 14,
     fontWeight: "bold",
     marginBottom: 8,
     backgroundColor: "#f3f4f6",
-    padding: 5,
+    padding: 8,
+    borderRadius: 4,
+    color: "#2d3748",
   },
   row: {
     flexDirection: "row",
-    marginBottom: 5,
+    marginBottom: 8,
+    paddingBottom: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e2e8f0",
   },
   label: {
     width: 150,
     fontWeight: "bold",
+    color: "#4a5568",
   },
   value: {
     flex: 1,
+    color: "#2d3748",
+  },
+  paymentImage: {
+    marginTop: 10,
+    width: "100%",
+    maxHeight: 200,
+    objectFit: "contain",
   },
   footer: {
     marginTop: 30,
     borderTop: 1,
+    borderTopColor: "#e2e8f0",
     paddingTop: 10,
     fontSize: 10,
-    color: "#666",
+    color: "#4a5568",
+  },
+  footerText: {
     textAlign: "center",
+    marginBottom: 5,
+  },
+  contactInfo: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#f8fafc",
+    borderRadius: 4,
+  },
+  contactTitle: {
+    fontSize: 12,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#2d3748",
+  },
+  contactRow: {
+    flexDirection: "row",
+    marginBottom: 4,
   },
 });
 
-export function TrainingRegistrationTemplate({ data }: { data: any }) {
+export function TrainingRegistrationTemplate({
+  data,
+  selectedTopic,
+}: {
+  data: any;
+  selectedTopic: Topic | null;
+}) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Header with Logos */}
+        <View style={styles.headerLogos}>
+          <Image src="/logo.png" style={styles.logo} />
+          <Image src="/logo-2025.png" style={styles.mainLogo} />
+          <Image src="/2.png" style={styles.logo} />
+        </View>
+
         <View style={styles.header}>
           <Text style={styles.title}>BIRAT EXPO-2025</Text>
           <Text style={styles.subtitle}>
@@ -66,6 +140,19 @@ export function TrainingRegistrationTemplate({ data }: { data: any }) {
         </View>
 
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Training Details</Text>
+          <View style={styles.row}>
+            <Text style={styles.label}>Training Name:</Text>
+            <Text style={styles.value}>{selectedTopic?.name}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Training Description:</Text>
+            <Text style={styles.value}>{selectedTopic?.description}</Text>
+          </View>
+        </View>
+
+        {/* Session Details */}
+        <View style={styles.section}>
           <Text style={styles.sectionTitle}>Session Details</Text>
           <View style={styles.row}>
             <Text style={styles.label}>Date:</Text>
@@ -75,10 +162,23 @@ export function TrainingRegistrationTemplate({ data }: { data: any }) {
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Time Slot:</Text>
-            <Text style={styles.value}>{data.time_slot}</Text>
+            <Text style={styles.value}>
+              {
+                selectedTopic?.time_slots.find(
+                  (slot) => slot.id === data.time_slot
+                )?.start_time
+              }{" "}
+              -{" "}
+              {
+                selectedTopic?.time_slots.find(
+                  (slot) => slot.id === data.time_slot
+                )?.end_time
+              }
+            </Text>
           </View>
         </View>
 
+        {/* Registration Information */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Registration Information</Text>
           <View style={styles.row}>
@@ -103,6 +203,7 @@ export function TrainingRegistrationTemplate({ data }: { data: any }) {
           </View>
         </View>
 
+        {/* Group Members Section */}
         {data.registration_type === "Group" && data.group_members && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Group Members</Text>
@@ -124,9 +225,56 @@ export function TrainingRegistrationTemplate({ data }: { data: any }) {
           </View>
         )}
 
+        {/* Payment Details with Screenshot */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Payment Details</Text>
+          <View style={styles.row}>
+            <Text style={styles.label}>Payment Method:</Text>
+            <Text style={styles.value}>{data.payment_method}</Text>
+          </View>
+          {data.payment_screenshot && (
+            <View>
+              <Text style={[styles.label, { marginBottom: 5 }]}>
+                Payment Screenshot:
+              </Text>
+              <Image
+                src={URL.createObjectURL(data.payment_screenshot)}
+                style={styles.paymentImage}
+              />
+            </View>
+          )}
+        </View>
+
+        {/* Contact Information */}
+        <View style={styles.contactInfo}>
+          <Text style={styles.contactTitle}>Contact Information</Text>
+          <View style={styles.contactRow}>
+            <Text style={styles.label}>Coordinator:</Text>
+            <Text style={styles.value}>Sandeep Chaudhary</Text>
+          </View>
+          <View style={styles.contactRow}>
+            <Text style={styles.label}>Position:</Text>
+            <Text style={styles.value}>
+              Skill Development Unit (Co-ordinator)
+            </Text>
+          </View>
+          <View style={styles.contactRow}>
+            <Text style={styles.label}>Phone:</Text>
+            <Text style={styles.value}>+977 9828015958</Text>
+          </View>
+        </View>
+
+        {/* Footer */}
         <View style={styles.footer}>
-          <Text>Generated on {format(new Date(), "PPP")}</Text>
-          <Text>BIRAT EXPO-2025 - Training Registration Document</Text>
+          <Text style={styles.footerText}>
+            Generated on {format(new Date(), "PPP")}
+          </Text>
+          <Text style={styles.footerText}>
+            BIRAT EXPO-2025 - Training Registration Document
+          </Text>
+          <Text style={styles.footerText}>
+            Digital Koshi: Bridging Innovation and Investment
+          </Text>
         </View>
       </Page>
     </Document>

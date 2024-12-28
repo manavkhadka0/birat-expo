@@ -20,7 +20,7 @@ export function RegistrationDetailsStep({
   const registrationType = watch("registration_type");
 
   return (
-    <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+    <section>
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
         Registration Details
       </h2>
@@ -31,19 +31,25 @@ export function RegistrationDetailsStep({
           return (
             <div
               key={type}
-              className={`p-6 rounded-lg border-2 transition-all cursor-pointer ${
+              className={`p-6 flex items-start gap-4 justify-between rounded-lg border-2 transition-all cursor-pointer ${
                 registrationType === type
                   ? "border-blue-500 bg-blue-50"
                   : "border-gray-200 hover:border-blue-300"
               }`}
               onClick={() => setValue("registration_type", type)}
             >
-              <config.icon className="w-8 h-8 text-blue-600 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">{type}</h3>
-              <p className="text-gray-600 text-sm mb-3">{config.description}</p>
-              <p className="text-blue-600 font-semibold">
-                Rs. {config.price.toLocaleString()}
-              </p>
+              <>
+                <config.icon className="w-12 h-12 text-blue-600 mb-4" />
+              </>
+              <div>
+                <h3 className="text-lg font-semibold mb-2">{type}</h3>
+                <p className="text-gray-600 text-sm mb-3">
+                  {config.description}
+                </p>
+                <p className="text-blue-600 font-semibold text-xl">
+                  Rs. {config.price.toLocaleString()}
+                </p>
+              </div>
             </div>
           );
         })}
@@ -125,15 +131,35 @@ export function RegistrationDetailsStep({
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Gender
           </label>
-          <select
-            {...register("gender")}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">Select gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
+          <div className="space-y-2">
+            <label className="inline-flex items-center mr-6">
+              <input
+                type="radio"
+                {...register("gender")}
+                value="Male"
+                className="form-radio h-4 w-4 text-blue-600"
+              />
+              <span className="ml-2">Male</span>
+            </label>
+            <label className="inline-flex items-center mr-6">
+              <input
+                type="radio"
+                {...register("gender")}
+                value="Female"
+                className="form-radio h-4 w-4 text-blue-600"
+              />
+              <span className="ml-2">Female</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                {...register("gender")}
+                value="Other"
+                className="form-radio h-4 w-4 text-blue-600"
+              />
+              <span className="ml-2">Other</span>
+            </label>
+          </div>
           {errors.gender && (
             <p className="mt-2 text-sm text-red-600">{errors.gender.message}</p>
           )}
@@ -280,15 +306,35 @@ export function RegistrationDetailsStep({
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Gender
                     </label>
-                    <select
-                      {...register(`group_members.${index}.gender`)}
-                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Select gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
+                    <div className="space-y-2">
+                      <label className="inline-flex items-center mr-6">
+                        <input
+                          type="radio"
+                          {...register(`group_members.${index}.gender`)}
+                          value="Male"
+                          className="form-radio h-4 w-4 text-blue-600"
+                        />
+                        <span className="ml-2">Male</span>
+                      </label>
+                      <label className="inline-flex items-center mr-6">
+                        <input
+                          type="radio"
+                          {...register(`group_members.${index}.gender`)}
+                          value="Female"
+                          className="form-radio h-4 w-4 text-blue-600"
+                        />
+                        <span className="ml-2">Female</span>
+                      </label>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          {...register(`group_members.${index}.gender`)}
+                          value="Other"
+                          className="form-radio h-4 w-4 text-blue-600"
+                        />
+                        <span className="ml-2">Other</span>
+                      </label>
+                    </div>
                     {errors.group_members?.[index]?.gender && (
                       <p className="mt-2 text-sm text-red-600">
                         {errors.group_members[index].gender.message}

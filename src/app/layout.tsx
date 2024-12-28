@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import Navbar from "@/components/navbar";
 import "./globals.css";
 import Footer from "@/components/footer";
 
-const inter = Inter({ subsets: ["latin"] });
+const bricolage = Bricolage_Grotesque({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Birat Expo 2025",
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={bricolage.className}>
         <Navbar></Navbar>
         {children}
         <Footer />
