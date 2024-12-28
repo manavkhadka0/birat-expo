@@ -48,7 +48,7 @@ export default function LiveTrainingHero() {
             </div>
 
             <a
-              href="#register"
+              href="/live-training/register"
               className="inline-flex items-center px-8 py-4 text-lg rounded-full text-white font-medium 
               bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 
               hover:from-indigo-600 hover:via-indigo-700 hover:to-violet-700 

@@ -11,7 +11,7 @@ export default function Hero() {
               and Build Futures.
             </h1>
             <a
-              href="#register"
+              href="/live-training/register"
               className="inline-flex items-center px-6 py-3 rounded-full text-white font-medium 
               bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 
               hover:to-violet-700 transition-all duration-200 shadow-lg hover:shadow-xl"
