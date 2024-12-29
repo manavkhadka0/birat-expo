@@ -1,7 +1,8 @@
-import { Topic } from "@/types/training";
+import { Topic, TimeSlot } from "@/types/training";
 import { format, eachDayOfInterval } from "date-fns";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import SessionCard from "../session-card";
+import { useState, useEffect } from "react";
 
 interface SessionSelectionStepProps {
   topics: Topic[];
@@ -23,8 +24,35 @@ export function SessionSelectionStep({
   setSelectedTopic,
   onNext,
 }: SessionSelectionStepProps) {
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+
   const selectedTimeSlot = watch("time_slot");
   const selectedDate = watch("date");
+
+  // Fetch time slots when both topic and date are selected
+  useEffect(() => {
+    async function fetchTimeSlots() {
+      if (selectedTopic && selectedDate) {
+        setIsLoadingSlots(true);
+        try {
+          const date = format(new Date(selectedDate), "yyyy-MM-dd");
+          const response = await fetch(
+            `/api/timeslots/?date=${date}&topic=${selectedTopic.id}`
+          );
+          const data = await response.json();
+          setTimeSlots(data);
+        } catch (error) {
+          console.error("Error fetching time slots:", error);
+          setTimeSlots([]);
+        } finally {
+          setIsLoadingSlots(false);
+        }
+      }
+    }
+
+    fetchTimeSlots();
+  }, [selectedTopic, selectedDate]);
 
   const canProceed = selectedTimeSlot && selectedDate && selectedTopic;
 
@@ -118,16 +146,26 @@ export function SessionSelectionStep({
               Available Time Slots
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {selectedTopic.time_slots.map((slot) => (
-                <SessionCard
-                  key={slot.id}
-                  topic={selectedTopic}
-                  slot={slot}
-                  isSelected={selectedTimeSlot === slot.id}
-                  onSelect={(slotId) => setValue("time_slot", slotId)}
-                  disabled={slot.available_spots === 0}
-                />
-              ))}
+              {isLoadingSlots ? (
+                <div className="col-span-3 text-center py-4">
+                  Loading time slots...
+                </div>
+              ) : timeSlots.length > 0 ? (
+                timeSlots.map((slot) => (
+                  <SessionCard
+                    key={slot.id}
+                    topic={selectedTopic}
+                    slot={slot}
+                    isSelected={selectedTimeSlot === slot.id}
+                    onSelect={(slotId) => setValue("time_slot", slotId)}
+                    disabled={slot.available_spots === 0}
+                  />
+                ))
+              ) : (
+                <div className="col-span-3 text-center py-4">
+                  No time slots available for the selected date
+                </div>
+              )}
             </div>
             {errors.time_slot && (
               <p className="mt-2 text-sm text-red-600">

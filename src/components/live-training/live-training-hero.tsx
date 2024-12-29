@@ -72,32 +72,36 @@ export default function LiveTrainingHero() {
 
             {/* Training cards */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <div className="bg-white p-4 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
-                <img
-                  src="/cctv.png"
-                  alt="CCTV Setup"
-                  className="w-12 h-12 object-contain"
-                />
-                <div>
-                  <h3 className="font-semibold">CCTV Setup</h3>
-                  <p className="text-sm text-gray-500">
-                    22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
-                  </p>
+              <a href="/live-training/register">
+                <div className="bg-white hover:bg-gray-300 p-4 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
+                  <img
+                    src="/cctv.png"
+                    alt="CCTV Setup"
+                    className="w-12 h-12 object-contain"
+                  />
+                  <div>
+                    <h3 className="font-semibold">CCTV Setup</h3>
+                    <p className="text-sm text-gray-500">
+                      22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="bg-white p-4 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
-                <img
-                  src="/coffee.png"
-                  alt="Coffee Making"
-                  className="w-12 h-12 object-contain"
-                />
-                <div>
-                  <h3 className="font-semibold">Coffee Making</h3>
-                  <p className="text-sm text-gray-500">
-                    22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
-                  </p>
+              </a>
+              <a href="/live-training/register">
+                <div className="bg-white p-4 hover:bg-gray-300 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
+                  <img
+                    src="/coffee.png"
+                    alt="Coffee Making"
+                    className="w-12 h-12 object-contain"
+                  />
+                  <div>
+                    <h3 className="font-semibold">Coffee Making</h3>
+                    <p className="text-sm text-gray-500">
+                      22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </a>
             </div>
           </div>
 

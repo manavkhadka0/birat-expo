@@ -22,9 +22,10 @@ export default function Programs() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {programs.map((program, index) => (
-          <div
+          <a
+            href={`/live-training/register`}
             key={index}
-            className="bg-white p-8 rounded-lg shadow-md text-center"
+            className="bg-white p-8 rounded-lg shadow-md text-center hover:bg-gray-100 transition-colors duration-300"
           >
             <div className="w-32 h-32 mx-auto mb-4">
               <img
@@ -34,7 +35,7 @@ export default function Programs() {
               />
             </div>
             <h3 className="text-xl font-bold">{program.title}</h3>
-          </div>
+          </a>
         ))}
       </div>
     </div>

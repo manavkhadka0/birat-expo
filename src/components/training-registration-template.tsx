@@ -1,4 +1,4 @@
-import { Topic } from "@/types/training";
+import { Topic, TimeSlot } from "@/types/training";
 import {
   Document,
   Page,
@@ -8,6 +8,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
+import React from "react";
 
 const styles = StyleSheet.create({
   page: {
@@ -116,9 +117,45 @@ export function TrainingRegistrationTemplate({
   data,
   selectedTopic,
 }: {
-  data: any;
+  data: {
+    date: string;
+    time_slot: string;
+    registration_type: string;
+    full_name: string;
+    email: string;
+    mobile_number: string;
+    qualification: string;
+    payment_method: string;
+    payment_screenshot?: File;
+    group_members?: Array<{ name: string; email: string }>;
+  };
   selectedTopic: Topic | null;
 }) {
+  const [timeSlot, setTimeSlot] = React.useState<TimeSlot | null>(null);
+
+  React.useEffect(() => {
+    async function fetchTimeSlot() {
+      if (selectedTopic?.id && data.date && data.time_slot) {
+        try {
+          const date = format(new Date(data.date), "yyyy-MM-dd");
+          const response = await fetch(
+            `/api/timeslots/?date=${date}&topic=${selectedTopic.id}`
+          );
+          const slots: TimeSlot[] = await response.json();
+          const matchingSlot = slots.find(
+            (slot) => slot.id === Number(data.time_slot)
+          );
+          setTimeSlot(matchingSlot || null);
+        } catch (error) {
+          console.error("Error fetching time slot:", error);
+          setTimeSlot(null);
+        }
+      }
+    }
+
+    fetchTimeSlot();
+  }, [selectedTopic?.id, data.date, data.time_slot]);
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -163,17 +200,9 @@ export function TrainingRegistrationTemplate({
           <View style={styles.row}>
             <Text style={styles.label}>Time Slot:</Text>
             <Text style={styles.value}>
-              {
-                selectedTopic?.time_slots.find(
-                  (slot) => slot.id === data.time_slot
-                )?.start_time
-              }{" "}
-              -{" "}
-              {
-                selectedTopic?.time_slots.find(
-                  (slot) => slot.id === data.time_slot
-                )?.end_time
-              }
+              {timeSlot
+                ? `${timeSlot.start_time} - ${timeSlot.end_time}`
+                : "Loading..."}
             </Text>
           </View>
         </View>

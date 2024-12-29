@@ -6,7 +6,6 @@ export interface Topic {
   end_date: string;
   venue: string;
   is_active: boolean;
-  time_slots: TimeSlot[];
 }
 
 export interface TimeSlot {
@@ -17,6 +16,7 @@ export interface TimeSlot {
   max_participants: number;
   current_participants: number;
   available_spots: number;
+  date: string;
 }
 
 export interface Registration {
