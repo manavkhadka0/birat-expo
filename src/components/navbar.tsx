@@ -33,31 +33,36 @@ export const navItems = [
   {
     title: "Live Training",
     href: "/live-training",
+    className: "",
+    rel: "",
     subtitle: "Offer till Magh 5",
     subtitleClass: "text-green-700",
   },
   {
-    title: "Birat Expo'22",
-    subtitle: "Past Event",
-    subtitleClass: "text-red-700",
-    href: "/biratexpo-2022",
+    title: "Startup & Hackathon",
+    href: "/startups-hackathon",
+    subtitle: "Join Now",
+    subtitleClass: "text-green-700",
+  },
+  {
+    title: "Others",
+    items: [
+      { title: "Birat Expo'22", href: "/biratexpo-2022" },
+      {
+        title: "Organizer",
+        href: "/organizer",
+      },
+      {
+        title: "Floor Plan",
+        href: "/floorplan",
+      },
+      {
+        title: "Proposal",
+        href: "/proposal",
+      },
+    ],
   },
   // about
-  {
-    title: "Organizer",
-    href: "/organizer",
-  },
-  {
-    title: "Floor Plan",
-    href: "/floorplan",
-    rel: "noreferrer",
-  },
-  {
-    title: "Proposal",
-    className: "",
-    href: "/proposal",
-    rel: "noreferrer",
-  },
 ];
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
