@@ -37,7 +37,7 @@ const StallArea = ({
           {pathname !== "/sponsorship" ? (
             <div className="flex ml-auto justify-center my-6">
               <a
-                href="/Stall Booking Form English.pdf"
+                href="/Stall Booking Form.pdf"
                 download
                 className="px-4 py-2 text-white bg-blue-600 rounded-md no-underline"
               >

@@ -16,13 +16,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // logic to salt and hash password
         if (
-          credentials.email === "admin@admin.com" &&
-          credentials.password === "admin"
+          credentials.email === "biratexpo2025@gmail.com" &&
+          credentials.password === "admin-biratexpo2025!@"
         ) {
           user = {
             id: "1",
             name: "Admin",
-            email: "admin@admin.com",
+            email: "biratexpo2025@gmail.com",
           };
         }
 
