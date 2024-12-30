@@ -1,6 +1,12 @@
 import AdminTable from "@/components/admin-table";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const session = await auth();
+
+  if (!session?.user) redirect("/login");
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex flex-col md:flex-row justify-between items-center">
