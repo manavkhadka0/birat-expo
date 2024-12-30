@@ -34,17 +34,28 @@ export default function LiveTrainingHero() {
           {/* Left content */}
           <div className="z-10 space-y-8">
             <div className="space-y-4">
-              <h2 className="text-2xl font-medium text-white">
-                Crafting Careers, Shaping Futures
-              </h2>
-              <h1 className="text-6xl font-bold">
-                <span className="text-white">ROJGAR</span>{" "}
-                <span className="text-yellow-400">KOSHI</span>
-              </h1>
-              <p className="text-gray-200 text-lg max-w-xl">
-                Join our interactive session to explore essential skills and
-                discover how to transform your passion into a thriving career.
-              </p>
+              <div>
+                <h1 className="text-6xl font-bold">
+                  <span className="text-white">ROJGAR</span>{" "}
+                  <span className="text-yellow-400">KOSHI</span>
+                </h1>
+                <h2 className="text-base font-medium text-white">
+                  Crafting Careers, Shaping Futures
+                </h2>
+              </div>
+              <h3 className="text-white text-3xl font-medium">
+                <span className="text-yellow-400">Live </span>{" "}
+                <span className="text-white">Training</span>{" "}
+              </h3>
+              <div>
+                <p className="text-gray-200 text-lg max-w-xl">
+                  Explore Skills, Unlock Careers !
+                </p>
+                <p className="text-gray-200 text-lg max-w-xl">
+                  Join us for 2 hours and turn your interest into a career
+                  opportunity.
+                </p>
+              </div>
             </div>
 
             <a
