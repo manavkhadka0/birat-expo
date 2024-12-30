@@ -8,15 +8,19 @@ export default function TrainingPartners() {
       name: "South Asian School of Tourism & Hotel Management",
       logo: "/sasthm.png",
     },
+    {
+      name: "Manmohan Technical University",
+      logo: "/manmohan.png",
+    },
   ];
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 py-16">
+    <div className="container max-w-4xl mx-auto px-4 py-16">
       <h2 className="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-indigo-500 to-violet-700 bg-clip-text text-transparent">
         Our Training Partners
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {partners.map((partner, index) => (
           <div
             key={index}
@@ -26,7 +30,7 @@ export default function TrainingPartners() {
               <img
                 src={partner.logo}
                 alt={partner.name}
-                className="h-full object-contain"
+                className=" h-full object-contain"
               />
             </div>
             <h3 className="text-sm font-medium">{partner.name}</h3>
