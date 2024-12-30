@@ -4,11 +4,11 @@
 import { sponsorshipLevels } from "@/components/other-sections";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
-
+import { useEffect, useMemo } from "react";
 import { useState, useCallback } from "react";
 import StallArea from "@/components/stall-area";
 import Sponsors from "@/components/sponsors";
+import { useGetSponsorStallStatus } from "@/api/stall-status";
 
 type SponsorStallPropsType = {
   sponsor_type: string;
@@ -21,9 +21,106 @@ type StallInfo = {
   id: string;
   companyName: string;
 };
+
 export default function Sponsorship() {
   const pathname = usePathname();
+  const router = useRouter();
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
+
+  const {
+    sponsorStallStatus,
+    sponsorStallStatusLoading,
+    sponsorStallStatusError,
+    sponsorStallStatusValidating,
+  } = useGetSponsorStallStatus();
+
+  const isLoading = sponsorStallStatusLoading || sponsorStallStatusValidating;
+  const isError = sponsorStallStatusError;
+
+  // Memoize stall data processing
+  const { bookedStalls, reservedStalls } = useMemo(() => {
+    if (isLoading || isError) return { bookedStalls: [], reservedStalls: [] };
+
+    const booked =
+      sponsorStallStatus?.map((stall) => ({
+        id: stall.stall_id,
+        companyName: stall.company_name,
+      })) || [];
+
+    // Reserved stalls can be added here if needed
+    const reserved: StallInfo[] = [];
+
+    return {
+      bookedStalls: booked,
+      reservedStalls: reserved,
+    };
+  }, [isLoading, isError, sponsorStallStatus]);
+
+  // Memoize constant data
+  const legendItemsSponsors = useMemo(
+    () => [
+      { color: "#3498DB", label: "Main Sponsor" },
+      { color: "#E67E22", label: "Powered By Sponsor" },
+      { color: "#95A5A6", label: "Platinum" },
+      { color: "#1ABC9C", label: "Diamond" },
+      { color: "#F1C40F", label: "Gold" },
+      { color: "#9B59B6", label: "Partner Sponsor" },
+      { color: "#BDC3C7", label: "Silver" },
+      { color: "#E74C3C", label: "Booked" },
+      { color: "#ffff00", label: "Reserved" },
+      { color: "#2ECC71", label: "Selected" },
+    ],
+    []
+  );
+
+  const sponsorStallProps: SponsorStallPropsType[] = useMemo(
+    () => [
+      {
+        sponsor_type: "Main Sponsor",
+        price: 7500000,
+        color: "#3498DB",
+        stallid: ["S1"],
+      },
+      {
+        sponsor_type: "Powered By Sponsor",
+        price: 3500000,
+        color: "#E67E22",
+        stallid: ["S2"],
+      },
+      {
+        sponsor_type: "Platinum",
+        price: 200000,
+        color: "#95A5A6",
+        stallid: ["S3"],
+      },
+      {
+        sponsor_type: "Diamond",
+        price: 1500000,
+        color: "#1ABC9C",
+        stallid: ["S4"],
+      },
+      {
+        sponsor_type: "Gold",
+        price: 1000000,
+        color: "#F1C40F",
+        stallid: ["S5"],
+      },
+      {
+        sponsor_type: "Partner Sponsor",
+        price: 1000000,
+        color: "#9B59B6",
+        stallid: ["S6", "S7", "S8"],
+      },
+      {
+        sponsor_type: "Silver",
+        price: 500000,
+        color: "#BDC3C7",
+        stallid: ["S9", "S10", "S11", "S12"],
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     if (pathname.includes("#")) {
@@ -32,105 +129,55 @@ export default function Sponsorship() {
     }
   }, [pathname]);
 
-  const router = useRouter();
-  const [selectedStalls, setSelectedStalls] = useState<string[]>([]);
-
-  const legendItemsSponsors = [
-    { color: "#3498DB", label: "Main Sponsor" },
-    { color: "#E67E22", label: "Powered By Sponsor" },
-    { color: "#95A5A6", label: "Platinum" },
-    { color: "#1ABC9C", label: "Diamond" },
-    { color: "#F1C40F", label: "Gold" },
-    { color: "#9B59B6", label: "Partner Sponsor" },
-    { color: "#BDC3C7", label: "Silver" },
-    { color: "#E74C3C", label: "Booked" },
-    { color: "#ffff00", label: "Reserved" },
-    { color: "#2ECC71", label: "Selected" },
-  ];
-
-  const sponsorStallProps: SponsorStallPropsType[] = [
-    {
-      sponsor_type: "Main Sponsor",
-      price: 7500000,
-      color: "#3498DB",
-      stallid: ["S1"],
-    },
-    {
-      sponsor_type: "Powered By Sponsor",
-      price: 3500000,
-      color: "#E67E22",
-      stallid: ["S2"],
-    },
-    {
-      sponsor_type: "Platinum",
-      price: 200000,
-      color: "#95A5A6",
-      stallid: ["S3"],
-    },
-    {
-      sponsor_type: "Diamond",
-      price: 1500000,
-      color: "#1ABC9C",
-      stallid: ["S4"],
-    },
-    {
-      sponsor_type: "Gold",
-      price: 1000000,
-      color: "#F1C40F",
-      stallid: ["S5"],
-    },
-    {
-      sponsor_type: "Partner Sponsor",
-      price: 1000000,
-      color: "#9B59B6",
-      stallid: ["S6", "S7", "S8"],
-    },
-    {
-      sponsor_type: "Silver",
-      price: 500000,
-      color: "#BDC3C7",
-      stallid: ["S9", "S10", "S11", "S12"],
-    },
-  ];
-
-  const bookedStalls: StallInfo[] = [
-    // { id: "S1", companyName: "Company A" },
-    // // Add more as needed
-  ];
-
-  const reservedStalls: StallInfo[] = [
-    // { id: "S6", companyName: "Company B" },
-    // // Add more as needed
-  ];
-
-  const onAvailableStallClick = useCallback((stallId: string) => {
-    setSelectedStalls((prevSelected) => {
-      if (prevSelected.includes(stallId)) {
-        return prevSelected.filter((id) => id !== stallId);
-      } else {
-        if (prevSelected.length === 0) {
-          return [stallId];
+  const onAvailableStallClick = useCallback(
+    (stallId: string) => {
+      setSelectedStalls((prevSelected) => {
+        if (prevSelected.includes(stallId)) {
+          return prevSelected.filter((id) => id !== stallId);
         } else {
-          alert("You can only select one stall.");
-          return prevSelected;
-        }
-      }
-    });
-  }, []);
+          if (prevSelected.length === 0) {
+            return [stallId];
+          } else {
+            // Find sponsor type of currently selected stall
+            const currentSponsorType = sponsorStallProps.find((stall) =>
+              stall.stallid.some((id) => stallId === id)
+            )?.sponsor_type;
 
-  const handleProceed = () => {
+            // Find sponsor type of previously selected stall
+            const previousSponsorType = sponsorStallProps.find((stall) =>
+              stall.stallid.some((id) => prevSelected.includes(id))
+            )?.sponsor_type;
+
+            // Only allow selection if it's from the same sponsor type
+            if (currentSponsorType === previousSponsorType) {
+              return [...prevSelected, stallId];
+            } else {
+              alert("You can only select stalls from the same sponsor type.");
+              return prevSelected;
+            }
+          }
+        }
+      });
+    },
+    [sponsorStallProps]
+  );
+
+  const handleProceed = useCallback(() => {
     if (selectedStalls.length > 0) {
-      const sponsorStalls = sponsorStallProps.filter((stall) =>
-        selectedStalls.includes(stall.stallid[0])
+      // Find the sponsor type by checking if any of the stall's IDs match the selected stall
+      const sponsorStall = sponsorStallProps.find((stall) =>
+        stall.stallid.some((id) => selectedStalls.includes(id))
       );
-      console.log(sponsorStalls);
-      router.push(
-        `/sponsor-booking?stall_id=${selectedStalls.join(",")}&sponsor_type=${
-          sponsorStalls[0].sponsor_type
-        }`
-      );
+
+      if (sponsorStall) {
+        router.push(
+          `/sponsor-booking?stall_id=${selectedStalls.join(",")}&sponsor_type=${
+            sponsorStall.sponsor_type
+          }`
+        );
+      }
     }
-  };
+  }, [selectedStalls, sponsorStallProps, router]);
 
   return (
     <>

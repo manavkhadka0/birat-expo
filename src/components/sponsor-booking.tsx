@@ -7,7 +7,15 @@ import * as yup from "yup";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
-const schema = yup.object().shape({
+// Add interface for form data
+interface SponsorBookingFormData {
+  companyName: string;
+  companyEmail: string;
+  contactNumber: string;
+}
+
+// Update the schema with proper types
+const schema: yup.ObjectSchema<SponsorBookingFormData> = yup.object().shape({
   companyName: yup.string().required("Company Name is required"),
   companyEmail: yup
     .string()
@@ -30,27 +38,40 @@ const SponsorBookingForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<SponsorBookingFormData>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: SponsorBookingFormData) => {
     setIsSubmitting(true);
     setError("");
     setSuccess("");
 
     try {
-      await axios.post("/api/sponsor-booking", {
-        stallType,
-        stallId,
-        ...data,
-      });
+      // Make API calls concurrently
+      await Promise.all([
+        axios.post("/api/sponsor-booking", {
+          stallType,
+          stallId,
+          ...data,
+        }),
+        axios.post("https://yachu.baliyoventures.com/api/sponsor/", {
+          stall_type: stallType,
+          stall_id: stallId,
+          company_name: data.companyName,
+          company_email: data.companyEmail,
+          contact_number: data.contactNumber,
+        }),
+      ]);
+
       setSuccess("Booking confirmation sent successfully!");
       route.push("/thank-you");
     } catch (error) {
-      console.error(error);
+      console.error("Booking submission error:", error);
       setError(
-        "An error occurred while submitting the form. Please try again."
+        error instanceof Error
+          ? error.message
+          : "An error occurred while submitting the form. Please try again."
       );
     } finally {
       setIsSubmitting(false);
