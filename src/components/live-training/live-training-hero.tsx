@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function LiveTrainingHero() {
   return (
@@ -37,15 +38,15 @@ export default function LiveTrainingHero() {
               <div>
                 <h1 className="text-6xl font-bold">
                   <span className="text-white">ROJGAR</span>{" "}
-                  <span className="text-yellow-400">KOSHI</span>
+                  <span className="text-yellow-300">KOSHI</span>
                 </h1>
-                <h2 className="text-base font-medium text-white">
+                <h2 className="text-base font-medium text-white  ">
                   Crafting Careers, Shaping Futures
                 </h2>
               </div>
-              <h3 className="text-white text-3xl font-medium">
-                <span className="text-yellow-400">Live </span>{" "}
-                <span className="text-white">Training</span>{" "}
+              <h3 className="text-white text-4xl font-medium ">
+                <span className="text-yellow-300">Live </span>{" "}
+                <span className="text-yellow-300">Training</span>{" "}
               </h3>
               <div>
                 <p className="text-gray-200 text-lg max-w-xl">
@@ -83,36 +84,39 @@ export default function LiveTrainingHero() {
 
             {/* Training cards */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <a href="/live-training/register">
-                <div className="bg-white hover:bg-gray-300 p-4 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
+              <div className="bg-white hover:bg-gray-300 p-4 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
+                <Link href={"/live-training/register"}>
                   <img
                     src="/cctv.png"
                     alt="CCTV Setup"
                     className="w-12 h-12 object-contain"
                   />
-                  <div>
-                    <h3 className="font-semibold">CCTV Setup</h3>
-                    <p className="text-sm text-gray-500">
-                      22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
-                    </p>
-                  </div>
+                </Link>
+
+                <div>
+                  <h3 className="font-semibold">CCTV Setup</h3>
+                  <p className="text-sm text-gray-500">
+                    22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
+                  </p>
                 </div>
-              </a>
-              <a href="/live-training/register">
-                <div className="bg-white p-4 hover:bg-gray-300 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
+              </div>
+
+              <div className="bg-white p-4 hover:bg-gray-300 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
+                <Link href={"/live-training/register"}>
                   <img
                     src="/coffee.png"
                     alt="Coffee Making"
                     className="w-12 h-12 object-contain"
                   />
-                  <div>
-                    <h3 className="font-semibold">Coffee Making</h3>
-                    <p className="text-sm text-gray-500">
-                      22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
-                    </p>
-                  </div>
+                </Link>
+
+                <div>
+                  <h3 className="font-semibold">Coffee Making</h3>
+                  <p className="text-sm text-gray-500">
+                    22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
+                  </p>
                 </div>
-              </a>
+              </div>
             </div>
           </div>
 

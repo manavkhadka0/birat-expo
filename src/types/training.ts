@@ -6,6 +6,7 @@ export interface Topic {
   end_date: string;
   venue: string;
   is_active: boolean;
+  image:string;
 }
 
 export interface TimeSlot {

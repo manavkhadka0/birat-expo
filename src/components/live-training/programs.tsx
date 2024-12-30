@@ -1,16 +1,16 @@
 export default function Programs() {
   const programs = [
     {
-      title: "CC Camera Setup",
+      title: "Hospitality",
+      image: "/coffe.png",
+    },
+    {
+      title: "CCTV Setup",
       image: "/cctv.png",
     },
     {
-      title: "Coffee Making",
-      image: "/coffee.png",
-    },
-    {
-      title: "Mobile Repairing",
-      image: "/mobile.png",
+      title: "Electrical and Electronics",
+      image: "/job.png",
     },
   ];
 

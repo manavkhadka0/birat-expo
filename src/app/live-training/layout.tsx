@@ -5,10 +5,5 @@ export default function LiveTrainingLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div className="">
-      {children}
-      <ContactCard />
-    </div>
-  );
+  return <div className="">{children}</div>;
 }

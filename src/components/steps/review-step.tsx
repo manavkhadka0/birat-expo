@@ -1,9 +1,9 @@
 import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
 import { useState } from "react";
 import { TrainingRegistrationTemplate } from "../training-registration-template";
-import { format } from "date-fns";
+
 import Image from "next/image";
-import ContactCard from "../contact-card";
+
 import { Topic } from "@/types/training";
 
 interface ReviewStepProps {
