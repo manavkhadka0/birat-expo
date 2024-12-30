@@ -105,7 +105,8 @@ export function PaymentStep({
                 className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
               />
               <span className="text-sm text-gray-700">
-                I understand and agree to the no-refund policy
+                I understand and agree to the training terms and conditions,
+                including the no-refund policy.
               </span>
             </label>
             {errors.agreed_to_no_refund && (
@@ -128,6 +129,7 @@ export function PaymentStep({
         </button>
         <button
           type="button"
+          disabled={!watch("payment_method") || !watch("payment_screenshot")}
           onClick={() =>
             onNext({
               payment_method: watch("payment_method"),
@@ -135,7 +137,11 @@ export function PaymentStep({
               agreed_to_no_refund: watch("agreed_to_no_refund"),
             })
           }
-          className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+          className={`px-6 py-2 rounded-lg ${
+            !watch("payment_method") || !watch("payment_screenshot")
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
         >
           Next Step
         </button>

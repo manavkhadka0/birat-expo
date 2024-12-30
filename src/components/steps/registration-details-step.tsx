@@ -63,15 +63,27 @@ export function RegistrationDetailsStep({
           </label>
           <input
             type="text"
-            {...register("full_name")}
+            {...register("first_name")}
             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Enter your full name"
+            placeholder="Enter your first name"
           />
-          {errors.full_name && (
+          {errors.first_name && (
             <p className="mt-2 text-sm text-red-600">
-              {errors.full_name.message}
+              {errors.first_name.message}
             </p>
           )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Last Name
+          </label>
+          <input
+            type="text"
+            {...register("last_name")}
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Enter your last name"
+          />
         </div>
 
         <div>
@@ -215,21 +227,36 @@ export function RegistrationDetailsStep({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Full Name
+                      First Name
                     </label>
                     <input
                       type="text"
-                      {...register(`group_members.${index}.name`)}
+                      {...register(`group_members.${index}.first_name`)}
                       className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter member's full name"
+                      placeholder="Enter member's first name"
                     />
-                    {errors.group_members?.[index]?.name && (
+                    {errors.group_members?.[index]?.first_name && (
                       <p className="mt-2 text-sm text-red-600">
-                        {errors.group_members[index].name.message}
+                        {errors.group_members[index].first_name.message}
                       </p>
                     )}
                   </div>
-
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      {...register(`group_members.${index}.last_name`)}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter member's last name"
+                    />
+                    {errors.group_members?.[index]?.last_name && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {errors.group_members[index].last_name.message}
+                      </p>
+                    )}
+                  </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Email
@@ -380,7 +407,8 @@ export function RegistrationDetailsStep({
           onClick={() =>
             onNext({
               registration_type: registrationType,
-              full_name: watch("full_name"),
+              first_name: watch("first_name"),
+              last_name: watch("last_name"),
               email: watch("email"),
               mobile_number: watch("mobile_number"),
               qualification: watch("qualification"),

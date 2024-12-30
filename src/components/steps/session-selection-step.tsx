@@ -3,6 +3,8 @@ import { format, eachDayOfInterval } from "date-fns";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import SessionCard from "../session-card";
 import { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface SessionSelectionStepProps {
   topics: Topic[];
@@ -63,6 +65,14 @@ export function SessionSelectionStep({
     });
   };
 
+  const getDateRange = () => {
+    if (!selectedTopic) return { minDate: null, maxDate: null };
+    return {
+      minDate: new Date(selectedTopic.start_date),
+      maxDate: new Date(selectedTopic.end_date),
+    };
+  };
+
   return (
     <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
@@ -106,34 +116,27 @@ export function SessionSelectionStep({
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Select Date
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {getDatesBetween(
-                selectedTopic.start_date,
-                selectedTopic.end_date
-              ).map((date) => (
-                <button
-                  key={date.toISOString()}
-                  type="button"
-                  onClick={() => setValue("date", date.toISOString())}
-                  className={`p-4 rounded-lg border transition-all ${
-                    watch("date") === date.toISOString()
-                      ? "border-blue-500 bg-blue-50 shadow-md"
-                      : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
-                  }`}
-                >
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-gray-600">
-                      {format(date, "EEE")}
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {format(date, "d")}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {format(date, "MMM yyyy")}
-                    </p>
-                  </div>
-                </button>
-              ))}
+            <div className="max-w-md">
+              <DatePicker
+                selected={selectedDate ? new Date(selectedDate) : null}
+                onChange={(date: Date | null) =>
+                  setValue("date", date?.toISOString() || "")
+                }
+                minDate={getDateRange().minDate || undefined}
+                maxDate={getDateRange().maxDate || undefined}
+                dateFormat="MMMM d, yyyy"
+                placeholderText="Select a date"
+                inline
+                calendarClassName="border border-gray-200 rounded-lg shadow-md"
+                wrapperClassName="w-full"
+                dayClassName={(date: Date) =>
+                  `hover:bg-blue-50 rounded-full w-8 h-8 mx-auto flex items-center justify-center ${
+                    selectedDate === date.toISOString()
+                      ? "bg-blue-500 text-white hover:bg-blue-600"
+                      : ""
+                  }`
+                }
+              />
             </div>
             {errors.date && (
               <p className="mt-2 text-sm text-red-600">{errors.date.message}</p>

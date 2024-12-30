@@ -1,19 +1,10 @@
-export default function Programs() {
-  const programs = [
-    {
-      title: "Hospitality",
-      image: "/coffe.png",
-    },
-    {
-      title: "CCTV Setup",
-      image: "/cctv.png",
-    },
-    {
-      title: "Electrical and Electronics",
-      image: "/job.png",
-    },
-  ];
+import { Topic } from "@/types/training";
 
+type ProgramsProps = {
+  sessions: Topic[];
+};
+
+export default function Programs({ sessions }: ProgramsProps) {
   return (
     <div className="container max-w-4xl mx-auto px-4 py-16">
       <h2 className="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-indigo-500 to-violet-700 bg-clip-text text-transparent">
@@ -21,7 +12,7 @@ export default function Programs() {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {programs.map((program, index) => (
+        {sessions.map((session, index) => (
           <a
             href={`/live-training/register`}
             key={index}
@@ -29,12 +20,12 @@ export default function Programs() {
           >
             <div className="w-32 h-32 mx-auto mb-4">
               <img
-                src={program.image}
-                alt={program.title}
+                src={session.image}
+                alt={session.name}
                 className="w-full h-full object-contain"
               />
             </div>
-            <h3 className="text-xl font-bold">{program.title}</h3>
+            <h3 className="text-xl font-bold">{session.name}</h3>
           </a>
         ))}
       </div>

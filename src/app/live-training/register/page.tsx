@@ -2,10 +2,15 @@
 
 import { useGetAvailableSessions } from "@/api/training";
 import TrainingRegistrationForm from "@/components/training-registration-form";
+import { useSearchParams } from "next/navigation";
 
 export default function Register() {
   const { sessions, sessionsLoading, sessionsError } =
     useGetAvailableSessions();
+
+  const topicId = useSearchParams().get("topic");
+
+  const topic = sessions.find((session) => session.id === Number(topicId));
 
   if (sessionsLoading) {
     return (
@@ -32,7 +37,7 @@ export default function Register() {
           No training sessions available at the moment.
         </p>
       ) : (
-        <TrainingRegistrationForm topics={sessions} />
+        <TrainingRegistrationForm topics={sessions} topic={topic} />
       )}
     </div>
   );

@@ -1,7 +1,12 @@
+import { Topic } from "@/types/training";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function LiveTrainingHero() {
+type LiveTrainingHeroProps = {
+  sessions: Topic[];
+};
+
+export default function LiveTrainingHero({ sessions }: LiveTrainingHeroProps) {
   return (
     <div className="relative min-h-screen overflow">
       {/* Light background */}
@@ -31,7 +36,7 @@ export default function LiveTrainingHero() {
       </div>
 
       <div className="container max-w-7xl mx-auto px-4 py-16 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-8rem)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[calc(100vh-8rem)]">
           {/* Left content */}
           <div className="z-10 space-y-8">
             <div className="space-y-4">
@@ -83,41 +88,6 @@ export default function LiveTrainingHero() {
             </a>
 
             {/* Training cards */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <div className="bg-white hover:bg-gray-300 p-4 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
-                <Link href={"/live-training/register"}>
-                  <img
-                    src="/cctv.png"
-                    alt="CCTV Setup"
-                    className="w-12 h-12 object-contain"
-                  />
-                </Link>
-
-                <div>
-                  <h3 className="font-semibold">CCTV Setup</h3>
-                  <p className="text-sm text-gray-500">
-                    22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 hover:bg-gray-300 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
-                <Link href={"/live-training/register"}>
-                  <img
-                    src="/coffee.png"
-                    alt="Coffee Making"
-                    className="w-12 h-12 object-contain"
-                  />
-                </Link>
-
-                <div>
-                  <h3 className="font-semibold">Coffee Making</h3>
-                  <p className="text-sm text-gray-500">
-                    22<sup>nd</sup> Jan, 2025- 2<sup>nd</sup> Feb, 2025
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Right content */}
@@ -134,8 +104,40 @@ export default function LiveTrainingHero() {
               />
             </div>
           </div>
+          <div className="col-span-2">
+            <div className="flex flex-row gap-4">
+              {sessions.reverse().map((session) => (
+                <TrainingCards key={session.id} session={session} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+type TrainingCardsProps = {
+  session: Topic;
+};
+
+const TrainingCards = ({ session }: TrainingCardsProps) => {
+  return (
+    <Link href={`/live-training/register?topic=${session.id}`}>
+      <div className="bg-white hover:bg-gray-300 p-4 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
+        <img
+          src={session.image}
+          alt={session.name}
+          className="w-12 h-12 object-contain"
+        />
+
+        <div>
+          <h3 className="font-semibold">{session.name}</h3>
+          <p className="text-sm text-gray-500">
+            {session.start_date} - {session.end_date}
+          </p>
+        </div>
+      </div>
+    </Link>
+  );
+};

@@ -16,10 +16,12 @@ import { PRICE_CONFIG } from "@/lib/constants";
 
 interface Props {
   topics: Topic[];
+  topic?: Topic;
 }
 
 interface GroupMember {
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   mobile_number: string;
   address: string;
@@ -32,7 +34,8 @@ interface TrainingFormData {
   time_slot: number;
   date: string;
   registration_type: "Single Person" | "Group" | "Expo Access";
-  full_name: string;
+  first_name: string;
+  last_name: string;
   qualification: "Under SEE" | "10+2" | "Graduate" | "Post Graduate";
   gender: "Male" | "Female" | "Other";
   age: number;
@@ -57,7 +60,8 @@ const schema = yup.object().shape({
     .string()
     .oneOf(["Single Person", "Group", "Expo Access"] as const)
     .required("Registration type is required"),
-  full_name: yup.string().required("Full name is required"),
+  first_name: yup.string().required("First name is required"),
+  last_name: yup.string().required("Last name is required"),
   qualification: yup
     .string()
     .oneOf(["Under SEE", "10+2", "Graduate", "Post Graduate"] as const)
@@ -99,7 +103,8 @@ const schema = yup.object().shape({
     then: (schema) =>
       schema.of(
         yup.object().shape({
-          name: yup.string().required("Name is required"),
+          first_name: yup.string().required("First name is required"),
+          last_name: yup.string().required("Last name is required"),
           email: yup
             .string()
             .email("Invalid email")
@@ -134,7 +139,7 @@ type Step = {
   status: "upcoming" | "current" | "complete";
 };
 
-export default function TrainingRegistrationForm({ topics }: Props) {
+export default function TrainingRegistrationForm({ topics, topic }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -143,7 +148,9 @@ export default function TrainingRegistrationForm({ topics }: Props) {
   const [uploadedFile, setUploadedFile] = useState<FileWithPreview | null>(
     null
   );
-  const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<Topic | null>(
+    topic ? topic : null
+  );
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<TrainingFormData>>({});
   const [steps, setSteps] = useState<Step[]>([
@@ -187,8 +194,10 @@ export default function TrainingRegistrationForm({ topics }: Props) {
       payment_method: "Nabil Bank",
       agreed_to_no_refund: false,
       registration_type: "Single Person",
+      payment_screenshot: undefined,
       time_slot: 0,
-      full_name: "",
+      first_name: "",
+      last_name: "",
       qualification: "Under SEE",
       gender: "Male",
       age: 10,
@@ -296,7 +305,8 @@ export default function TrainingRegistrationForm({ topics }: Props) {
           .string()
           .oneOf(["Single Person", "Group", "Expo Access"] as const)
           .required("Registration type is required"),
-        full_name: yup.string().required("Full name is required"),
+        first_name: yup.string().required("First name is required"),
+        last_name: yup.string().required("Last name is required"),
         email: yup
           .string()
           .email("Invalid email")
@@ -323,7 +333,8 @@ export default function TrainingRegistrationForm({ topics }: Props) {
           then: (schema) =>
             schema.of(
               yup.object().shape({
-                name: yup.string().required("Name is required"),
+                first_name: yup.string().required("First name is required"),
+                last_name: yup.string().required("Last name is required"),
                 email: yup
                   .string()
                   .email("Invalid email")

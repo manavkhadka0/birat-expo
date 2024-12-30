@@ -78,7 +78,7 @@ export function ReviewStep({
                       selectedTopic={selectedTopic}
                     />
                   }
-                  fileName={`training-registration-${data.full_name}.pdf`}
+                  fileName={`training-registration-${data.first_name}-${data.last_name}.pdf`}
                   className="text-sm sm:text-base text-blue-600 hover:text-blue-700 font-medium"
                   onClick={() => setHasPDFDownloaded(true)}
                 >

@@ -12,104 +12,112 @@ import React from "react";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 30,
-    fontSize: 12,
+    padding: 6,
+    fontSize: 10,
+    backgroundColor: "#f8fafc",
   },
   header: {
-    marginBottom: 20,
+    marginBottom: 4,
     textAlign: "center",
   },
   headerLogos: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 4,
+    padding: 2,
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 50,
+    height: 50,
     objectFit: "contain",
   },
   mainLogo: {
-    width: 120,
-    height: 60,
+    width: 80,
+    height: 40,
     objectFit: "contain",
   },
   title: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 10,
+    marginBottom: 2,
     fontWeight: "bold",
     color: "#1a365d",
   },
   subtitle: {
-    fontSize: 14,
-    marginBottom: 5,
+    fontSize: 8,
+    marginBottom: 2,
     color: "#4a5568",
   },
   section: {
-    marginBottom: 20,
-    padding: 10,
+    marginBottom: 4,
+    padding: 4,
     backgroundColor: "#ffffff",
-    borderRadius: 5,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
   },
   sectionTitle: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginBottom: 3,
     backgroundColor: "#f3f4f6",
-    padding: 8,
-    borderRadius: 4,
+    padding: 3,
+    borderRadius: 2,
     color: "#2d3748",
   },
   row: {
     flexDirection: "row",
-    marginBottom: 8,
-    paddingBottom: 4,
+    marginBottom: 3,
+    paddingBottom: 2,
     borderBottomWidth: 1,
     borderBottomColor: "#e2e8f0",
   },
   label: {
-    width: 150,
+    width: 100,
     fontWeight: "bold",
     color: "#4a5568",
+    fontSize: 9,
   },
   value: {
     flex: 1,
     color: "#2d3748",
+    fontSize: 9,
   },
   paymentImage: {
-    marginTop: 10,
+    marginTop: 4,
     width: "100%",
-    maxHeight: 200,
+    maxHeight: 120,
     objectFit: "contain",
   },
   footer: {
-    marginTop: 30,
+    marginTop: 15,
     borderTop: 1,
     borderTopColor: "#e2e8f0",
-    paddingTop: 10,
-    fontSize: 10,
+    paddingTop: 4,
+    fontSize: 8,
     color: "#4a5568",
   },
   footerText: {
     textAlign: "center",
-    marginBottom: 5,
+    marginBottom: 2,
   },
   contactInfo: {
-    marginTop: 20,
-    padding: 10,
+    marginTop: 4,
+    padding: 4,
     backgroundColor: "#f8fafc",
-    borderRadius: 4,
+    borderRadius: 2,
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
   },
   contactTitle: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginBottom: 3,
     color: "#2d3748",
   },
   contactRow: {
     flexDirection: "row",
-    marginBottom: 4,
+    marginBottom: 2,
   },
 });
 
@@ -121,7 +129,8 @@ export function TrainingRegistrationTemplate({
     date: string;
     time_slot: string;
     registration_type: string;
-    full_name: string;
+    first_name: string;
+    last_name: string;
     email: string;
     mobile_number: string;
     qualification: string;
@@ -169,11 +178,13 @@ export function TrainingRegistrationTemplate({
         <View style={styles.header}>
           <Text style={styles.title}>BIRAT EXPO-2025</Text>
           <Text style={styles.subtitle}>
-            Training Registration Confirmation
-          </Text>
-          <Text style={styles.subtitle}>
             Digital Koshi: Bridging Innovation and Investment
           </Text>
+        </View>
+
+        <View style={styles.header}>
+          <Text style={styles.title}>Rojgar Koshi</Text>
+          <Text style={styles.subtitle}>Crafting Careers, Shaping Futures</Text>
         </View>
 
         <View style={styles.section}>
@@ -216,7 +227,9 @@ export function TrainingRegistrationTemplate({
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Full Name:</Text>
-            <Text style={styles.value}>{data.full_name}</Text>
+            <Text style={styles.value}>
+              {data.first_name} {data.last_name}
+            </Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Email:</Text>
