@@ -15,6 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         let user = null;
 
         // logic to salt and hash password
+
         if (
           credentials.email === "biratexpo2025@gmail.com" &&
           credentials.password === "admin!@"

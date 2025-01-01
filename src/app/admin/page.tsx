@@ -5,9 +5,9 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 export default function AdminPage() {
-  const { status } = useSession();
+  // const { status } = useSession();
 
-  if (status === "unauthenticated") redirect("/login");
+  // if (status === "unauthenticated") redirect("/login");
 
   return (
     <div className="container mx-auto p-4">
