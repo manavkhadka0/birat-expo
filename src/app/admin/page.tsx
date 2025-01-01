@@ -1,11 +1,13 @@
+"use client";
+
 import AdminTable from "@/components/admin-table";
-import { auth } from "@/lib/auth";
+import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
-export default async function AdminPage() {
-  // const session = await auth();
+export default function AdminPage() {
+  const { status } = useSession();
 
-  // if (!session?.user) redirect("/login");
+  if (status === "unauthenticated") redirect("/login");
 
   return (
     <div className="container mx-auto p-4">
