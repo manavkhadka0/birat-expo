@@ -11,35 +11,49 @@ export default function Hero() {
               <br />
               and Build Futures.
             </h1>
+            <a
+              href="/live-training/register"
+              className="inline-flex items-center px-6 py-3 rounded-full text-white font-medium 
+              bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 
+              hover:to-violet-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              Register Now
+              <svg
+                className="w-5 h-5 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </a>
 
             <div className="mt-10 py-5">
-              <div className="border p-4 rounded-lg bg-white">
-                <div className="flex flex-row gap-4">
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    For more details, & queries :
-                  </h3>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800">
-                  Contact Coordinator
-                </h3>
-                <div className="space-y-3">
-                  <p className="text-gray-700 font-medium">Sandeep Chaudhary</p>
-                  <p className="text-gray-700 font-medium">Coordinator</p>
-                  <p className="text-gray-600">Skill Development Unit</p>
-                  <Link
-                    href="tel:+919828015958"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors hover:scale-105 transform duration-200"
+              <h3 className="text-xl font-semibold text-gray-800">
+                Contact Coordinator
+              </h3>
+              <div className="space-y-3">
+                <p className="text-gray-700 font-medium">Sandeep Chaudhary</p>
+                <p className="text-gray-600">Skill Development Unit</p>
+                <Link
+                  href="tel:+919828015958"
+                  className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors hover:scale-105 transform duration-200"
+                >
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
                   >
-                    <svg
-                      className="w-5 h-5 mr-2"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                    </svg>
-                    +977 9828015958
-                  </Link>
-                </div>
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                  </svg>
+                  +977 9828015958
+                </Link>
               </div>
             </div>
             <div

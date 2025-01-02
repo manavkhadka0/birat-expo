@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function StartupsHackathonHero() {
   return (
-    <div className="relative min-h-screen overflow">
+    <div className="relative min-h-screen overflow-hidden">
       {/* Light background */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100" />
 
@@ -30,24 +30,32 @@ export default function StartupsHackathonHero() {
       </div>
 
       <div className="container max-w-7xl mx-auto px-4 py-16 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-8rem)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[calc(100vh-8rem)]">
           {/* Left content */}
           <div className="z-10 space-y-8">
             <div className="space-y-4">
-              <h2 className="text-2xl font-medium text-white">
-                Innovate for Koshi Province
-              </h2>
-              <h1 className="text-6xl font-bold">
-                {/* Vision Koshi Startup and Hackathon */}
-                <span className="text-white">Vision Koshi</span>{" "}
-                <span className="text-yellow-400">Startup</span>{" "}
-                <span className="text-white">and</span>{" "}
-                <span className="text-yellow-400">Hackathon</span>
-              </h1>
-              <p className="text-gray-200 text-lg max-w-xl">
-                Join the Startup and Hackathon to innovate for Koshi Province
-                and win exciting prizes.
-              </p>
+              <div>
+                <h1 className="text-6xl font-bold">
+                  <span className="text-white">Vision</span>{" "}
+                  <span className="text-yellow-300">Koshi</span>
+                </h1>
+                <h2 className="text-base font-medium text-white">
+                  Innovate for Koshi Province
+                </h2>
+              </div>
+              <h3 className="text-white text-4xl font-medium">
+                <span className="text-yellow-300">Startup</span> and{" "}
+                <span className="text-yellow-300">Hackathon</span>
+              </h3>
+              <div>
+                <p className="text-gray-200 text-lg max-w-xl">
+                  Join the Startup and Hackathon to innovate for Koshi Province
+                  and win exciting prizes.
+                </p>
+                <p className="text-gray-200 text-lg max-w-xl">
+                  Showcase your skills and make an impact!
+                </p>
+              </div>
             </div>
 
             <a
@@ -76,7 +84,7 @@ export default function StartupsHackathonHero() {
 
           {/* Right content */}
           <div className="relative flex justify-center items-center">
-            {/* Logo */}
+            {/* Main logo */}
             <div className="relative z-10">
               <Image
                 src="/logo-2025.png"
@@ -86,6 +94,17 @@ export default function StartupsHackathonHero() {
                 className="w-full h-auto"
                 priority
               />
+              {/* Small logo underneath */}
+              <div className="flex justify-center mt-4">
+                <Image
+                  src="/Frame.svg"
+                  alt="Small Logo"
+                  width={200}
+                  height={150}
+                  className="h-auto w-auto"
+                  priority
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -96,6 +96,19 @@ export default function LiveTrainingHero() {
                 className="w-full h-auto"
                 priority
               />
+              {/* Small logo underneath */}
+              <div className=" flex justify-center h-[200px]">
+                {" "}
+                {/* Adjust the height here */}
+                <Image
+                  src="/Training.svg"
+                  alt="Large Logo"
+                  width={200} // Increased width
+                  height={150} // Increased height
+                  className="h-auto w-auto" // Maintains aspect ratio
+                  priority
+                />
+              </div>
             </div>
           </div>
         </div>
