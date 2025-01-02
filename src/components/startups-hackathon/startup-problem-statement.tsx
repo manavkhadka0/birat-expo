@@ -83,6 +83,9 @@ export default function StartupProblemStatement() {
           </div>
         </div>
       </section>
+      <h2 className=" mt-10 text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-indigo-500 to-violet-700 bg-clip-text text-transparent">
+        Our Sponsors
+      </h2>
       <div className="flex justify-center py-10 container mx-auto">
         <Image
           src="/Frame.svg"
