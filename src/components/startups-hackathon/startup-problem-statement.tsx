@@ -45,40 +45,54 @@ const problemStatements: ProblemStatement[] = [
 
 export default function StartupProblemStatement() {
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="container max-w-7xl mx-auto px-4">
-        <div className="mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Problem Statements
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl">
-            Choose from these key challenges facing Koshi Province and develop
-            innovative solutions
-          </p>
-        </div>
+    <div>
+      <section className="py-20 bg-gray-50">
+        <div className="container max-w-7xl mx-auto px-4">
+          <div className="mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Problem Statements
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl">
+              Choose from these key challenges facing Koshi Province and develop
+              innovative solutions
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {problemStatements.map((problem) => (
-            <div
-              key={problem.number}
-              className="p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300"
-            >
-              <div className="flex items-start space-x-4">
-                <div
-                  className={`${problem.bgColor} py-3 px-6 rounded-lg w-12 h-12 flex items-center justify-center`}
-                >
-                  <span className={`${problem.numberColor} text-xl font-bold`}>
-                    {problem.number}
-                  </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {problemStatements.map((problem) => (
+              <div
+                key={problem.number}
+                className="p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300"
+              >
+                <div className="flex items-start space-x-4">
+                  <div
+                    className={`${problem.bgColor} py-3 px-6 rounded-lg w-12 h-12 flex items-center justify-center`}
+                  >
+                    <span
+                      className={`${problem.numberColor} text-xl font-bold`}
+                    >
+                      {problem.number}
+                    </span>
+                  </div>
+                  <p className="text-lg font-medium text-gray-800">
+                    {problem.title}
+                  </p>
                 </div>
-                <p className="text-lg font-medium text-gray-800">
-                  {problem.title}
-                </p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+      </section>
+      <div className="flex justify-center py-10 container mx-auto">
+        <Image
+          src="/Frame.svg"
+          alt="Live Training Partner"
+          width={500}
+          height={400}
+          className="h-auto w-auto"
+          priority
+        />
       </div>
-    </section>
+    </div>
   );
 }
