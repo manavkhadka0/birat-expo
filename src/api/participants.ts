@@ -5,7 +5,17 @@ import useSWR from "swr";
 
 export type Participant = {
   id: number;
-  time_slot: number;
+  time_slot: {
+    id: number;
+    start_time: string;
+    end_time: string;
+    date: string;
+    topic: {
+      id: number;
+      name: string;
+      description: string;
+    };
+  };
   registration_type: "Single Person" | "Group" | "Expo Access";
   status: "Pending" | "Confirmed" | "Cancelled";
   first_name: string;

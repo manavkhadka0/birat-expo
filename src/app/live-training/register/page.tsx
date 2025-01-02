@@ -31,7 +31,7 @@ export default function Register() {
   }
 
   return (
-    <div className="container mx-auto max-w-7xl">
+    <div className="container mx-auto max-w-4xl">
       {sessions.length === 0 ? (
         <p className="text-center text-gray-600">
           No training sessions available at the moment.

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import { mutate } from "swr";
 import { ArrowDownFromLine, DownloadCloud, Loader, Mail } from "lucide-react";
@@ -15,13 +15,19 @@ const registrationTypes = [
   { value: "Expo Access", label: "Expo Access" },
 ];
 
-const paymentMethods = [{ value: "Nabil Bank", label: "Nabil Bank" }];
-
 const registrationStatuses = [
   { value: "Pending", label: "Pending" },
   { value: "Confirmed", label: "Confirmed" },
   { value: "Cancelled", label: "Cancelled" },
 ];
+
+type TimeSlot = {
+  id: number;
+  date: string;
+  topic: {
+    name: string;
+  };
+};
 
 type ModalProps = {
   isOpen: boolean;
@@ -46,6 +52,21 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   );
 };
 
+const TRAINING_DATES = [
+  "2025-01-22",
+  "2025-01-23",
+  "2025-01-24",
+  "2025-01-25",
+  "2025-01-26",
+  "2025-01-27",
+  "2025-01-28",
+  "2025-01-29",
+  "2025-01-30",
+  "2025-01-31",
+  "2025-02-01",
+  "2025-02-02",
+];
+
 const ParticipantsTable: React.FC = () => {
   const {
     participants,
@@ -62,6 +83,26 @@ const ParticipantsTable: React.FC = () => {
   const [pdfData, setPdfData] = useState<Participant | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [topics, setTopics] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (participants) {
+      const uniqueTimeSlots = Array.from(
+        new Set(participants.map((p) => JSON.stringify(p.time_slot)))
+      ).map((slot) => JSON.parse(slot));
+      setTimeSlots(uniqueTimeSlots);
+    }
+  }, [participants]);
+
+  useEffect(() => {
+    if (participants) {
+      const uniqueTopics = Array.from(
+        new Set(participants.map((p) => p.time_slot.topic.name))
+      ).sort();
+      setTopics(uniqueTopics);
+    }
+  }, [participants]);
 
   const handlePdfGeneration = (item: Participant) => {
     setPdfData(item);
@@ -137,6 +178,7 @@ const ParticipantsTable: React.FC = () => {
     let filteredData = participants.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
+
         if (key === "global") {
           return Object.values(item).some(
             (field) =>
@@ -145,21 +187,15 @@ const ParticipantsTable: React.FC = () => {
               field.toString().toLowerCase().includes(value.toLowerCase())
           );
         }
-        if (key === "paymentStatus") {
-          const totalAmount = parseFloat(item.total_price);
-          const advanceAmount = parseFloat(item.payment_method);
-          if (value === "fullyPaid") {
-            return totalAmount === advanceAmount;
-          } else if (value === "partiallyPaid") {
-            return advanceAmount > 0 && advanceAmount < totalAmount;
-          }
-          return true;
+
+        if (key === "topic") {
+          return item.time_slot.topic.name === value;
         }
-        if (key === "dateRange") {
-          const [start, end] = value.split(",");
-          const createdDate = new Date(item.created_at);
-          return createdDate >= new Date(start) && createdDate <= new Date(end);
+
+        if (key === "date") {
+          return item.time_slot.date === value;
         }
+
         const itemValue = item[key as keyof Participant];
         return (
           itemValue !== null &&
@@ -185,7 +221,7 @@ const ParticipantsTable: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <input
           type="text"
           placeholder="Search (Name, Email, Mobile)"
@@ -218,14 +254,23 @@ const ParticipantsTable: React.FC = () => {
         </select>
         <select
           className="w-full p-2 border rounded"
-          onChange={(e) =>
-            setFilters({ ...filters, payment_method: e.target.value })
-          }
+          onChange={(e) => setFilters({ ...filters, topic: e.target.value })}
         >
-          <option value="">All Payment Methods</option>
-          {paymentMethods.map((method) => (
-            <option key={method.value} value={method.value}>
-              {method.label}
+          <option value="">All Topics</option>
+          {topics.map((topic) => (
+            <option key={topic} value={topic}>
+              {topic}
+            </option>
+          ))}
+        </select>
+        <select
+          className="w-full p-2 border rounded"
+          onChange={(e) => setFilters({ ...filters, date: e.target.value })}
+        >
+          <option value="">All Dates</option>
+          {TRAINING_DATES.map((date) => (
+            <option key={date} value={date}>
+              {date}
             </option>
           ))}
         </select>
@@ -271,13 +316,14 @@ const ParticipantsTable: React.FC = () => {
                 >
                   {item.status}
                 </td>
-                <td className="py-4 px-6">{item.time_slot}</td>
+                <td className="py-4 px-6">
+                  {item.time_slot.topic.name} - {item.time_slot.date}
+                </td>
                 <td className="py-4 px-6">
                   Rs. {parseFloat(item.total_price).toFixed(2)}
                 </td>
                 <td className="py-4 px-6">
                   <div className="flex flex-col">
-                    <span>{item.payment_method}</span>
                     {item.payment_screenshot && (
                       <button
                         onClick={() =>
@@ -424,14 +470,10 @@ const ParticipantsTable: React.FC = () => {
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-semibold text-gray-600">
-                  Payment Screenshot
+                  Qualification
                 </span>
                 <span className="mt-1">
-                  <img
-                    src={selectedParticipant.payment_screenshot}
-                    alt="Payment Screenshot"
-                    className="w-full h-auto"
-                  />
+                  {selectedParticipant.qualification}
                 </span>
               </div>
               {selectedParticipant.group_members?.length > 0 && (
