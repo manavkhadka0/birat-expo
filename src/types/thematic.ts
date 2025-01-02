@@ -15,7 +15,6 @@ export interface ThematicRegistration {
   email: string;
   contact: string;
   sessions: number[]; // Array of session IDs the participant registered for
-  created_at?: string;
 }
 
 export interface ThematicRegistrationResponse {
@@ -27,7 +26,6 @@ export interface ThematicRegistrationResponse {
   email: string;
   contact: string;
   sessions: ThematicSession[];
-  created_at?: string;
 }
 
 export const THEMATIC_SESSIONS = [
