@@ -15,7 +15,7 @@ export const TOUR_DATES = [
 ] as const;
 
 export const guidedTourSchema = yup.object({
-  collegeName: yup.string().min(1, "College name is required"),
+  college_name: yup.string().min(1, "College name is required"),
   district: yup
     .string()
     .min(1, "District is required")
@@ -33,15 +33,15 @@ export const guidedTourSchema = yup.object({
     .string()
     .email("Invalid email format")
     .required("Email is required"),
-  contactPersonName: yup.string().min(1, "Contact person name is required"),
+  contact_person_name: yup.string().min(1, "Contact person name is required"),
   designation: yup.string().min(1, "Designation is required"),
-  mobileNo: yup.string().matches(/^\+?1?\d{9,15}$/, "Invalid mobile number"),
-  tourDate: yup.string().required("Tour date is required"),
-  numberOfStudents: yup
+  mobile_no: yup.string().matches(/^\+?1?\d{9,15}$/, "Invalid mobile number"),
+  tour_date: yup.string().required("Tour date is required"),
+  number_of_students: yup
     .number()
     .min(1, "At least 1 student required")
     .max(50, "Maximum 50 students allowed"),
-  studentLevel: yup
+  student_level: yup
     .string()
     .oneOf(
       ["10+2", "Bachelors", "Masters", "Mixed"],

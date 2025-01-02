@@ -25,24 +25,24 @@ export default function GuidedTourRegistrationForm() {
   } = useForm<GuidedTourFormData>({
     resolver: yupResolver(guidedTourSchema),
     defaultValues: {
-      collegeName: "",
+      college_name: "",
       district: "",
       municipality: "",
       ward: "",
       phone: "",
       email: "",
-      contactPersonName: "",
+      contact_person_name: "",
       designation: "",
-      mobileNo: "",
-      tourDate: preselectedDate || "",
-      numberOfStudents: undefined,
-      studentLevel: undefined,
+      mobile_no: "",
+      tour_date: preselectedDate || "",
+      number_of_students: undefined,
+      student_level: undefined,
     },
   });
 
   useEffect(() => {
     if (preselectedDate) {
-      setValue("tourDate", preselectedDate);
+      setValue("tour_date", preselectedDate);
     }
   }, [preselectedDate, setValue]);
 
@@ -69,12 +69,12 @@ export default function GuidedTourRegistrationForm() {
             </label>
             <input
               type="text"
-              {...register("collegeName")}
+              {...register("college_name")}
               className="w-full p-2 border rounded-md border-gray-800 focus:ring-blue-500 focus:border-blue-500"
             />
-            {errors.collegeName && (
+            {errors.college_name && (
               <p className="mt-1 text-sm text-red-600">
-                {errors.collegeName.message}
+                {errors.college_name.message}
               </p>
             )}
           </div>
@@ -163,12 +163,12 @@ export default function GuidedTourRegistrationForm() {
             </label>
             <input
               type="text"
-              {...register("contactPersonName")}
+              {...register("contact_person_name")}
               className="w-full p-2 border rounded-md border-gray-800 focus:ring-blue-500 focus:border-blue-500"
             />
-            {errors.contactPersonName && (
+            {errors.contact_person_name && (
               <p className="mt-1 text-sm text-red-600">
-                {errors.contactPersonName.message}
+                {errors.contact_person_name.message}
               </p>
             )}
           </div>
@@ -195,12 +195,12 @@ export default function GuidedTourRegistrationForm() {
             </label>
             <input
               type="tel"
-              {...register("mobileNo")}
+              {...register("mobile_no")}
               className="w-full p-2 border rounded-md border-gray-800 focus:ring-blue-500 focus:border-blue-500"
             />
-            {errors.mobileNo && (
+            {errors.mobile_no && (
               <p className="mt-1 text-sm text-red-600">
-                {errors.mobileNo.message}
+                {errors.mobile_no.message}
               </p>
             )}
           </div>
@@ -210,7 +210,7 @@ export default function GuidedTourRegistrationForm() {
               Tour Date
             </label>
             <select
-              {...register("tourDate")}
+              {...register("tour_date")}
               className="w-full p-2 border rounded-md border-gray-800 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Select a date</option>
@@ -220,9 +220,9 @@ export default function GuidedTourRegistrationForm() {
                 </option>
               ))}
             </select>
-            {errors.tourDate && (
+            {errors.tour_date && (
               <p className="mt-1 text-sm text-red-600">
-                {errors.tourDate.message}
+                {errors.tour_date.message}
               </p>
             )}
           </div>
@@ -233,14 +233,14 @@ export default function GuidedTourRegistrationForm() {
             </label>
             <input
               type="number"
-              {...register("numberOfStudents", { valueAsNumber: true })}
+              {...register("number_of_students", { valueAsNumber: true })}
               min={1}
               max={50}
               className="w-full p-2 border rounded-md border-gray-800 focus:ring-blue-500 focus:border-blue-500"
             />
-            {errors.numberOfStudents && (
+            {errors.number_of_students && (
               <p className="mt-1 text-sm text-red-600">
-                {errors.numberOfStudents.message}
+                {errors.number_of_students.message}
               </p>
             )}
           </div>
@@ -250,7 +250,7 @@ export default function GuidedTourRegistrationForm() {
               Student Level
             </label>
             <select
-              {...register("studentLevel")}
+              {...register("student_level")}
               className="w-full p-2 border rounded-md border-gray-800 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Select student level</option>
@@ -259,9 +259,9 @@ export default function GuidedTourRegistrationForm() {
               <option value="Masters">Masters</option>
               <option value="Mixed">Mixed</option>
             </select>
-            {errors.studentLevel && (
+            {errors.student_level && (
               <p className="mt-1 text-sm text-red-600">
-                {errors.studentLevel.message}
+                {errors.student_level.message}
               </p>
             )}
           </div>
