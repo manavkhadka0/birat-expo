@@ -1,12 +1,6 @@
-import { Topic } from "@/types/training";
 import Image from "next/image";
-import Link from "next/link";
 
-type LiveTrainingHeroProps = {
-  sessions: Topic[];
-};
-
-export default function LiveTrainingHero({ sessions }: LiveTrainingHeroProps) {
+export default function LiveTrainingHero() {
   return (
     <div className="relative min-h-screen overflow">
       {/* Light background */}
@@ -65,7 +59,7 @@ export default function LiveTrainingHero({ sessions }: LiveTrainingHeroProps) {
             </div>
 
             <a
-              href="/live-training/register"
+              href="#register"
               className="inline-flex items-center px-8 py-4 text-lg rounded-full text-white font-medium 
               bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 
               hover:from-indigo-600 hover:via-indigo-700 hover:to-violet-700 
@@ -104,40 +98,8 @@ export default function LiveTrainingHero({ sessions }: LiveTrainingHeroProps) {
               />
             </div>
           </div>
-          <div className="col-span-2">
-            <div className="flex flex-row gap-4">
-              {sessions.reverse().map((session) => (
-                <TrainingCards key={session.id} session={session} />
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </div>
   );
 }
-
-type TrainingCardsProps = {
-  session: Topic;
-};
-
-const TrainingCards = ({ session }: TrainingCardsProps) => {
-  return (
-    <Link href={`/live-training/register?topic=${session.id}`}>
-      <div className="bg-white hover:bg-gray-300 p-4 rounded-xl shadow-lg flex items-center gap-4 border border-gray-100">
-        <img
-          src={session.image}
-          alt={session.name}
-          className="w-12 h-12 object-contain"
-        />
-
-        <div>
-          <h3 className="font-semibold">{session.name}</h3>
-          <p className="text-sm text-gray-500">
-            {session.start_date} - {session.end_date}
-          </p>
-        </div>
-      </div>
-    </Link>
-  );
-};

@@ -73,6 +73,7 @@ const schema = yup.object().shape({
   age: yup
     .number()
     .min(10, "Must be at least 10 years old")
+    .max(60, "Must be less than 60 years old")
     .required("Age is required"),
   address: yup.string().required("Address is required"),
   mobile_number: yup
@@ -125,6 +126,7 @@ const schema = yup.object().shape({
           age: yup
             .number()
             .min(10, "Must be at least 10 years old")
+            .max(60, "Must be less than 60 years old")
             .required("Age is required"),
         })
       ),

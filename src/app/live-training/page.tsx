@@ -21,7 +21,7 @@ export default function LiveTrainingPage() {
   return (
     <>
       {/* Hero Section */}
-      <LiveTrainingHero sessions={sessions} />
+      <LiveTrainingHero />
 
       <Programs sessions={sessions} />
       <TrainingPartners />

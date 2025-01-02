@@ -6,12 +6,12 @@ export interface Topic {
   end_date: string;
   venue: string;
   is_active: boolean;
-  image:string;
+  image: string;
 }
 
 export interface TimeSlot {
   id: number;
-  topic: number;
+  topic: Topic;
   start_time: string;
   end_time: string;
   max_participants: number;

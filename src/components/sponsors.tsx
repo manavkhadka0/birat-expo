@@ -76,7 +76,14 @@ const Sponsors = ({
 
       if (parentG) {
         parentG.onmouseenter = (e) => {
-          updateStallColorAndCursor(clipPathId, defaultColor, "pointer", 0.5);
+          // Only change opacity on hover for clickable stalls
+          const hoverOpacity = isClickable ? 0.5 : 1;
+          updateStallColorAndCursor(
+            clipPathId,
+            defaultColor,
+            isClickable ? "pointer" : "not-allowed",
+            hoverOpacity
+          );
           if (stallInfo) {
             const rect = parentG.getBoundingClientRect();
             let content = "";
@@ -88,17 +95,22 @@ const Sponsors = ({
             setTooltip({ show: true, content, x: rect.left, y: rect.top });
           }
         };
+
         parentG.onmouseleave = () => {
           updateStallColorAndCursor(
             clipPathId,
             selectedStalls.includes(clipPathId) ? "#00ff00" : defaultColor,
-            "pointer",
+            isClickable ? "pointer" : "not-allowed",
             1
           );
           setTooltip({ show: false, content: "", x: 0, y: 0 });
         };
+
+        // Only add click handler if the stall is clickable
         if (isClickable) {
           parentG.onclick = () => onAvailableStallClick(clipPathId);
+        } else {
+          parentG.onclick = null; // Explicitly remove any click handler
         }
       }
     };

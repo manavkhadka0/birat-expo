@@ -34,12 +34,6 @@ interface TrainingRegistrationTemplateProps {
 const TrainingEmailRegistrationTemplate = ({
   data,
 }: TrainingRegistrationTemplateProps) => {
-  const registrationTypeDisplay = {
-    "Single Person": "Single Person Registration",
-    Group: "Group Registration (5 paid + 1 free)",
-    "Expo Access": "Expo Access with Training",
-  };
-
   // Format date for better display
   const registrationDate = new Date(data.created_at).toLocaleDateString(
     "en-US",
@@ -104,20 +98,6 @@ const TrainingEmailRegistrationTemplate = ({
           </h2>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
             <strong>Registration ID:</strong> #{data.id}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Status:</strong>{" "}
-            <span
-              style={{
-                padding: "2px 8px",
-                borderRadius: "4px",
-                backgroundColor:
-                  data.status === "PENDING" ? "#FEF3C7" : "#D1FAE5",
-                color: data.status === "PENDING" ? "#92400E" : "#065F46",
-              }}
-            >
-              {data.status}
-            </span>
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
             <strong>Registration Date:</strong> {registrationDate}
@@ -204,15 +184,7 @@ const TrainingEmailRegistrationTemplate = ({
 
           {data.qr_code && (
             <div style={{ marginTop: "20px", textAlign: "center" }}>
-              <h2
-                style={
-                  {
-                    /* existing styles */
-                  }
-                }
-              >
-                Your QR Code
-              </h2>
+              <h2>Your QR Code</h2>
               <img
                 src={data.qr_code}
                 alt="Registration QR Code"
@@ -261,7 +233,7 @@ const TrainingEmailRegistrationTemplate = ({
           fontSize: "14px",
         }}
       >
-        <p>&copy; 2025 BIRAT EXPO. All rights reserved.</p>
+        <p>&copy; 2025 CIM. All rights reserved.</p>
         <p>
           This is an automated confirmation email. Please do not reply directly
           to this email.

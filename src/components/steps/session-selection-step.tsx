@@ -1,10 +1,7 @@
 import { Topic, TimeSlot } from "@/types/training";
 import { format, eachDayOfInterval } from "date-fns";
-import { CalendarIcon } from "@heroicons/react/24/outline";
 import SessionCard from "../session-card";
 import { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 interface SessionSelectionStepProps {
   topics: Topic[];
@@ -65,78 +62,47 @@ export function SessionSelectionStep({
     });
   };
 
-  const getDateRange = () => {
-    if (!selectedTopic) return { minDate: null, maxDate: null };
-    return {
-      minDate: new Date(selectedTopic.start_date),
-      maxDate: new Date(selectedTopic.end_date),
-    };
-  };
-
   return (
     <section className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
-        Select Training Session
-      </h2>
-
-      {/* Topic Selection */}
-      <div className="space-y-6 mb-8">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
-          Available Topics
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {topics.map((topic) => (
-            <div
-              key={topic.id}
-              className={`p-6 rounded-lg border-2 transition-all cursor-pointer ${
-                selectedTopic?.id === topic.id
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:border-blue-300"
-              }`}
-              onClick={() => setSelectedTopic(topic)}
-            >
-              <h4 className="text-lg font-semibold mb-2">{topic.name}</h4>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <CalendarIcon className="w-4 h-4" />
-                <span>
-                  {format(new Date(topic.start_date), "MMM d")} -{" "}
-                  {format(new Date(topic.end_date), "MMM d, yyyy")}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Date and Time Selection */}
       {selectedTopic && (
         <div className="space-y-8">
           {/* Date Selection */}
           <div>
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-800 mb-4">
+              {selectedTopic.name}
+            </h3>
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Select Date
             </h3>
-            <div className="max-w-md">
-              <DatePicker
-                selected={selectedDate ? new Date(selectedDate) : null}
-                onChange={(date: Date | null) =>
-                  setValue("date", date?.toISOString() || "")
-                }
-                minDate={getDateRange().minDate || undefined}
-                maxDate={getDateRange().maxDate || undefined}
-                dateFormat="MMMM d, yyyy"
-                placeholderText="Select a date"
-                inline
-                calendarClassName="border border-gray-200 rounded-lg shadow-md"
-                wrapperClassName="w-full"
-                dayClassName={(date: Date) =>
-                  `hover:bg-blue-50 rounded-full w-8 h-8 mx-auto flex items-center justify-center ${
-                    selectedDate === date.toISOString()
-                      ? "bg-blue-500 text-white hover:bg-blue-600"
-                      : ""
-                  }`
-                }
-              />
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {getDatesBetween(
+                selectedTopic.start_date,
+                selectedTopic.end_date
+              ).map((date) => (
+                <button
+                  key={date.toISOString()}
+                  type="button"
+                  onClick={() => setValue("date", date.toISOString())}
+                  className={`p-4 rounded-lg border transition-all ${
+                    watch("date") === date.toISOString()
+                      ? "border-blue-500 bg-gradient-to-br from-blue-100 to-blue-200 shadow-md transform scale-105"
+                      : "border-gray-200 hover:border-blue-300 bg-gradient-to-br from-gray-50 to-gray-100 hover:from-blue-50 hover:to-blue-100 hover:transform hover:scale-102"
+                  }`}
+                >
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-gray-600">
+                      {format(date, "EEE")}
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {format(date, "d")}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {format(date, "MMM yyyy")}
+                    </p>
+                  </div>
+                </button>
+              ))}
             </div>
             {errors.date && (
               <p className="mt-2 text-sm text-red-600">{errors.date.message}</p>
@@ -162,6 +128,11 @@ export function SessionSelectionStep({
                     isSelected={selectedTimeSlot === slot.id}
                     onSelect={(slotId) => setValue("time_slot", slotId)}
                     disabled={slot.available_spots === 0}
+                    className={`bg-gradient-to-br ${
+                      selectedTimeSlot === slot.id
+                        ? "from-blue-100 to-blue-200 border-blue-500 shadow-md transform scale-105"
+                        : "from-gray-50 to-gray-100 hover:from-blue-50 hover:to-blue-100"
+                    }`}
                   />
                 ))
               ) : (

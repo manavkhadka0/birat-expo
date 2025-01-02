@@ -1,4 +1,4 @@
-import { Topic, TimeSlot } from "@/types/training";
+import { Participant } from "@/api/participants";
 import {
   Document,
   Page,
@@ -86,8 +86,7 @@ const styles = StyleSheet.create({
   paymentImage: {
     marginTop: 4,
     width: "100%",
-    maxHeight: 120,
-    objectFit: "contain",
+    height: 120,
   },
   footer: {
     marginTop: 15,
@@ -119,52 +118,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 2,
   },
+  qrCodeContainer: {
+    marginTop: 4,
+    alignItems: "center",
+  },
+  qrCode: {
+    width: 100,
+    height: 100,
+  },
 });
 
-export function TrainingRegistrationTemplate({
-  data,
-  selectedTopic,
-}: {
-  data: {
-    date: string;
-    time_slot: string;
-    registration_type: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    mobile_number: string;
-    qualification: string;
-    payment_method: string;
-    payment_screenshot?: File;
-    group_members?: Array<{ name: string; email: string }>;
-  };
-  selectedTopic: Topic | null;
-}) {
-  const [timeSlot, setTimeSlot] = React.useState<TimeSlot | null>(null);
-
-  React.useEffect(() => {
-    async function fetchTimeSlot() {
-      if (selectedTopic?.id && data.date && data.time_slot) {
-        try {
-          const date = format(new Date(data.date), "yyyy-MM-dd");
-          const response = await fetch(
-            `/api/timeslots/?date=${date}&topic=${selectedTopic.id}`
-          );
-          const slots: TimeSlot[] = await response.json();
-          const matchingSlot = slots.find(
-            (slot) => slot.id === Number(data.time_slot)
-          );
-          setTimeSlot(matchingSlot || null);
-        } catch (error) {
-          console.error("Error fetching time slot:", error);
-          setTimeSlot(null);
-        }
-      }
-    }
-
-    fetchTimeSlot();
-  }, [selectedTopic?.id, data.date, data.time_slot]);
-
+export function TrainingRegistrationAdminPDF({ data }: { data: Participant }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -191,11 +155,11 @@ export function TrainingRegistrationTemplate({
           <Text style={styles.sectionTitle}>Training Details</Text>
           <View style={styles.row}>
             <Text style={styles.label}>Training Name:</Text>
-            <Text style={styles.value}>{selectedTopic?.name}</Text>
+            <Text style={styles.value}>{data.time_slot}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Training Description:</Text>
-            <Text style={styles.value}>{selectedTopic?.description}</Text>
+            <Text style={styles.value}>{data.time_slot}</Text>
           </View>
         </View>
 
@@ -205,16 +169,12 @@ export function TrainingRegistrationTemplate({
           <View style={styles.row}>
             <Text style={styles.label}>Date:</Text>
             <Text style={styles.value}>
-              {format(new Date(data.date), "PPP")}
+              {format(new Date(data.time_slot), "PPP")}
             </Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Time Slot:</Text>
-            <Text style={styles.value}>
-              {timeSlot
-                ? `${timeSlot.start_time} - ${timeSlot.end_time}`
-                : "Loading..."}
-            </Text>
+            <Text style={styles.value}>{data.time_slot}</Text>
           </View>
         </View>
 
@@ -280,11 +240,19 @@ export function TrainingRegistrationTemplate({
                 Payment Screenshot:
               </Text>
               <Image
-                src={URL.createObjectURL(data.payment_screenshot)}
+                src={data.payment_screenshot}
                 style={styles.paymentImage}
               />
             </View>
           )}
+
+          {/* QR Code Section */}
+          <View style={styles.qrCodeContainer}>
+            <Text style={[styles.label, { marginBottom: 5 }]}>
+              Payment QR Code:
+            </Text>
+            <Image src={data.qr_code} style={styles.qrCode} />
+          </View>
         </View>
 
         {/* Contact Information */}

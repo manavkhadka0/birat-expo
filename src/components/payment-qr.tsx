@@ -48,13 +48,6 @@ export default function PaymentQR({ amount }: PaymentQRProps) {
               className="w-full h-full object-contain rounded-lg"
             />
           </div>
-          <div className="aspect-square relative">
-            <img
-              src="/scan2.jpeg"
-              alt="Payment QR Code"
-              className="w-full h-full object-contain rounded-lg"
-            />
-          </div>
         </div>
       </div>
     </>

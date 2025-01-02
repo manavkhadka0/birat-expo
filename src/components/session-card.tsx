@@ -6,7 +6,8 @@ interface SessionCardProps {
   slot: TimeSlot;
   isSelected: boolean;
   onSelect: (slotId: number) => void;
-  disabled?: boolean;
+  disabled: boolean;
+  className?: string;
 }
 
 export default function SessionCard({
@@ -15,17 +16,14 @@ export default function SessionCard({
   isSelected,
   onSelect,
   disabled,
+  className = "",
 }: SessionCardProps) {
   return (
     <div
+      className={`p-4 rounded-lg border transition-all ${
+        disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+      } ${className}`}
       onClick={() => !disabled && onSelect(slot.id)}
-      className={`cursor-pointer p-6 rounded-lg transition-all duration-200 ${
-        isSelected
-          ? "bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-500 shadow-blue-100"
-          : disabled
-          ? "bg-gray-50 border border-gray-200 opacity-60 cursor-not-allowed"
-          : "bg-white border border-gray-200 hover:shadow-lg hover:border-blue-200"
-      }`}
     >
       <div className="space-y-4">
         <div className="flex items-center justify-between">

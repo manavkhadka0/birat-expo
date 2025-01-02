@@ -46,21 +46,21 @@ export async function registerForTraining(formData: FormData) {
     }
 
     // After successful registration, send confirmation email
-    try {
-      const emailResponse = await fetch("/api/training-registration", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+    // try {
+    //   const emailResponse = await fetch("/api/training-registration", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(data),
+    //   });
 
-      if (!emailResponse.ok) {
-        console.error("Failed to send confirmation email");
-      }
-    } catch (emailError) {
-      console.error("Error sending confirmation email:", emailError);
-    }
+    //   if (!emailResponse.ok) {
+    //     console.error("Failed to send confirmation email");
+    //   }
+    // } catch (emailError) {
+    //   console.error("Error sending confirmation email:", emailError);
+    // }
 
     return data;
   } catch (error) {
