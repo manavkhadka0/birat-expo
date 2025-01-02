@@ -11,7 +11,8 @@ export async function POST(request: Request) {
     const { data, error } = await resend.emails.send({
       from: "Birat Expo 2025 Guided Tour <info@baliyoventures.com>",
       to: [body.email, "biratexpo2024@gmail.com"],
-      subject: `Guided Tour Registration Confirmation - ${body.collegeName}`,
+     subject: `Guided Tour Registration Confirmation - ${body.college_name}`,
+
       react: GuidedTourEmailTemplate({ data: body }),
     });
 

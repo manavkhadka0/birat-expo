@@ -42,11 +42,11 @@ export default function GuidedTourEmailTemplate({
         </h1>
 
         <p style={{ color: "#4b5563", lineHeight: "1.6" }}>
-          Dear {data.contactPersonName},
+          Dear {data.contact_person_name},
         </p>
 
         <p style={{ color: "#4b5563", lineHeight: "1.6" }}>
-          Thank you for registering {data.collegeName} for the Guided Exposure
+          Thank you for registering {data.college_name} for the Guided Exposure
           Tour at BIRAT EXPO 2025. Your participation has been confirmed.
         </p>
 
@@ -73,7 +73,7 @@ export default function GuidedTourEmailTemplate({
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
             <strong>Tour Date:</strong>{" "}
-            {new Date(data.tourDate).toLocaleDateString("en-US", {
+            {new Date(data.tour_date).toLocaleDateString("en-US", {
               weekday: "long",
               year: "numeric",
               month: "long",
@@ -92,7 +92,7 @@ export default function GuidedTourEmailTemplate({
             College Details
           </h2>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>College Name:</strong> {data.collegeName}
+            <strong>College Name:</strong> {data.college_name}
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
             <strong>Address:</strong> Ward {data.ward}, {data.municipality},{" "}
@@ -122,15 +122,15 @@ export default function GuidedTourEmailTemplate({
             Contact Person Details
           </h2>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Name:</strong> {data.contactPersonName}
+            <strong>Name:</strong> {data.contact_person_name}
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
             <strong>Designation:</strong> {data.designation}
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
             <strong>Mobile:</strong>{" "}
-            <a href={`tel:${data.mobileNo}`} style={{ color: "#4b5563" }}>
-              {data.mobileNo}
+            <a href={`tel:${data.mobile_no}`} style={{ color: "#4b5563" }}>
+              {data.mobile_no}
             </a>
           </p>
 
@@ -145,10 +145,10 @@ export default function GuidedTourEmailTemplate({
             Student Information
           </h2>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Number of Students:</strong> {data.numberOfStudents}
+            <strong>Number of Students:</strong> {data.number_of_students}
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Student Level:</strong> {data.studentLevel}
+            <strong>Student Level:</strong> {data.student_level}
           </p>
         </div>
 

@@ -128,10 +128,10 @@ export default function Home() {
       {/* <SponsorshipSection /> */}
       <div className="py-10">
         {/* <img src="/12.jpg" alt="Birat Expo 2025" className="mx-w-100 my-20" /> */}
-        <img src="/13.png" alt="Birat Expo 2025" className="mx-w-100 my-20" />
-        <img src="/14.png" alt="Birat Expo 2025" className="mx-w-100 my-20" />
-        <img src="/15.png" alt="Birat Expo 2025" className="mx-w-100 my-20" />
-        <img src="/16.png" alt="Birat Expo 2025" className="mx-w-100 my-20" />
+        <Image src="/13.png" alt="Birat Expo 2025" width={500} height={300} />
+        <Image src="/14.png" alt="Birat Expo 2025" width={500} height={300} />
+        <Image src="/15.png" alt="Birat Expo 2025" width={500} height={300} />
+        <Image src="/16.png" alt="Birat Expo 2025" width={500} height={300} />
       </div>
       <div className="py-10"></div>
       <AttractionsSection />
