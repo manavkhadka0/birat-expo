@@ -132,7 +132,7 @@ const ThematicEmailRegistrationTemplate = ({
                 {session.title}
               </p>
               <p style={{ color: "#6b7280", fontSize: "14px" }}>
-                Date: {session.date} | Time: {session.time}
+                Date: {session.date}
               </p>
               <p style={{ color: "#6b7280", fontSize: "14px" }}>
                 {session.description}

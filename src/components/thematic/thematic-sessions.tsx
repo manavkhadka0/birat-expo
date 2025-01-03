@@ -1,10 +1,17 @@
+"use client";
+
 import { useGetThematicSessions } from "@/api/thematic";
-import { THEMATIC_SESSIONS, ThematicSession } from "@/types/thematic";
+import { ThematicSession } from "@/types/thematic";
 import { CalendarDays, Clock } from "lucide-react";
+import DOMPurify from "isomorphic-dompurify";
 
 export default function ThematicSessions() {
   const { thematicSessions, thematicSessionsLoading } =
     useGetThematicSessions();
+
+  const createMarkup = (html: string) => {
+    return { __html: DOMPurify.sanitize(html) };
+  };
 
   return (
     <div className="bg-gray-50 py-24 sm:py-32">
@@ -38,9 +45,10 @@ export default function ThematicSessions() {
                     {session.start_time} - {session.end_time}
                   </span>
                 </div>
-                <p className="mt-4 text-gray-600 text-lg">
-                  {session.description}
-                </p>
+                <div
+                  className="mt-4 text-gray-600 text-lg"
+                  dangerouslySetInnerHTML={createMarkup(session.description)}
+                />
               </div>
             </div>
           ))}
