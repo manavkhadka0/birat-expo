@@ -28,16 +28,6 @@ const schema = yup.object().shape({
     .string()
     .oneOf(["Speaker", "Participant"])
     .required("Participant type is required"),
-  food: yup
-    .string()
-    .oneOf(["Veg", "Non Veg"])
-    .required("Food preference is required"),
-  hotel_accomodation: yup.string().when("participant", {
-    is: "Speaker",
-    then: (schema) =>
-      schema.oneOf(["Self", "CIM"]).required("Hotel accommodation is required"),
-    otherwise: (schema) => schema.nullable(),
-  }),
 });
 
 export default function ThematicRegistrationForm() {
@@ -63,12 +53,20 @@ export default function ThematicRegistrationForm() {
       travel_arrive_date: new Date().toISOString(),
       travel_back_date: new Date().toISOString(),
       participant: "Participant",
-      food: "Veg",
-      hotel_accomodation: undefined,
     },
   });
 
   const selectedSessions = watch("sessions") || [];
+  const [expandedSessions, setExpandedSessions] = useState<string[]>([]);
+
+  const toggleDescription = (sessionId: number, event: React.MouseEvent) => {
+    event.stopPropagation();
+    setExpandedSessions((prev) =>
+      prev.includes(sessionId.toString())
+        ? prev.filter((id) => id !== sessionId.toString())
+        : [...prev, sessionId.toString()]
+    );
+  };
 
   useEffect(() => {
     const loadSessions = async () => {
@@ -93,8 +91,6 @@ export default function ThematicRegistrationForm() {
     travel_arrive_date: string;
     travel_back_date: string;
     participant: string;
-    food: string;
-    hotel_accomodation?: string;
   }) => {
     setLoading(true);
 
@@ -242,46 +238,6 @@ export default function ThematicRegistrationForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Food Preference
-              </label>
-              <select
-                {...register("food")}
-                className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="">Select food preference</option>
-                <option value="Veg">Veg</option>
-                <option value="Non Veg">Non Veg</option>
-              </select>
-              {errors.food && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.food.message}
-                </p>
-              )}
-            </div>
-
-            {watch("participant") === "Speaker" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Hotel Accommodation
-                </label>
-                <select
-                  {...register("hotel_accomodation")}
-                  className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
-                >
-                  <option value="">Select accommodation</option>
-                  <option value="Self">Self</option>
-                  <option value="CIM">CIM</option>
-                </select>
-                {errors.hotel_accomodation && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.hotel_accomodation.message}
-                  </p>
-                )}
-              </div>
-            )}
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Travel Arrival Date
               </label>
               <input
@@ -351,11 +307,53 @@ export default function ThematicRegistrationForm() {
                     onChange={() => {}}
                     className="mt-1"
                   />
-                  <div>
-                    <h3 className="font-medium">{session.title}</h3>
-                    <p className="text-sm text-gray-500">
-                      {session.date} | {session.start_time} - {session.end_time}
-                    </p>
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-medium">{session.title}</h3>
+                        <p className="text-sm">
+                          <span className="text-blue-600 font-medium">
+                            {session.date}
+                          </span>
+                          <span className="text-gray-500">
+                            {" "}
+                            | {session.start_time} - {session.end_time}
+                          </span>
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => toggleDescription(session.id, e)}
+                        className="ml-2 p-1 text-gray-500 hover:text-gray-700 focus:outline-none"
+                      >
+                        <svg
+                          className={`w-5 h-5 transform transition-transform ${
+                            expandedSessions.includes(session.id.toString())
+                              ? "rotate-180"
+                              : ""
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+
+                    {expandedSessions.includes(session.id.toString()) && (
+                      <div
+                        className="mt-2 text-sm text-gray-600"
+                        dangerouslySetInnerHTML={{
+                          __html: session.description,
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
               </div>

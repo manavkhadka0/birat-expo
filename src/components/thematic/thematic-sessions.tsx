@@ -2,15 +2,23 @@
 
 import { useGetThematicSessions } from "@/api/thematic";
 import { ThematicSession } from "@/types/thematic";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, X } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
+import { useState } from "react";
 
 export default function ThematicSessions() {
   const { thematicSessions, thematicSessionsLoading } =
     useGetThematicSessions();
+  const [selectedSession, setSelectedSession] =
+    useState<ThematicSession | null>(null);
 
   const createMarkup = (html: string) => {
     return { __html: DOMPurify.sanitize(html) };
+  };
+
+  const truncateDescription = (description: string) => {
+    const stripped = description.replace(/<[^>]*>/g, "");
+    return stripped.length > 150 ? stripped.slice(0, 150) + "..." : stripped;
   };
 
   return (
@@ -29,15 +37,18 @@ export default function ThematicSessions() {
           {thematicSessions.map((session) => (
             <div
               key={session.id}
-              className="flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+              className="flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+              onClick={() => setSelectedSession(session)}
             >
               <div className="p-8">
                 <h3 className="text-2xl font-semibold text-gray-900">
                   {session.title}
                 </h3>
-                <div className="mt-4 flex items-center text-gray-600">
-                  <CalendarDays className="h-5 w-5 mr-2" />
-                  <span>{session.date}</span>
+                <div className="mt-4 flex items-center">
+                  <CalendarDays className="h-5 w-5 mr-2 text-blue-600" />
+                  <span className="font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                    {session.date}
+                  </span>
                 </div>
                 <div className="mt-2 flex items-center text-gray-600">
                   <Clock className="h-5 w-5 mr-2" />
@@ -45,14 +56,53 @@ export default function ThematicSessions() {
                     {session.start_time} - {session.end_time}
                   </span>
                 </div>
-                <div
-                  className="mt-4 text-gray-600 text-lg"
-                  dangerouslySetInnerHTML={createMarkup(session.description)}
-                />
+                <div className="mt-4 text-gray-600 text-lg">
+                  {truncateDescription(session.description)}
+                </div>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Modal */}
+        {selectedSession && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-start">
+                  <h3 className="text-2xl font-semibold text-gray-900">
+                    {selectedSession.title}
+                  </h3>
+                  <button
+                    onClick={() => setSelectedSession(null)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+                <div className="mt-4 flex items-center">
+                  <CalendarDays className="h-5 w-5 mr-2 text-blue-600" />
+                  <span className="font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                    {selectedSession.date}
+                  </span>
+                </div>
+                <div className="mt-2 flex items-center text-gray-600">
+                  <Clock className="h-5 w-5 mr-2" />
+                  <span>
+                    {selectedSession.start_time} - {selectedSession.end_time}
+                  </span>
+                </div>
+                <div
+                  className="mt-4 text-gray-600 text-lg prose max-w-none"
+                  dangerouslySetInnerHTML={createMarkup(
+                    selectedSession.description
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="mt-16 text-center">
           <div className="space-y-4">
             <p className="text-gray-600">
