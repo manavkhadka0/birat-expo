@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { THEMATIC_SESSIONS } from "@/types/thematic";
 import { registerForThematic } from "@/api/thematic";
 import { useRouter } from "next/navigation";
+import { formatDate } from "date-fns";
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   organization: yup.string().required("Organization is required"),
@@ -21,6 +22,12 @@ const schema = yup.object().shape({
     .array()
     .min(1, "Please select at least one session")
     .required("Please select at least one session"),
+  travel_arrive_date: yup.string().required("Arrival date is required"),
+  travel_back_date: yup.string().required("Departure date is required"),
+  participant: yup
+    .string()
+    .oneOf(["Speaker", "Participant"])
+    .required("Participant type is required"),
 });
 
 export default function ThematicRegistrationForm() {
@@ -42,6 +49,9 @@ export default function ThematicRegistrationForm() {
       email: "",
       contact: "",
       sessions: [],
+      travel_arrive_date: new Date().toISOString(),
+      travel_back_date: new Date().toISOString(),
+      participant: "Participant",
     },
   });
 
@@ -55,23 +65,27 @@ export default function ThematicRegistrationForm() {
     email: string;
     contact: string;
     sessions: string[];
+    travel_arrive_date: string;
+    travel_back_date: string;
+    participant: string;
   }) => {
     setLoading(true);
 
     const payload = {
       ...data,
-      sessions: THEMATIC_SESSIONS.filter((session) =>
-        selectedSessions.includes(session.id)
-      ),
+      sessions: data.sessions.map((sessionId) => parseInt(sessionId, 10)),
+      travel_arrive_date: formatDate(data.travel_arrive_date, "yyyy-MM-dd"),
+      travel_back_date: formatDate(data.travel_back_date, "yyyy-MM-dd"),
     };
 
     try {
-      await registerForThematic(payload);
+      await registerForThematic(payload).then(() => {
+        router.push("/thank-you");
+      });
     } catch (error) {
       console.error("Registration failed:", error);
     } finally {
       setLoading(false);
-      router.push("/thank-you");
     }
   };
 
@@ -124,6 +138,11 @@ export default function ThematicRegistrationForm() {
                 {...register("designation")}
                 className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
               />
+              {errors.designation && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.designation.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -135,6 +154,11 @@ export default function ThematicRegistrationForm() {
                 {...register("address")}
                 className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
               />
+              {errors.address && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.address.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -146,6 +170,11 @@ export default function ThematicRegistrationForm() {
                 {...register("email")}
                 className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
               />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -157,6 +186,69 @@ export default function ThematicRegistrationForm() {
                 {...register("contact")}
                 className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
               />
+              {errors.contact && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.contact.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Participant
+              </label>
+              <select
+                {...register("participant")}
+                defaultValue="Participant"
+                className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="Speaker">Speaker</option>
+                <option value="Participant">Participant</option>
+              </select>
+
+              {errors.participant && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.participant.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Travel Arrival Date
+              </label>
+              <input
+                type="date"
+                {...register("travel_arrive_date")}
+                min={new Date().toISOString()}
+                className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+              />
+
+              {errors.travel_arrive_date && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.travel_arrive_date.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Travel Departure Date
+              </label>
+              <input
+                type="date"
+                {...register("travel_back_date")}
+                min={new Date(
+                  watch("travel_arrive_date") || new Date()
+                ).toISOString()}
+                className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+              />
+
+              {errors.travel_back_date && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.travel_back_date.message}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -195,7 +287,7 @@ export default function ThematicRegistrationForm() {
                   <div>
                     <h3 className="font-medium">{session.title}</h3>
                     <p className="text-sm text-gray-500">
-                      {session.date} | {session.time}
+                      {session.date} | {session.start_time} - {session.end_time}
                     </p>
                   </div>
                 </div>

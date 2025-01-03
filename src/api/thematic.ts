@@ -1,4 +1,7 @@
-import { ThematicRegistrationResponse } from "@/types/thematic";
+import { fetcher } from "@/lib/axios";
+import { ThematicRegistration, ThematicSession } from "@/types/thematic";
+import { useMemo } from "react";
+import useSWR from "swr";
 
 interface RegistrationError {
   error?: string;
@@ -6,7 +9,7 @@ interface RegistrationError {
 }
 
 export async function registerForThematic(
-  formData: ThematicRegistrationResponse
+  formData: ThematicRegistration
 ): Promise<any> {
   const FETCH_TIMEOUT = 10000; // 10 seconds timeout
 
@@ -90,4 +93,26 @@ export async function registerForThematic(
     }
     throw new Error("An unexpected error occurred. Please try again.");
   }
+}
+
+export function useGetThematicSessions() {
+  const URL = "https://yachu.baliyoventures.com/api/thematic-sessions/";
+
+  const { data, error, isLoading, isValidating } = useSWR<ThematicSession[]>(
+    URL,
+    fetcher
+  );
+
+  const memoizedValue = useMemo(
+    () => ({
+      thematicSessions: data || [],
+      thematicSessionsLoading: isLoading,
+      thematicSessionsError: error,
+      thematicSessionsValidating: isValidating,
+      thematicSessionsEmpty: !isLoading && !data?.length,
+    }),
+    [data, isLoading, isValidating, error]
+  );
+
+  return memoizedValue;
 }

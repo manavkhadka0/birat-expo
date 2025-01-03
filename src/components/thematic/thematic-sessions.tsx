@@ -1,7 +1,11 @@
+import { useGetThematicSessions } from "@/api/thematic";
 import { THEMATIC_SESSIONS, ThematicSession } from "@/types/thematic";
 import { CalendarDays, Clock } from "lucide-react";
 
 export default function ThematicSessions() {
+  const { thematicSessions, thematicSessionsLoading } =
+    useGetThematicSessions();
+
   return (
     <div className="bg-gray-50 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -15,7 +19,7 @@ export default function ThematicSessions() {
           </p>
         </div>
         <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-          {THEMATIC_SESSIONS.map((session) => (
+          {thematicSessions.map((session) => (
             <div
               key={session.id}
               className="flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -30,7 +34,9 @@ export default function ThematicSessions() {
                 </div>
                 <div className="mt-2 flex items-center text-gray-600">
                   <Clock className="h-5 w-5 mr-2" />
-                  <span>{session.time}</span>
+                  <span>
+                    {session.start_time} - {session.end_time}
+                  </span>
                 </div>
                 <p className="mt-4 text-gray-600 text-lg">
                   {session.description}
