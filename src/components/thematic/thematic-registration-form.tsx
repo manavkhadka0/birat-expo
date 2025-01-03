@@ -28,6 +28,18 @@ const schema = yup.object().shape({
     .string()
     .oneOf(["Speaker", "Participant"])
     .required("Participant type is required"),
+  food: yup
+    .string()
+    .oneOf(["Veg", "Non Veg"])
+    .required("Food preference is required"),
+  hotel_accomodation: yup
+    .string()
+    .oneOf(["Self", "CIM"])
+    .when("participant", {
+      is: "Speaker",
+      then: (schema) => schema.required("Hotel accommodation is required"),
+      otherwise: (schema) => schema.optional(),
+    }),
 });
 
 export default function ThematicRegistrationForm() {
@@ -53,6 +65,8 @@ export default function ThematicRegistrationForm() {
       travel_arrive_date: new Date().toISOString(),
       travel_back_date: new Date().toISOString(),
       participant: "Participant",
+      food: "Veg",
+      hotel_accomodation: "Self",
     },
   });
 
@@ -91,6 +105,8 @@ export default function ThematicRegistrationForm() {
     travel_arrive_date: string;
     travel_back_date: string;
     participant: string;
+    food: string;
+    hotel_accomodation?: string;
   }) => {
     setLoading(true);
 
@@ -235,6 +251,44 @@ export default function ThematicRegistrationForm() {
                 </p>
               )}
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Food Preference
+              </label>
+              <select
+                {...register("food")}
+                className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="Veg">Veg</option>
+                <option value="Non Veg">Non Veg</option>
+              </select>
+              {errors.food && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.food.message}
+                </p>
+              )}
+            </div>
+
+            {watch("participant") === "Speaker" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Hotel Accommodation
+                </label>
+                <select
+                  {...register("hotel_accomodation")}
+                  className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="Self">Self</option>
+                  <option value="CIM">CIM</option>
+                </select>
+                {errors.hotel_accomodation && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.hotel_accomodation.message}
+                  </p>
+                )}
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
