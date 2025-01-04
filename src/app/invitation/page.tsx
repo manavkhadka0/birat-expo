@@ -33,23 +33,22 @@ export default function InvitationPage() {
       setIsSubmitting(true);
       setError(null);
 
-      // First check available sessions
-      //   const sessionsResponse = await fetch(
-      //     "https://yachu.baliyoventures.com/api/rsvp/",
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify(data),
-      //     }
-      //   );
+      const sessionsResponse = await fetch(
+        "https://yachu.baliyoventures.com/api/rsvp/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
-      //   const sessionsResult = await sessionsResponse.json();
+      const sessionsResult = await sessionsResponse.json();
 
-      //   if (!sessionsResponse.ok) {
-      //     throw new Error("Something went wrong. Please try again later.");
-      //   }
+      if (!sessionsResponse.ok) {
+        throw new Error("Something went wrong. Please try again later.");
+      }
 
       // If sessions check passes, submit the RSVP
       const response = await fetch("/api/rsvp", {
