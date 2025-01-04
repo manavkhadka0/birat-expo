@@ -8,6 +8,8 @@ import { fetchThematicSessions, type ThematicSession } from "@/types/thematic";
 import { registerForThematic } from "@/api/thematic";
 import { useRouter } from "next/navigation";
 import { formatDate } from "date-fns";
+import { SessionModal } from "./components/session-modal";
+
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   organization: yup.string().required("Organization is required"),
@@ -71,16 +73,8 @@ export default function ThematicRegistrationForm() {
   });
 
   const selectedSessions = watch("sessions") || [];
-  const [expandedSessions, setExpandedSessions] = useState<string[]>([]);
-
-  const toggleDescription = (sessionId: number, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setExpandedSessions((prev) =>
-      prev.includes(sessionId.toString())
-        ? prev.filter((id) => id !== sessionId.toString())
-        : [...prev, sessionId.toString()]
-    );
-  };
+  const [selectedSession, setSelectedSession] =
+    useState<ThematicSession | null>(null);
 
   useEffect(() => {
     const loadSessions = async () => {
@@ -126,6 +120,14 @@ export default function ThematicRegistrationForm() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const openSessionDetailsPopup = (session: ThematicSession) => {
+    setSelectedSession(session);
+  };
+
+  const closeSessionDetailsPopup = () => {
+    setSelectedSession(null);
   };
 
   return (
@@ -338,7 +340,7 @@ export default function ThematicRegistrationForm() {
               (Multiple sessions can be selected)
             </span>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             {sessions.map((session) => (
               <div
                 key={session.id}
@@ -354,15 +356,15 @@ export default function ThematicRegistrationForm() {
                   setValue("sessions", newSessions, { shouldValidate: true });
                 }}
               >
-                <div className="flex items-start space-x-3">
+                <div className="flex items-center space-x-3">
                   <input
                     type="checkbox"
                     checked={selectedSessions.includes(session.id)}
                     onChange={() => {}}
-                    className="mt-1"
+                    className="w-6 h-6 text-blue-600 form-checkbox rounded-md"
                   />
                   <div className="flex-1">
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-center justify-between">
                       <div>
                         <h3 className="font-medium">{session.title}</h3>
                         <p className="text-sm">
@@ -377,37 +379,16 @@ export default function ThematicRegistrationForm() {
                       </div>
                       <button
                         type="button"
-                        onClick={(e) => toggleDescription(session.id, e)}
-                        className="ml-2 p-1 text-gray-500 hover:text-gray-700 focus:outline-none"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Open popup with session details
+                          openSessionDetailsPopup(session);
+                        }}
+                        className="ml-2 text-blue-600 hover:text-blue-800 focus:outline-none"
                       >
-                        <svg
-                          className={`w-5 h-5 transform transition-transform ${
-                            expandedSessions.includes(session.id.toString())
-                              ? "rotate-180"
-                              : ""
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
+                        View Details
                       </button>
                     </div>
-
-                    {expandedSessions.includes(session.id.toString()) && (
-                      <div
-                        className="mt-2 text-sm text-gray-600"
-                        dangerouslySetInnerHTML={{
-                          __html: session.description,
-                        }}
-                      />
-                    )}
                   </div>
                 </div>
               </div>
@@ -428,6 +409,13 @@ export default function ThematicRegistrationForm() {
           {loading ? "Submitting..." : "Register"}
         </button>
       </form>
+
+      {selectedSession && (
+        <SessionModal
+          session={selectedSession}
+          onClose={closeSessionDetailsPopup}
+        />
+      )}
     </div>
   );
 }
