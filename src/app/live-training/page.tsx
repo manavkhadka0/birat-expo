@@ -36,7 +36,7 @@ export default function LiveTrainingPage() {
 
         <div className="flex justify-center">
           <Image
-            src="/Training.svg" // Replace with your image path
+            src="/LiveTraining.svg" // Replace with your image path
             alt="Live Training Partner"
             width={500}
             height={400}

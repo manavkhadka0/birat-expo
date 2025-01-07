@@ -7,7 +7,7 @@ export default function LiveTrainingHero() {
       <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100" />
 
       {/* Oval gradient - repositioned to match design */}
-      <div className="absolute right-0 bottom-10 w-[100%] h-[450%]">
+      <div className="absolute right-0 bottom-10 w-[100%] h-[500%]">
         <Image
           src="/Oval.png"
           alt="Oval gradient"
@@ -96,16 +96,15 @@ export default function LiveTrainingHero() {
                 className="w-full h-auto"
                 priority
               />
-              {/* Small logo underneath */}
-              <div className=" flex justify-center h-[200px]">
+              <div className="flex justify-center h-[200px]">
                 {" "}
-                {/* Adjust the height here */}
+                {/* Remove margins and padding */}
                 <Image
-                  src="/Training.svg"
+                  src="/LiveTraining.svg"
                   alt="Large Logo"
-                  width={200} // Increased width
-                  height={150} // Increased height
-                  className="h-auto w-auto" // Maintains aspect ratio
+                  width={200}
+                  height={150}
+                  className="h-auto w-auto"
                   priority
                 />
               </div>
