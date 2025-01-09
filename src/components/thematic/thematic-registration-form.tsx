@@ -133,6 +133,47 @@ export default function ThematicRegistrationForm() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-8">
+        {/* Participant Selection Section */}
+        <div className="bg-white rounded-lg shadow p-6 space-y-6">
+          <h2 className="text-xl font-semibold mb-4">
+            Participant Information
+          </h2>
+          <div className="flex space-x-4">
+            <div
+              onClick={() => setValue("participant", "Participant")}
+              className={`flex-1 p-4 border rounded-lg cursor-pointer transition-all ${
+                watch("participant") === "Participant"
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-300"
+              }`}
+            >
+              <h3 className="text-lg font-semibold">Participant</h3>
+              <p className="text-sm text-gray-600">
+                Select this if you are a participant.
+              </p>
+            </div>
+            <div
+              onClick={() => setValue("participant", "Speaker")}
+              className={`flex-1 p-4 border rounded-lg cursor-pointer transition-all ${
+                watch("participant") === "Speaker"
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-300"
+              }`}
+            >
+              <h3 className="text-lg font-semibold">Speaker</h3>
+              <p className="text-sm text-gray-600">
+                Select this if you are a speaker.
+              </p>
+            </div>
+          </div>
+
+          {errors.participant && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.participant.message}
+            </p>
+          )}
+        </div>
+
         {/* Personal Information Section */}
         <div className="bg-white rounded-lg shadow p-6 space-y-6">
           <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
@@ -144,7 +185,7 @@ export default function ThematicRegistrationForm() {
               <input
                 type="text"
                 {...register("name")}
-                className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
               />
               {errors.name && (
                 <p className="mt-1 text-sm text-red-600">
@@ -234,43 +275,25 @@ export default function ThematicRegistrationForm() {
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Participant
-              </label>
-              <select
-                {...register("participant")}
-                defaultValue="Participant"
-                className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="Speaker">Speaker</option>
-                <option value="Participant">Participant</option>
-              </select>
-
-              {errors.participant && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.participant.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Food Preference
-              </label>
-              <select
-                {...register("food")}
-                className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="Veg">Veg</option>
-                <option value="Non Veg">Non Veg</option>
-              </select>
-              {errors.food && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.food.message}
-                </p>
-              )}
-            </div>
+            {watch("participant") === "Speaker" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Food Preference
+                </label>
+                <select
+                  {...register("food")}
+                  className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="Veg">Veg</option>
+                  <option value="Non Veg">Non Veg</option>
+                </select>
+                {errors.food && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.food.message}
+                  </p>
+                )}
+              </div>
+            )}
 
             {watch("participant") === "Speaker" && (
               <div>
@@ -291,44 +314,47 @@ export default function ThematicRegistrationForm() {
                 )}
               </div>
             )}
+            {watch("participant") === "Speaker" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Travel Arrival Date
+                </label>
+                <input
+                  type="date"
+                  {...register("travel_arrive_date")}
+                  min={new Date().toISOString()}
+                  className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Travel Arrival Date
-              </label>
-              <input
-                type="date"
-                {...register("travel_arrive_date")}
-                min={new Date().toISOString()}
-                className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
-              />
+                {errors.travel_arrive_date && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.travel_arrive_date.message}
+                  </p>
+                )}
+              </div>
+            )}
 
-              {errors.travel_arrive_date && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.travel_arrive_date.message}
-                </p>
-              )}
-            </div>
+            {watch("participant") === "Speaker" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Travel Departure Date
+                </label>
+                <input
+                  type="date"
+                  {...register("travel_back_date")}
+                  min={new Date(
+                    watch("travel_arrive_date") || new Date()
+                  ).toISOString()}
+                  className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Travel Departure Date
-              </label>
-              <input
-                type="date"
-                {...register("travel_back_date")}
-                min={new Date(
-                  watch("travel_arrive_date") || new Date()
-                ).toISOString()}
-                className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
-              />
-
-              {errors.travel_back_date && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.travel_back_date.message}
-                </p>
-              )}
-            </div>
+                {errors.travel_back_date && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.travel_back_date.message}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
