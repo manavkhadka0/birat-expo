@@ -98,11 +98,11 @@ export default function ThematicHero() {
             {/* Logo */}
             <div className="relative z-10">
               <Image
-                src="/logo-2025.png"
+                src="/mascot.png"
                 alt="Birat Digital Expo 2025"
-                width={600}
-                height={300}
-                className="w-full h-auto"
+                width={1000}
+                height={500}
+                className="w-200 h-200"
                 priority
               />
             </div>

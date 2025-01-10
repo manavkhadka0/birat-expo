@@ -102,11 +102,11 @@ export default function GuidedTourHero() {
             {/* Logo */}
             <div className="relative z-10">
               <Image
-                src="/logo-2025.png"
+                src="/mascot.png"
                 alt="Birat Digital Expo 2025"
-                width={600}
-                height={300}
-                className="w-full h-auto"
+                width={800}
+                height={400}
+                className="w-120 h-120"
                 priority
               />
             </div>

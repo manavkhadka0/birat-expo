@@ -87,7 +87,7 @@ export default function StartupsHackathonHero() {
             {/* Main logo */}
             <div className="relative z-10">
               <Image
-                src="/logo-2025.png"
+                src="/mascot.png"
                 alt="Birat Digital Expo 2025"
                 width={600}
                 height={300}
@@ -97,7 +97,7 @@ export default function StartupsHackathonHero() {
               {/* Small logo underneath */}
               <div className="flex justify-center mt-4">
                 <Image
-                  src="/Frame.svg"
+                  src="/logosupdated.svg"
                   alt="Small Logo"
                   width={200}
                   height={150}

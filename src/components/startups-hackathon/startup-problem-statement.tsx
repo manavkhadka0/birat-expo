@@ -88,7 +88,7 @@ export default function StartupProblemStatement() {
       </h2>
       <div className="flex justify-center py-10 container mx-auto">
         <Image
-          src="/Frame.svg"
+          src="/logosupdated.svg"
           alt="Live Training Partner"
           width={500}
           height={400}

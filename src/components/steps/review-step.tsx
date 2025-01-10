@@ -46,7 +46,7 @@ export function ReviewStep({
           </div>
         </div>
         <Image
-          src="/logo-2025.png"
+          src="/mascot.png"
           alt="Skill India Logo"
           width={120}
           height={60}

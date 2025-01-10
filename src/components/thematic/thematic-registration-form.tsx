@@ -9,6 +9,7 @@ import { registerForThematic } from "@/api/thematic";
 import { useRouter } from "next/navigation";
 import { formatDate } from "date-fns";
 import { SessionModal } from "./components/session-modal";
+import { ThematicRegistration } from "@/types/thematic";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -25,7 +26,7 @@ const schema = yup.object().shape({
     .min(1, "Please select at least one session")
     .required("Please select at least one session"),
   travel_arrive_date: yup.string().required("Arrival date is required"),
-  travel_back_date: yup.string().required("Departure date is required"),
+  travel_departure_date: yup.string().required("Departure date is required"),
   participant: yup
     .string()
     .oneOf(["Speaker", "Participant"])
@@ -42,6 +43,36 @@ const schema = yup.object().shape({
       then: (schema) => schema.required("Hotel accommodation is required"),
       otherwise: (schema) => schema.optional(),
     }),
+  airline: yup.string().when("participant", {
+    is: "Speaker",
+    then: (schema) => schema.required("Airline is required"),
+    otherwise: (schema) => schema.optional(),
+  }),
+  flight_no: yup.string().when("participant", {
+    is: "Speaker",
+    then: (schema) => schema.required("Flight number is required"),
+    otherwise: (schema) => schema.optional(),
+  }),
+  flight_time: yup.string().when("participant", {
+    is: "Speaker",
+    then: (schema) => schema.required("Flight time is required"),
+    otherwise: (schema) => schema.optional(),
+  }),
+  check_in_date: yup.string().when("participant", {
+    is: "Speaker",
+    then: (schema) =>
+      schema
+        .required("Check-in date is required")
+        .typeError(
+          "Date has wrong format. Use one of these formats instead: YYYY-MM-DD."
+        ),
+    otherwise: (schema) => schema.optional(),
+  }),
+  hotel: yup.string().when("participant", {
+    is: "Speaker",
+    then: (schema) => schema.required("Hotel is required"),
+    otherwise: (schema) => schema.optional(),
+  }),
 });
 
 export default function ThematicRegistrationForm() {
@@ -65,10 +96,12 @@ export default function ThematicRegistrationForm() {
       contact: "",
       sessions: [],
       travel_arrive_date: new Date().toISOString(),
-      travel_back_date: new Date().toISOString(),
+      travel_departure_date: new Date().toISOString(),
       participant: "Participant",
       food: "Veg",
       hotel_accomodation: "Self",
+      airline: "",
+      check_in_date: new Date().toISOString(),
     },
   });
 
@@ -97,23 +130,44 @@ export default function ThematicRegistrationForm() {
     contact: string;
     sessions: string[];
     travel_arrive_date: string;
-    travel_back_date: string;
+    travel_departure_date: string;
     participant: string;
     food: string;
     hotel_accomodation?: string;
+    check_in_date?: string;
+    airline?: string;
+    flight_no?: string;
+    flight_time?: string;
   }) => {
     setLoading(true);
 
-    const payload = {
-      ...data,
+    const payload: ThematicRegistration = {
+      name: data.name,
+      organization: data.organization,
+      designation: data.designation,
+      address: data.address,
+      email: data.email,
+      contact: data.contact,
       sessions: data.sessions.map((sessionId) => parseInt(sessionId, 10)),
       travel_arrive_date: formatDate(data.travel_arrive_date, "yyyy-MM-dd"),
-      travel_back_date: formatDate(data.travel_back_date, "yyyy-MM-dd"),
+      travel_departure_date: formatDate(
+        data.travel_departure_date,
+        "yyyy-MM-dd"
+      ),
+      participant: data.participant,
+      food: data.food,
+      hotel_accomodation: data.hotel_accomodation || "",
+      ...(data.participant === "Speaker" && {
+        check_in_date: formatDate(data.check_in_date || "", "yyyy-MM-dd"),
+        airline: data.airline || "",
+        flight_no: data.flight_no || "",
+        flight_time: data.flight_time || "",
+      }),
     };
 
     try {
       await registerForThematic(payload).then(() => {
-        router.push("/thank-you");
+        router.push("/thematic/thank-you");
       });
     } catch (error) {
       console.error("Registration failed:", error);
@@ -298,32 +352,13 @@ export default function ThematicRegistrationForm() {
             {watch("participant") === "Speaker" && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Hotel Accommodation
-                </label>
-                <select
-                  {...register("hotel_accomodation")}
-                  className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
-                >
-                  <option value="Self">Self</option>
-                  <option value="CIM">CIM</option>
-                </select>
-                {errors.hotel_accomodation && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.hotel_accomodation.message}
-                  </p>
-                )}
-              </div>
-            )}
-            {watch("participant") === "Speaker" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Travel Arrival Date
                 </label>
                 <input
                   type="date"
                   {...register("travel_arrive_date")}
                   min={new Date().toISOString()}
-                  className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                  className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
                 />
 
                 {errors.travel_arrive_date && (
@@ -341,21 +376,150 @@ export default function ThematicRegistrationForm() {
                 </label>
                 <input
                   type="date"
-                  {...register("travel_back_date")}
+                  {...register("travel_departure_date")}
                   min={new Date(
                     watch("travel_arrive_date") || new Date()
                   ).toISOString()}
-                  className="w-full p-2 border rounded-md  border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                  className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
                 />
 
-                {errors.travel_back_date && (
+                {errors.travel_departure_date && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.travel_back_date.message}
+                    {errors.travel_departure_date.message}
                   </p>
                 )}
               </div>
             )}
           </div>
+          {watch("participant") === "Speaker" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+              {/* Flight Information Section */}
+              <div className="bg-white rounded-lg p-6 space-y-6">
+                <h2 className="text-xl font-semibold mb-4">
+                  Flight Information
+                </h2>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Flight Number
+                  </label>
+                  <input
+                    type="text"
+                    {...register("flight_no")}
+                    className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Flight Time
+                  </label>
+                  <input
+                    type="time"
+                    {...register("flight_time")}
+                    className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Airline
+                  </label>
+                  <select
+                    {...register("airline")}
+                    className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                  >
+                    <option value="">Select Airline</option>
+                    <option value="Buddha">Buddha</option>
+                    <option value="Yeti">Yeti</option>
+                    <option value="Shree">Shree</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Hotel Accommodation Section */}
+              <div className="bg-white rounded-lg p-6 space-y-6">
+                <h2 className="text-xl font-semibold mb-4">
+                  Hotel Accommodation
+                </h2>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Hotel Accommodation
+                  </label>
+                  <select
+                    {...register("hotel_accomodation")}
+                    className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                  >
+                    <option value="Self">Self</option>
+                    <option value="CIM">CIM</option>
+                  </select>
+                  {errors.hotel_accomodation && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.hotel_accomodation.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Check-in Date
+                  </label>
+                  <input
+                    type="date"
+                    {...register("check_in_date")}
+                    className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  {errors.check_in_date && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.check_in_date.message}
+                    </p>
+                  )}
+                </div>
+                {watch("hotel_accomodation") === "CIM" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Hotel
+                    </label>
+                    <select
+                      {...register("hotel")}
+                      className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                    >
+                      <option value="">Select Hotel</option>
+                      <option value="Big">Big</option>
+                      <option value="Ratna">Ratna</option>
+                      <option value="Asiatique">Asiatique</option>
+                      <option value="Nepalirika">Nepalirika</option>
+                      <option value="Swagatam">Swagatam</option>
+                      <option value="Easterstar">Easterstar</option>
+                    </select>
+                    {errors.hotel && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.hotel.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {watch("hotel_accomodation") === "Self" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Enter Your Hotel Name
+                    </label>
+                    <input
+                      type="text"
+                      {...register("hotel")}
+                      className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    {errors.hotel && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.hotel.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Session Selection Section */}

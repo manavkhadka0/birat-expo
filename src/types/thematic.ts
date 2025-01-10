@@ -16,10 +16,18 @@ export interface ThematicRegistration {
   address: string;
   email: string;
   contact: string;
-  sessions: number[]; // Array of session IDs the participant registered for
+  sessions: number[];
   travel_arrive_date: string;
-  travel_back_date: string;
+  travel_departure_date: string;
   participant: string;
+  checked_in?: boolean;
+  check_in_date?: string;
+  hotel?: string;
+  flight_no?: string;
+  flight_time?: string;
+  food: string;
+  hotel_accomodation?: string;
+  airline?: string;
 }
 
 export interface ThematicRegistrationResponse {

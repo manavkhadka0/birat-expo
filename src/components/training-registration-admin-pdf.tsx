@@ -135,7 +135,7 @@ export function TrainingRegistrationAdminPDF({ data }: { data: Participant }) {
         {/* Header with Logos */}
         <View style={styles.headerLogos}>
           <Image src="/logo.png" style={styles.logo} />
-          <Image src="/logo-2025.png" style={styles.mainLogo} />
+          <Image src="/logo2025.png" style={styles.mainLogo} />
           <Image src="/2.png" style={styles.logo} />
         </View>
 
