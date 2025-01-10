@@ -1,8 +1,24 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import ParticipantsTable from "@/components/participants-table";
+import LoginForm from "@/components/LoginForm";
+import { useRouter } from "next/navigation";
 
 export default function LiveTrainingPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("admintoken");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+      router.push("/admin/login");
+    }
+  }, []);
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex flex-col md:flex-row justify-between items-center">
@@ -19,7 +35,7 @@ export default function LiveTrainingPage() {
           Export Data
         </a> */}
       </div>
-      <ParticipantsTable />
+      {isLoggedIn ? <ParticipantsTable /> : <LoginForm />}
     </div>
   );
 }
