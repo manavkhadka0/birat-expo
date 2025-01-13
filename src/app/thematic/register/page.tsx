@@ -1,4 +1,6 @@
 import ThematicRegistrationForm from "@/components/thematic/thematic-registration-form";
+import { Loader2Icon } from "lucide-react";
+import { Suspense } from "react";
 
 export default function ThematicRegistrationPage() {
   return (
@@ -13,7 +15,19 @@ export default function ThematicRegistrationPage() {
           </p>
         </div>
 
-        <ThematicRegistrationForm />
+        <Suspense
+          fallback={
+            <div className="text-center text-gray-500 min-h-screen flex items-center justify-center">
+              <div className="flex flex-col items-center justify-center">
+                <div className="flex items-center gap-2">
+                  <Loader2Icon className="w-6 h-6 animate-spin" />
+                </div>
+              </div>
+            </div>
+          }
+        >
+          <ThematicRegistrationForm />
+        </Suspense>
       </div>
     </div>
   );

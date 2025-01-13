@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { fetchThematicSessions, type ThematicSession } from "@/types/thematic";
 import { registerForThematic } from "@/api/thematic";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { formatDate } from "date-fns";
 import { SessionModal } from "./components/session-modal";
 import { ThematicRegistration } from "@/types/thematic";
@@ -79,12 +79,15 @@ export default function ThematicRegistrationForm() {
   const [loading, setLoading] = useState(false);
   const [sessions, setSessions] = useState<ThematicSession[]>([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preSelectedSession = searchParams.get("session");
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
     watch,
+    getValues,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -120,6 +123,19 @@ export default function ThematicRegistrationForm() {
     };
     loadSessions();
   }, []);
+
+  useEffect(() => {
+    if (preSelectedSession) {
+      const sessionId = parseInt(preSelectedSession);
+      const currentSessions = getValues("sessions") || [];
+      if (!currentSessions.includes(sessionId)) {
+        setValue("sessions", [...currentSessions, sessionId], {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      }
+    }
+  }, [preSelectedSession, setValue, getValues]);
 
   const handleSubmitForm = async (data: {
     name: string;

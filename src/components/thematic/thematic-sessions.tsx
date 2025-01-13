@@ -4,13 +4,10 @@ import { useGetThematicSessions } from "@/api/thematic";
 import { ThematicSession } from "@/types/thematic";
 import { useState } from "react";
 import { SessionCard } from "./components/session-card";
-import { SessionModal } from "./components/session-modal";
 
 export default function ThematicSessions() {
   const { thematicSessions, thematicSessionsLoading } =
     useGetThematicSessions();
-  const [selectedSession, setSelectedSession] =
-    useState<ThematicSession | null>(null);
 
   return (
     <section className="bg-gradient-to-b from-gray-50 to-white py-24 sm:py-32">
@@ -34,11 +31,7 @@ export default function ThematicSessions() {
         ) : (
           <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
             {thematicSessions.map((session) => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                onClick={setSelectedSession}
-              />
+              <SessionCard key={session.id} session={session} />
             ))}
           </div>
         )}
@@ -76,14 +69,6 @@ export default function ThematicSessions() {
             </a>
           </div>
         </div>
-
-        {/* Modal */}
-        {selectedSession && (
-          <SessionModal
-            session={selectedSession}
-            onClose={() => setSelectedSession(null)}
-          />
-        )}
       </div>
     </section>
   );

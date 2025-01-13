@@ -1,3 +1,19 @@
+export interface Panelist {
+  role: string;
+  name: string;
+  profile_image: string | null;
+  company: string | null;
+  location: string | null;
+  biodata: string;
+}
+
+export interface SubSession {
+  id: number;
+  title: string;
+  description: string;
+  panelists: Panelist[];
+}
+
 export interface ThematicSession {
   id: number;
   title: string;
@@ -5,7 +21,7 @@ export interface ThematicSession {
   start_time: string;
   end_time: string;
   description: string;
-  time: string;
+  sub_sessions: SubSession[];
 }
 
 export interface ThematicRegistration {
@@ -42,9 +58,11 @@ export interface ThematicRegistrationResponse {
 }
 
 export async function fetchThematicSessions(): Promise<ThematicSession[]> {
-  const response = await fetch('https://yachu.baliyoventures.com/api/thematic-sessions/');
+  const response = await fetch(
+    "https://yachu.baliyoventures.com/api/thematic-sessions/"
+  );
   if (!response.ok) {
-    throw new Error('Failed to fetch thematic sessions');
+    throw new Error("Failed to fetch thematic sessions");
   }
   return response.json();
 }
