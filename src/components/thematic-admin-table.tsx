@@ -7,11 +7,11 @@ import { useGetThematicRegistrations } from "@/api/thematic";
 import { ThematicRegistrationResponse } from "@/types/thematic";
 import { ThematicRegistrationAdminPDF } from "./thematic-registration-admin-pdf";
 
-type RegistrationStatus = "Pending" | "Accepted" | "Rejected";
+type RegistrationStatus = "Pending" | "Approved" | "Rejected";
 
 const registrationStatuses = [
   { value: "Pending", label: "Pending" },
-  { value: "Accepted", label: "Accepted" },
+  { value: "Approved", label: "Approved" },
   { value: "Rejected", label: "Rejected" },
 ];
 
@@ -160,7 +160,7 @@ const ThematicParticipationTable: React.FC = () => {
           }
         )
         .then(async (res) => {
-          if (newStatus === "Accepted") {
+          if (newStatus === "Approved") {
             try {
               const emailResponse = await fetch("/api/thematic-registration", {
                 method: "POST",
@@ -372,18 +372,18 @@ const ThematicParticipationTable: React.FC = () => {
                         )
                       }
                       className={`px-2 py-1 rounded text-xs font-semibold ${
-                        item.status === "Accepted"
+                        item.status === "Approved"
                           ? "bg-green-100 text-green-800"
                           : item.status === "Rejected"
                           ? "bg-red-100 text-red-800"
                           : "bg-yellow-100 text-yellow-800"
                       }`}
                       disabled={
-                        item.status === "Accepted" || item.status === "Rejected"
+                        item.status === "Approved" || item.status === "Rejected"
                       }
                     >
                       <option value="Pending">Pending</option>
-                      <option value="Accepted">Accept</option>
+                      <option value="Approved">Accept</option>
                       <option value="Rejected">Reject</option>
                     </select>
                   )}
@@ -445,7 +445,7 @@ const ThematicParticipationTable: React.FC = () => {
         }? This action cannot be undone.`}
         confirmText={statusChangeInfo?.newStatus || ""}
         confirmClass={
-          statusChangeInfo?.newStatus === "Accepted"
+          statusChangeInfo?.newStatus === "Approved"
             ? "bg-green-600 hover:bg-green-700"
             : "bg-red-600 hover:bg-red-700"
         }
@@ -530,18 +530,18 @@ const ThematicParticipationTable: React.FC = () => {
                     onClick={() => {
                       handleStatusChange(
                         selectedParticipant.id!,
-                        selectedParticipant.status === "Accepted"
+                        selectedParticipant.status === "Approved"
                           ? "Rejected"
-                          : "Accepted"
+                          : "Approved"
                       ).then(() => setIsModalOpen(false));
                     }}
                     className={`${
-                      selectedParticipant.status === "Accepted"
+                      selectedParticipant.status === "Approved"
                         ? "bg-red-500 hover:bg-red-700"
                         : "bg-green-500 hover:bg-green-700"
                     } px-4 py-2 text-white rounded transition duration-300`}
                   >
-                    {selectedParticipant.status === "Accepted"
+                    {selectedParticipant.status === "Approved"
                       ? "Reject Registration"
                       : "Accept Registration"}
                   </button>

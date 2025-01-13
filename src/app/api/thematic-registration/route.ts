@@ -14,8 +14,8 @@ export async function POST(request: Request) {
       to: [body.email, "Chauhan.ashu0630@gmail.com"],
 
       subject: `Thematic Training Registration #${body.id} ${
-        body.status === "Accepted"
-          ? "Accepted"
+        body.status === "Approved"
+          ? "Approved"
           : body.status === "Rejected"
           ? "Rejected"
           : "Pending Approval"

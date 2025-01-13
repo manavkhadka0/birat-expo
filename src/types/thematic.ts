@@ -49,7 +49,7 @@ export interface ThematicRegistration {
 export interface ThematicRegistrationResponse {
   id?: number;
   name: string;
-  status: "Accepted" | "Rejected" | "Pending";
+  status: "Approved" | "Rejected" | "Pending";
   organization: string;
   designation: string;
   address: string;

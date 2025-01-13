@@ -102,9 +102,12 @@ const ThematicEmailRegistrationTemplate = ({
         <p style={{ color: "#4b5563", lineHeight: "1.6" }}>Dear {data.name},</p>
 
         <p style={{ color: "#4b5563", lineHeight: "1.6" }}>
-          Thank you for registering for the Thematic Sessions at BIRAT EXPO
+          {data.status === "Approved"
+            ? `Thank you for registering for the Thematic Sessions at BIRAT EXPO
+          2025. Your registration has been approved. Please find your registration details below. `
+            : `Thank you for registering for the Thematic Sessions at BIRAT EXPO
           2025. We have received your registration and will review it shortly.
-          Please note that your registration is pending approval.
+          Please wait for your registration to be approved. `}
         </p>
 
         <div
