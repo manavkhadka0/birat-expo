@@ -1,8 +1,11 @@
 import { fetcher } from "@/lib/axios";
-import { ThematicRegistration, ThematicSession } from "@/types/thematic";
+import {
+  ThematicRegistration,
+  ThematicRegistrationResponse,
+  ThematicSession,
+} from "@/types/thematic";
 import { useMemo } from "react";
-import useSWRImmutable from 'swr/immutable';
-
+import useSWR from "swr";
 
 interface RegistrationError {
   error?: string;
@@ -44,7 +47,7 @@ export async function registerForThematic(
       }
     );
 
-    let data: any;
+    let data: ThematicRegistrationResponse;
     try {
       data = await response.json();
     } catch (parseError) {
@@ -69,7 +72,7 @@ export async function registerForThematic(
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(data),
           }
         );
 
@@ -97,9 +100,12 @@ export async function registerForThematic(
 }
 
 export function useGetThematicSessions() {
-  const URL = useMemo(() => "https://yachu.baliyoventures.com/api/thematic-sessions/", []);
+  const URL = useMemo(
+    () => "https://yachu.baliyoventures.com/api/thematic-sessions/",
+    []
+  );
 
-  const { data, error, isLoading, isValidating } = useSWRImmutable<ThematicSession[]>(
+  const { data, error, isLoading, isValidating } = useSWR<ThematicSession[]>(
     URL,
     fetcher
   );
@@ -118,35 +124,23 @@ export function useGetThematicSessions() {
   return memoizedValue;
 }
 
-export async function getThematicSessions(): Promise<ThematicSession[]> {
-  try {
-    const response = await fetch('https://yachu.baliyoventures.com/api/thematic-sessions/');
-    if (!response.ok) {
-      throw new Error('Failed to fetch thematic sessions');
-    }
-    const data = await response.json();
-    
-    // Transform the API data to match our interface format
-    return data.map((session: any) => ({
-      id: session.id,
-      title: session.title,
-      date: session.date,
-      start_time: formatTime(session.start_time),
-      end_time: formatTime(session.end_time),
-      description: session.description,
-      time: `${formatTime(session.start_time)} - ${formatTime(session.end_time)}`
-    }));
-  } catch (error) {
-    console.error('Error fetching thematic sessions:', error);
-    throw error;
-  }
-}
+export function useGetThematicRegistrations() {
+  const URL = `https://yachu.baliyoventures.com/api/thematic-registrations/`;
 
-// Helper function to format time from 24-hour to 12-hour format
-function formatTime(time: string): string {
-  const [hours, minutes] = time.split(':');
-  const hour = parseInt(hours);
-  const ampm = hour >= 12 ? 'PM' : 'AM';
-  const hour12 = hour % 12 || 12;
-  return `${hour12}:${minutes} ${ampm}`;
+  const { data, error, isLoading, isValidating } = useSWR<
+    ThematicRegistrationResponse[]
+  >(URL, fetcher);
+
+  const memoizedValue = useMemo(
+    () => ({
+      thematicRegistrations: data || [],
+      thematicRegistrationsLoading: isLoading,
+      thematicRegistrationsError: error,
+      thematicRegistrationsValidating: isValidating,
+      thematicRegistrationsEmpty: !isLoading && !data?.length,
+    }),
+    [data, isLoading, isValidating, error]
+  );
+
+  return memoizedValue;
 }

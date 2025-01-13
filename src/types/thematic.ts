@@ -33,8 +33,8 @@ export interface ThematicRegistration {
   email: string;
   contact: string;
   sessions: number[];
-  travel_arrive_date: string;
-  travel_departure_date: string;
+  arrival_date: string;
+  departure_date: string;
   participant: string;
   checked_in?: boolean;
   check_in_date?: string;
@@ -49,12 +49,24 @@ export interface ThematicRegistration {
 export interface ThematicRegistrationResponse {
   id?: number;
   name: string;
+  status: "Accepted" | "Rejected" | "Pending";
   organization: string;
   designation: string;
   address: string;
   email: string;
   contact: string;
   sessions: ThematicSession[];
+  arrival_date: string;
+  departure_date: string;
+  participant: string;
+  checked_in?: boolean;
+  check_in_date?: string;
+  hotel?: string;
+  flight_no?: string;
+  flight_time?: string;
+  food: string;
+  hotel_accomodation?: string;
+  airline?: string;
 }
 
 export async function fetchThematicSessions(): Promise<ThematicSession[]> {

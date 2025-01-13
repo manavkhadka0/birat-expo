@@ -1,16 +1,74 @@
 import { ThematicRegistrationResponse } from "@/types/thematic";
 
+const formatDate = (date: string | null): string => {
+  if (!date) return "N/A";
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+const getValueOrNA = (value: string | null | undefined): string => {
+  return value || "N/A";
+};
+
+interface DetailRowProps {
+  label: string;
+  value: string | number;
+  isLink?: "email" | "tel" | false;
+}
+
+const DetailRow = ({ label, value, isLink }: DetailRowProps) => (
+  <p style={{ margin: "10px 0", color: "#4b5563" }}>
+    <strong>{label}:</strong>{" "}
+    {isLink ? (
+      <a href={`${isLink}:${value}`} style={{ color: "#4b5563" }}>
+        {value}
+      </a>
+    ) : (
+      value
+    )}
+  </p>
+);
+
 const ThematicEmailRegistrationTemplate = ({
   data,
 }: {
   data: ThematicRegistrationResponse;
 }) => {
-  // Format date for better display
-  const registrationDate = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const registrationDate = formatDate(new Date().toISOString());
+
+  const personalDetails = [
+    { label: "Registration ID", value: `#${data.id}` },
+    { label: "Registration Date", value: registrationDate },
+    { label: "Full Name", value: data.name },
+    { label: "Organization", value: data.organization },
+    { label: "Designation", value: data.designation },
+    { label: "Address", value: data.address },
+    { label: "Email", value: data.email, isLink: "email" as const },
+    { label: "Contact", value: data.contact, isLink: "tel" as const },
+  ];
+
+  const travelDetails = [
+    { label: "Participant Type", value: getValueOrNA(data.participant) },
+    { label: "Arrival Date", value: formatDate(data.arrival_date) },
+    { label: "Departure Date", value: formatDate(data.departure_date) },
+    { label: "Airline", value: getValueOrNA(data.airline) },
+    { label: "Flight Number", value: getValueOrNA(data.flight_no) },
+    { label: "Flight Time", value: getValueOrNA(data.flight_time) },
+  ];
+
+  const accommodationDetails = [
+    { label: "Food Preference", value: getValueOrNA(data.food) },
+    {
+      label: "Hotel Accommodation",
+      value: getValueOrNA(data.hotel_accomodation),
+    },
+    { label: "Hotel", value: getValueOrNA(data.hotel) },
+    { label: "Check-in Date", value: formatDate(data.check_in_date || "") },
+    { label: "Checked In", value: data.checked_in ? "Yes" : "No" },
+  ];
 
   return (
     <div
@@ -45,7 +103,8 @@ const ThematicEmailRegistrationTemplate = ({
 
         <p style={{ color: "#4b5563", lineHeight: "1.6" }}>
           Thank you for registering for the Thematic Sessions at BIRAT EXPO
-          2025. Your participation has been confirmed.
+          2025. We have received your registration and will review it shortly.
+          Please note that your registration is pending approval.
         </p>
 
         <div
@@ -58,20 +117,13 @@ const ThematicEmailRegistrationTemplate = ({
           }}
         >
           <h2
-            style={{
-              color: "#3730a3",
-              fontSize: "18px",
-              marginBottom: "15px",
-            }}
+            style={{ color: "#3730a3", fontSize: "18px", marginBottom: "15px" }}
           >
-            Registration Information
+            Personal Information
           </h2>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Registration ID:</strong> #{data.id}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Registration Date:</strong> {registrationDate}
-          </p>
+          {personalDetails.map((detail) => (
+            <DetailRow key={detail.label} {...detail} />
+          ))}
 
           <h2
             style={{
@@ -81,32 +133,25 @@ const ThematicEmailRegistrationTemplate = ({
               marginBottom: "15px",
             }}
           >
-            Personal Details
+            Travel Details
           </h2>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Full Name:</strong> {data.name}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Organization:</strong> {data.organization}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Designation:</strong> {data.designation}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Address:</strong> {data.address}
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Email:</strong>{" "}
-            <a href={`mailto:${data.email}`} style={{ color: "#4b5563" }}>
-              {data.email}
-            </a>
-          </p>
-          <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Contact:</strong>{" "}
-            <a href={`tel:${data.contact}`} style={{ color: "#4b5563" }}>
-              {data.contact}
-            </a>
-          </p>
+          {travelDetails.map((detail) => (
+            <DetailRow key={detail.label} {...detail} />
+          ))}
+
+          <h2
+            style={{
+              color: "#3730a3",
+              fontSize: "18px",
+              marginTop: "20px",
+              marginBottom: "15px",
+            }}
+          >
+            Accommodation Details
+          </h2>
+          {accommodationDetails.map((detail) => (
+            <DetailRow key={detail.label} {...detail} />
+          ))}
 
           <h2
             style={{
@@ -134,13 +179,23 @@ const ThematicEmailRegistrationTemplate = ({
               <p style={{ color: "#6b7280", fontSize: "14px" }}>
                 Date: {session.date}
               </p>
-              <p style={{ color: "#6b7280", fontSize: "14px" }}>
-                {session.description}
-              </p>
+              {session.sub_sessions.length > 0 && (
+                <div style={{ marginTop: "10px", paddingLeft: "15px" }}>
+                  <p style={{ fontWeight: "500", color: "#4b5563" }}>
+                    Sub Sessions:
+                  </p>
+                  {session.sub_sessions.map((subSession) => (
+                    <div key={subSession.id} style={{ marginTop: "5px" }}>
+                      <p style={{ color: "#4b5563" }}>- {subSession.title}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
 
+        {/* Important Notes Section */}
         <div
           style={{
             backgroundColor: "#fff7ed",

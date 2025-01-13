@@ -13,7 +13,13 @@ export async function POST(request: Request) {
       from: "Birat Expo 2025 Thematic Training <info@baliyoventures.com>",
       to: [body.email, "Chauhan.ashu0630@gmail.com"],
 
-      subject: `Thematic Training Registration #${body.id} Confirmation - Birat Expo 2025`,
+      subject: `Thematic Training Registration #${body.id} ${
+        body.status === "Accepted"
+          ? "Accepted"
+          : body.status === "Rejected"
+          ? "Rejected"
+          : "Pending Approval"
+      } - Birat Expo 2025`,
       react: ThematicEmailRegistrationTemplate({ data: body }),
     });
 

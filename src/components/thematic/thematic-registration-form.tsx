@@ -25,8 +25,8 @@ const schema = yup.object().shape({
     .array()
     .min(1, "Please select at least one session")
     .required("Please select at least one session"),
-  travel_arrive_date: yup.string().required("Arrival date is required"),
-  travel_departure_date: yup.string().required("Departure date is required"),
+  arrival_date: yup.string().required("Arrival date is required"),
+  departure_date: yup.string().required("Departure date is required"),
   participant: yup
     .string()
     .oneOf(["Speaker", "Participant"])
@@ -98,8 +98,11 @@ export default function ThematicRegistrationForm() {
       email: "",
       contact: "",
       sessions: [],
-      travel_arrive_date: new Date().toISOString(),
-      travel_departure_date: new Date().toISOString(),
+      hotel: "",
+      flight_no: "",
+      flight_time: "",
+      arrival_date: new Date().toISOString(),
+      departure_date: new Date().toISOString(),
       participant: "Participant",
       food: "Veg",
       hotel_accomodation: "Self",
@@ -143,10 +146,11 @@ export default function ThematicRegistrationForm() {
     email: string;
     contact: string;
     sessions: string[];
-    travel_arrive_date: string;
-    travel_departure_date: string;
+    arrival_date: string;
+    departure_date: string;
     participant: string;
     food: string;
+    hotel?: string;
     hotel_accomodation?: string;
     check_in_date?: string;
     airline?: string;
@@ -163,12 +167,10 @@ export default function ThematicRegistrationForm() {
       email: data.email,
       contact: data.contact,
       sessions: data.sessions.map((sessionId) => parseInt(sessionId, 10)),
-      travel_arrive_date: formatDate(data.travel_arrive_date, "yyyy-MM-dd"),
-      travel_departure_date: formatDate(
-        data.travel_departure_date,
-        "yyyy-MM-dd"
-      ),
+      arrival_date: formatDate(data.arrival_date, "yyyy-MM-dd"),
+      departure_date: formatDate(data.departure_date, "yyyy-MM-dd"),
       participant: data.participant,
+
       food: data.food,
       hotel_accomodation: data.hotel_accomodation || "",
       ...(data.participant === "Speaker" && {
@@ -176,6 +178,7 @@ export default function ThematicRegistrationForm() {
         airline: data.airline || "",
         flight_no: data.flight_no || "",
         flight_time: data.flight_time || "",
+        hotel: data.hotel || "",
       }),
     };
 
@@ -362,14 +365,14 @@ export default function ThematicRegistrationForm() {
                 </label>
                 <input
                   type="date"
-                  {...register("travel_arrive_date")}
+                  {...register("arrival_date")}
                   min={new Date().toISOString()}
                   className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
                 />
 
-                {errors.travel_arrive_date && (
+                {errors.arrival_date && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.travel_arrive_date.message}
+                    {errors.arrival_date.message}
                   </p>
                 )}
               </div>
@@ -382,16 +385,16 @@ export default function ThematicRegistrationForm() {
                 </label>
                 <input
                   type="date"
-                  {...register("travel_departure_date")}
+                  {...register("departure_date")}
                   min={new Date(
-                    watch("travel_arrive_date") || new Date()
+                    watch("arrival_date") || new Date()
                   ).toISOString()}
                   className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
                 />
 
-                {errors.travel_departure_date && (
+                {errors.departure_date && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.travel_departure_date.message}
+                    {errors.departure_date.message}
                   </p>
                 )}
               </div>
