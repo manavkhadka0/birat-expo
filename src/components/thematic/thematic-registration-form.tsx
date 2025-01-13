@@ -109,8 +109,6 @@ export default function ThematicRegistrationForm() {
   });
 
   const selectedSessions = watch("sessions") || [];
-  const [selectedSession, setSelectedSession] =
-    useState<ThematicSession | null>(null);
 
   useEffect(() => {
     const loadSessions = async () => {
@@ -190,14 +188,6 @@ export default function ThematicRegistrationForm() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const openSessionDetailsPopup = (session: ThematicSession) => {
-    setSelectedSession(session);
-  };
-
-  const closeSessionDetailsPopup = () => {
-    setSelectedSession(null);
   };
 
   return (
@@ -585,10 +575,8 @@ export default function ThematicRegistrationForm() {
                       </div>
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Open popup with session details
-                          openSessionDetailsPopup(session);
+                        onClick={() => {
+                          router.push(`/thematic/details/${session.id}`);
                         }}
                         className="ml-2 text-blue-600 hover:text-blue-800 focus:outline-none"
                       >
@@ -615,13 +603,6 @@ export default function ThematicRegistrationForm() {
           {loading ? "Submitting..." : "Register"}
         </button>
       </form>
-
-      {selectedSession && (
-        <SessionModal
-          session={selectedSession}
-          onClose={closeSessionDetailsPopup}
-        />
-      )}
     </div>
   );
 }
