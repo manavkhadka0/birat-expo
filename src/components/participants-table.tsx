@@ -4,7 +4,6 @@ import { mutate } from "swr";
 import { ArrowDownFromLine, DownloadCloud, Loader, Mail } from "lucide-react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Participant, useGetParticipants } from "@/api/participants";
-import { TrainingRegistrationTemplate } from "./training-registration-template";
 import { TrainingRegistrationAdminPDF } from "./training-registration-admin-pdf";
 
 type RegistrationStatus = "Pending" | "Confirmed" | "Cancelled";
@@ -53,8 +52,6 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
 };
 
 const TRAINING_DATES = [
-  "2025-01-22",
-  "2025-01-23",
   "2025-01-24",
   "2025-01-25",
   "2025-01-26",
@@ -420,84 +417,175 @@ const ParticipantsTable: React.FC = () => {
               Participant Details
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-600">
-                  Full Name
-                </span>
-                <span className="mt-1">
-                  {selectedParticipant.first_name}{" "}
-                  {selectedParticipant.last_name}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-600">
-                  Email
-                </span>
-                <span className="mt-1">{selectedParticipant.email}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-600">
-                  Mobile
-                </span>
-                <span className="mt-1">
-                  {selectedParticipant.mobile_number}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-600">Age</span>
-                <span className="mt-1">{selectedParticipant.age}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-600">
-                  Gender
-                </span>
-                <span className="mt-1">{selectedParticipant.gender}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-600">
-                  Address
-                </span>
-                <span className="mt-1">{selectedParticipant.address}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-600">
-                  Total Participants
-                </span>
-                <span className="mt-1">
-                  {selectedParticipant.total_participants}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-600">
-                  Registration Type
-                </span>
-                <span className="mt-1">
-                  {selectedParticipant.registration_type}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-600">
-                  Qualification
-                </span>
-                <span className="mt-1">
-                  {selectedParticipant.qualification}
-                </span>
-              </div>
-              {selectedParticipant.group_members?.length > 0 && (
-                <div className="col-span-2">
-                  <span className="text-sm font-semibold text-gray-600">
-                    Group Members
-                  </span>
-                  <div className="mt-2 space-y-2">
-                    {selectedParticipant.group_members.map((member, index) => (
-                      <div key={index} className="p-2 bg-gray-50 rounded">
-                        {member}
-                      </div>
-                    ))}
+              {/* Personal Information */}
+              <div className="col-span-2">
+                <h3 className="text-xl font-semibold mb-4 text-gray-700">
+                  Personal Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Full Name
+                    </span>
+                    <span className="mt-1">
+                      {selectedParticipant.first_name}{" "}
+                      {selectedParticipant.last_name}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Email
+                    </span>
+                    <span className="mt-1">{selectedParticipant.email}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Mobile
+                    </span>
+                    <span className="mt-1">
+                      {selectedParticipant.mobile_number}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Age
+                    </span>
+                    <span className="mt-1">{selectedParticipant.age}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Gender
+                    </span>
+                    <span className="mt-1">{selectedParticipant.gender}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Address
+                    </span>
+                    <span className="mt-1">{selectedParticipant.address}</span>
                   </div>
                 </div>
-              )}
+              </div>
+
+              {/* Registration Details */}
+              <div className="col-span-2">
+                <h3 className="text-xl font-semibold mb-4 text-gray-700">
+                  Registration Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Registration Type
+                    </span>
+                    <span className="mt-1">
+                      {selectedParticipant.registration_type}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Status
+                    </span>
+                    <span
+                      className={`mt-1 font-semibold ${
+                        selectedParticipant.status === "Confirmed"
+                          ? "text-green-600"
+                          : selectedParticipant.status === "Cancelled"
+                          ? "text-red-600"
+                          : "text-yellow-600"
+                      }`}
+                    >
+                      {selectedParticipant.status}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Total Price
+                    </span>
+                    <span className="mt-1">
+                      Rs.{" "}
+                      {parseFloat(selectedParticipant.total_price).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Total Participants
+                    </span>
+                    <span className="mt-1">
+                      {selectedParticipant.total_participants}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Time Slot Information */}
+              <div className="col-span-2">
+                <h3 className="text-xl font-semibold mb-4 text-gray-700">
+                  Time Slot Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Topic
+                    </span>
+                    <span className="mt-1">
+                      {selectedParticipant.time_slot.topic.name}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Date
+                    </span>
+                    <span className="mt-1">
+                      {selectedParticipant.time_slot.date}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Time
+                    </span>
+                    <span className="mt-1">
+                      {selectedParticipant.time_slot.start_time} -{" "}
+                      {selectedParticipant.time_slot.end_time}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Information */}
+              <div className="col-span-2">
+                <h3 className="text-xl font-semibold mb-4 text-gray-700">
+                  Additional Information
+                </h3>
+                <div className="grid grid-cols-1 gap-6">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-600">
+                      Qualification
+                    </span>
+                    <span className="mt-1">
+                      {selectedParticipant.qualification}
+                    </span>
+                  </div>
+                  {selectedParticipant.group_members?.length > 0 && (
+                    <div className="flex flex-col">
+                      <span className="text-sm font-semibold text-gray-600">
+                        Group Members
+                      </span>
+                      <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {selectedParticipant.group_members.map(
+                          (member, index) => (
+                            <div key={index} className="p-2 bg-gray-50 rounded">
+                              {member}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
+
+            {/* Action Buttons */}
             <div className="mt-8 flex justify-end space-x-4">
               {loadingStallId ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>
@@ -512,19 +600,15 @@ const ParticipantsTable: React.FC = () => {
                           : "Confirmed"
                       ).then(() => setIsModalOpen(false))
                     }
-                    className={`${
+                    className={`px-4 py-2 text-white rounded transition duration-300 ${
                       selectedParticipant.status === "Confirmed"
-                        ? "bg-red-500"
-                        : "bg-green-500"
-                    } hover:${
-                      selectedParticipant.status === "Confirmed"
-                        ? "bg-red-700"
-                        : "bg-green-700"
-                    } px-4 py-2 text-white rounded transition duration-300`}
+                        ? "bg-red-500 hover:bg-red-700"
+                        : "bg-green-500 hover:bg-green-700"
+                    }`}
                   >
                     {selectedParticipant.status === "Confirmed"
-                      ? "Reject Stall"
-                      : "Approve Stall"}
+                      ? "Cancel Registration"
+                      : "Confirm Registration"}
                   </button>
                   <button
                     onClick={() => setIsModalOpen(false)}
