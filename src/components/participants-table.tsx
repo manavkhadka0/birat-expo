@@ -317,7 +317,14 @@ const ParticipantsTable: React.FC = () => {
                   {item.status}
                 </td>
                 <td className="py-4 px-6">
-                  {item.time_slot.topic.name} - {item.time_slot.date}
+                  <div className="flex flex-col">
+                    <div>
+                      {item.time_slot.topic.name} - {item.time_slot.date}
+                    </div>
+                    <div>
+                      {item.time_slot.start_time} - {item.time_slot.end_time}
+                    </div>
+                  </div>
                 </td>
                 <td className="py-4 px-6">
                   Rs. {parseFloat(item.total_price).toFixed(2)}

@@ -49,3 +49,7 @@ export const guidedTourSchema = yup.object({
 });
 
 export type GuidedTourFormData = yup.InferType<typeof guidedTourSchema>;
+
+export interface GuidedTourResponse extends GuidedTourFormData {
+  id: number;
+}

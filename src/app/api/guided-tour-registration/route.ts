@@ -1,17 +1,17 @@
 import GuidedTourEmailTemplate from "@/components/guided-tour/guided-tour-email-template";
-import { GuidedTourFormData } from "@/types/guided-tour";
+import { GuidedTourResponse } from "@/types/guided-tour";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API);
 
 export async function POST(request: Request) {
   try {
-    const body: GuidedTourFormData = await request.json();
+    const body: GuidedTourResponse = await request.json();
 
     const { data, error } = await resend.emails.send({
       from: "Birat Expo 2025 Guided Tour <info@baliyoventures.com>",
       to: [body.email, "biratexpo2024@gmail.com"],
-     subject: `Guided Tour Registration Confirmation - ${body.college_name}`,
+      subject: `Guided Tour Registration Confirmation - ${body.college_name}`,
 
       react: GuidedTourEmailTemplate({ data: body }),
     });

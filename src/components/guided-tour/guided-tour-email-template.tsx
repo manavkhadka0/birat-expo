@@ -1,9 +1,9 @@
-import { GuidedTourFormData } from "@/types/guided-tour";
+import { GuidedTourResponse } from "@/types/guided-tour";
 
 export default function GuidedTourEmailTemplate({
   data,
 }: {
-  data: GuidedTourFormData;
+  data: GuidedTourResponse;
 }) {
   // Format date for better display
   const registrationDate = new Date().toLocaleDateString("en-US", {

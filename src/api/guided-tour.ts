@@ -1,4 +1,4 @@
-import { GuidedTourFormData } from "@/types/guided-tour";
+import { GuidedTourFormData, GuidedTourResponse } from "@/types/guided-tour";
 
 interface RegistrationError {
   error?: string;
@@ -30,7 +30,7 @@ export async function registerForGuidedTour(
   try {
     // Main registration request to backend
     const response = await fetchWithTimeout(
-      "https://yachu.baliyoventures.com/api/guided-tour-registrations/",
+      "https://yachu.baliyoventures.com/api/guided-tours/",
       {
         method: "POST",
         headers: {
@@ -40,7 +40,7 @@ export async function registerForGuidedTour(
       }
     );
 
-    let data: any;
+    let data: GuidedTourResponse;
     try {
       data = await response.json();
     } catch (parseError) {
@@ -65,7 +65,7 @@ export async function registerForGuidedTour(
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(data),
           }
         );
 
