@@ -5,6 +5,7 @@ import { ArrowDownFromLine, DownloadCloud, Loader, Mail } from "lucide-react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Participant, useGetParticipants } from "@/api/participants";
 import { TrainingRegistrationAdminPDF } from "./training-registration-admin-pdf";
+import { CSVLink } from "react-csv";
 
 type RegistrationStatus = "Pending" | "Confirmed" | "Cancelled";
 
@@ -205,6 +206,109 @@ const ParticipantsTable: React.FC = () => {
     return filteredData;
   }, [participants, filters]);
 
+  const csvData =
+    participants?.map((participant) => ({
+      ID: participant.id,
+      Name: `${participant.first_name} ${participant.last_name}`,
+      Email: participant.email,
+      Mobile: participant.mobile_number,
+      Age: participant.age,
+      Gender: participant.gender,
+      Qualification: participant.qualification,
+      RegistrationType: participant.registration_type,
+      Status: participant.status,
+      TotalPrice: parseFloat(participant.total_price).toFixed(2),
+      PaymentMethod: participant.payment_method,
+      PaymentScreenshot: participant.payment_screenshot,
+      QRCode: participant.qr_code,
+      IsEarlyBird: participant.is_early_bird ? "Yes" : "No",
+      IsExpoAccess: participant.is_expo_access ? "Yes" : "No",
+      IsFreeEntry: participant.is_free_entry ? "Yes" : "No",
+      Date: participant.time_slot.date,
+      StartTime: participant.time_slot.start_time,
+      EndTime: participant.time_slot.end_time,
+      Topic: participant.time_slot.topic.name,
+      TotalParticipants: participant.total_participants,
+      Address: participant.address,
+      AgreedToNoRefund: participant.agreed_to_no_refund ? "Yes" : "No",
+      CreatedAt: participant.created_at,
+      UpdatedAt: participant.updated_at,
+    })) || [];
+
+  const downloadCSV = () => {
+    const headers = [
+      "ID",
+      "Name",
+      "Email",
+      "Mobile",
+      "Age",
+      "Gender",
+      "Qualification",
+      "RegistrationType",
+      "Status",
+      "TotalPrice",
+      "PaymentMethod",
+      "PaymentScreenshot",
+      "QRCode",
+      "IsEarlyBird",
+      "IsExpoAccess",
+      "IsFreeEntry",
+      "Date",
+      "StartTime",
+      "EndTime",
+      "Topic",
+      "TotalParticipants",
+      "Address",
+      "AgreedToNoRefund",
+      "CreatedAt",
+      "UpdatedAt",
+      "Description",
+    ];
+
+    const rows = csvData.map((participant) => [
+      participant.ID,
+      participant.Name,
+      participant.Email,
+      participant.Mobile,
+      participant.Age,
+      participant.Gender,
+      participant.Qualification,
+      participant.RegistrationType,
+      participant.Status,
+      participant.TotalPrice,
+      participant.PaymentMethod,
+      participant.PaymentScreenshot,
+      participant.QRCode,
+      participant.IsEarlyBird,
+      participant.IsExpoAccess,
+      participant.IsFreeEntry,
+      participant.Date,
+      participant.StartTime,
+      participant.EndTime,
+      participant.Topic,
+      participant.TotalParticipants,
+      participant.Address,
+      participant.AgreedToNoRefund,
+      participant.CreatedAt,
+      participant.UpdatedAt,
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((e) => e.join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "participants_data.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (participantsError)
     return <div className="text-red-500">Failed to load data</div>;
   if (participantsLoading)
@@ -218,6 +322,15 @@ const ParticipantsTable: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={downloadCSV}
+          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          <DownloadCloud className="w-5 h-5 mr-2" />
+          Download CSV
+        </button>
+      </div>
       <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <input
           type="text"

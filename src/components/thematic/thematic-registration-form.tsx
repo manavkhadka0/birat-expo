@@ -439,9 +439,7 @@ export default function ThematicRegistrationForm() {
                     className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
                   >
                     <option value="">Select Airline</option>
-                    <option value="Buddha">Buddha</option>
                     <option value="Yeti">Yeti</option>
-                    <option value="Shree">Shree</option>
                   </select>
                 </div>
               </div>
@@ -495,12 +493,10 @@ export default function ThematicRegistrationForm() {
                       className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
                     >
                       <option value="">Select Hotel</option>
-                      <option value="Big">Big</option>
                       <option value="Ratna">Ratna</option>
-                      <option value="Asiatique">Asiatique</option>
+
                       <option value="Nepalirika">Nepalirika</option>
-                      <option value="Swagatam">Swagatam</option>
-                      <option value="Easterstar">Easterstar</option>
+                      <option value="Harrison">Harrison</option>
                     </select>
                     {errors.hotel && (
                       <p className="mt-1 text-sm text-red-600">

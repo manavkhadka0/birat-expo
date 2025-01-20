@@ -14,8 +14,6 @@ export default function AdminPage() {
           Admin Dashboard
         </h1>
 
-        {/* button tthat links to https://yachu.baliyoventures.com/api/export */}
-
         <a
           href="https://yachu.baliyoventures.com/api/export"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"

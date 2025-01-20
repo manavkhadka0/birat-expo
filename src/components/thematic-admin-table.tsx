@@ -244,6 +244,94 @@ const ThematicParticipationTable: React.FC = () => {
     });
   }, [thematicRegistrations, filters]);
 
+  const csvData =
+    thematicRegistrations?.map((registration) => ({
+      ID: registration.id,
+      Name: registration.name,
+      Email: registration.email,
+      Contact: registration.contact,
+      Organization: registration.organization,
+      Participant: registration.participant,
+      HotelAccommodation: registration.hotel_accomodation,
+      Food: registration.food,
+      ArrivalDate: registration.arrival_date,
+      DepartureDate: registration.departure_date,
+      Designation: registration.designation,
+      Status: registration.status,
+      Sessions: registration.sessions
+        .map((session) => session.title)
+        .join(", "),
+      SessionDates: registration.sessions
+        .map((session) => session.date)
+        .join(", "),
+      StartTimes: registration.sessions
+        .map((session) => session.start_time)
+        .join(", "),
+      EndTimes: registration.sessions
+        .map((session) => session.end_time)
+        .join(", "),
+      Description: registration.sessions
+        .map((session) => session.description)
+        .join(" | "),
+    })) || [];
+
+  const downloadCSV = () => {
+    const headers = [
+      "ID",
+      "Name",
+      "Email",
+      "Contact",
+      "Organization",
+      "Participant",
+      "HotelAccommodation",
+      "Food",
+      "ArrivalDate",
+      "DepartureDate",
+      "Designation",
+      "Status",
+      "Sessions",
+      "SessionDates",
+      "StartTimes",
+      "EndTimes",
+      "Description",
+    ];
+
+    const rows = csvData.map((registration) => [
+      registration.ID,
+      registration.Name,
+      registration.Email,
+      registration.Contact,
+      registration.Organization,
+      registration.Participant,
+      registration.HotelAccommodation,
+      registration.Food,
+      registration.ArrivalDate,
+      registration.DepartureDate,
+      registration.Designation,
+      registration.Status,
+      registration.Sessions,
+      registration.SessionDates,
+      registration.StartTimes,
+      registration.EndTimes,
+      registration.Description,
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((e) => e.join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "thematic_participation_data.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (thematicRegistrationsError)
     return <div className="text-red-500">Failed to load data</div>;
   if (thematicRegistrationsLoading)
@@ -257,6 +345,15 @@ const ThematicParticipationTable: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={downloadCSV}
+          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          <DownloadCloud className="w-5 h-5 mr-2" />
+          Download CSV
+        </button>
+      </div>
       <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <input
           type="text"
