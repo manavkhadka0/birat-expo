@@ -55,31 +55,6 @@ export async function registerForGuidedTour(
       throw new Error(errorMessage);
     }
 
-    // Send confirmation email in the background
-    Promise.resolve().then(async () => {
-      try {
-        const emailResponse = await fetchWithTimeout(
-          "/api/guided-tour-registration",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
-
-        if (!emailResponse.ok) {
-          console.error(
-            "Failed to send confirmation email:",
-            await emailResponse.text().catch(() => "Unknown error")
-          );
-        }
-      } catch (emailError) {
-        console.error("Error sending confirmation email:", emailError);
-      }
-    });
-
     return data;
   } catch (error) {
     if (error instanceof Error) {

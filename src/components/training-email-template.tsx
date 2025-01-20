@@ -1,34 +1,7 @@
+import { TrainingFormDataResponse } from "./training-registration-form";
+
 interface TrainingRegistrationTemplateProps {
-  data: {
-    id: number;
-    time_slot: number;
-    registration_type: string;
-    status: string;
-    full_name: string;
-    qualification: string;
-    gender: string;
-    age: number;
-    address: string;
-    mobile_number: string;
-    group_members: {
-      name: string;
-      email: string;
-      address: string;
-      age: number;
-    }[];
-    email: string;
-    total_participants: number;
-    total_price: number | null;
-    payment_method: string;
-    payment_screenshot: string;
-    agreed_to_no_refund: boolean;
-    is_early_bird: boolean;
-    is_expo_access: boolean;
-    is_free_entry: boolean;
-    qr_code: string;
-    created_at: string;
-    updated_at: string;
-  };
+  data: TrainingFormDataResponse;
 }
 
 const TrainingEmailRegistrationTemplate = ({
@@ -43,6 +16,50 @@ const TrainingEmailRegistrationTemplate = ({
       day: "numeric",
     }
   );
+
+  // Determine email content based on status
+  const getStatusMessage = () => {
+    switch (data.status) {
+      case "Confirmed":
+        return {
+          title: "Registration Confirmed",
+          description:
+            "Your registration for the training program has been successfully confirmed.",
+          color: "#3730a3",
+          importantNote:
+            "Your registration is confirmed. Please make sure to arrive at least 15 minutes before your scheduled session.",
+        };
+      case "Pending":
+        return {
+          title: "Registration Pending",
+          description:
+            "Your registration for the training program is currently under review.",
+          color: "#f59e0b",
+          importantNote:
+            "Your registration is pending. We will update you once it has been processed.",
+        };
+      case "Cancelled":
+        return {
+          title: "Registration Cancelled",
+          description:
+            "Your registration for the training program has been cancelled.",
+          color: "#dc2626",
+          importantNote:
+            "Your registration has been cancelled. If this was not intended, please contact our support team.",
+        };
+      default:
+        return {
+          title: "Registration Status Update",
+          description:
+            "We have received your registration for the training program.",
+          color: "#3730a3",
+          importantNote:
+            "Please wait for further instructions regarding your registration.",
+        };
+    }
+  };
+
+  const statusMessage = getStatusMessage();
 
   return (
     <div
@@ -65,17 +82,16 @@ const TrainingEmailRegistrationTemplate = ({
       >
         <h1
           style={{
-            color: "#3730a3",
+            color: statusMessage.color,
             fontSize: "24px",
             marginBottom: "20px",
           }}
         >
-          Training Registration #{data.id} - BIRAT EXPO 2025
+          {statusMessage.title} - BIRAT EXPO 2025
         </h1>
 
         <p style={{ color: "#4b5563", lineHeight: "1.6" }}>
-          Thank you for registering for our training program at BIRAT EXPO 2025.
-          Below are your registration details:
+          {statusMessage.description} Below are your registration details:
         </p>
 
         <div
@@ -128,7 +144,8 @@ const TrainingEmailRegistrationTemplate = ({
               {data.group_members.map((member, index) => (
                 <div key={index}>
                   <p style={{ margin: "10px 0", color: "#4b5563" }}>
-                    <strong>Name:</strong> {member.name}
+                    <strong>Name:</strong> {member.first_name}{" "}
+                    {member.last_name}
                   </p>
                   <p style={{ margin: "10px 0", color: "#4b5563" }}>
                     <strong>Email:</strong> {member.email}
@@ -155,7 +172,7 @@ const TrainingEmailRegistrationTemplate = ({
             Personal Details
           </h2>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
-            <strong>Full Name:</strong> {data.full_name}
+            <strong>Full Name:</strong> {data.first_name} {data.last_name}
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
             <strong>Email:</strong>{" "}
@@ -180,6 +197,22 @@ const TrainingEmailRegistrationTemplate = ({
           </p>
           <p style={{ margin: "10px 0", color: "#4b5563" }}>
             <strong>Address:</strong> {data.address}
+          </p>
+
+          <p style={{ margin: "10px 0", color: "#4b5563" }}>
+            <strong>Registration Status:</strong>{" "}
+            <span
+              style={{
+                color:
+                  data.status === "Confirmed"
+                    ? "#16a34a"
+                    : data.status === "Cancelled"
+                    ? "#dc2626"
+                    : "#f59e0b",
+              }}
+            >
+              {data.status}
+            </span>
           </p>
 
           {data.qr_code && (
@@ -209,18 +242,31 @@ const TrainingEmailRegistrationTemplate = ({
 
         <div
           style={{
-            backgroundColor: "#fff7ed",
-            border: "1px solid #fdba74",
+            backgroundColor:
+              data.status === "Confirmed"
+                ? "#f0fdf4"
+                : data.status === "Cancelled"
+                ? "#fef2f2"
+                : "#fffbeb",
+            border:
+              data.status === "Confirmed"
+                ? "1px solid #4ade80"
+                : data.status === "Cancelled"
+                ? "1px solid #fca5a5"
+                : "1px solid #fde047",
             padding: "15px",
             borderRadius: "8px",
             marginTop: "20px",
-            color: "#9a3412",
+            color:
+              data.status === "Confirmed"
+                ? "#166534"
+                : data.status === "Cancelled"
+                ? "#991b1b"
+                : "#92400e",
           }}
         >
           <p style={{ margin: "0", fontSize: "14px" }}>
-            <strong>Important:</strong> Please note that this registration is
-            non-refundable. Make sure to arrive at least 15 minutes before your
-            scheduled session.
+            <strong>Important:</strong> {statusMessage.importantNote}
           </p>
         </div>
       </main>
@@ -235,8 +281,8 @@ const TrainingEmailRegistrationTemplate = ({
       >
         <p>&copy; 2025 CIM. All rights reserved.</p>
         <p>
-          This is an automated confirmation email. Please do not reply directly
-          to this email.
+          This is an automated {data.status.toLowerCase()} registration email.
+          Please do not reply directly to this email.
         </p>
       </footer>
     </div>

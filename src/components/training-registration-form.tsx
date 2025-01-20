@@ -49,6 +49,18 @@ interface TrainingFormData {
   group_members?: GroupMember[];
 }
 
+export interface TrainingFormDataResponse extends TrainingFormData {
+  id: string;
+  status: "Pending" | "Confirmed" | "Cancelled";
+  total_price: number;
+  is_early_bird: boolean;
+  is_expo_access: boolean;
+  is_free_entry: boolean;
+  qr_code: string;
+  created_at: string;
+  updated_at: string;
+}
+
 interface FileWithPreview extends File {
   preview?: string;
 }

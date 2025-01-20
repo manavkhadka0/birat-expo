@@ -5,7 +5,6 @@ import { ArrowDownFromLine, DownloadCloud, Loader, Mail } from "lucide-react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Participant, useGetParticipants } from "@/api/participants";
 import { TrainingRegistrationAdminPDF } from "./training-registration-admin-pdf";
-import { CSVLink } from "react-csv";
 
 type RegistrationStatus = "Pending" | "Confirmed" | "Cancelled";
 
