@@ -35,7 +35,6 @@ export const navItems = [
     href: "/live-training",
     className: "",
     rel: "",
-    subtitle: "Offer till Magh 5",
     subtitleClass: "text-green-700",
   },
   {
