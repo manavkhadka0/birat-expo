@@ -134,32 +134,30 @@ const ParticipantsTable: React.FC = () => {
   ) => {
     setLoadingStallId(id);
     try {
-      await axios
-        .patch(`https://yachu.baliyoventures.com/api/registrations/${id}/`, {
+      await axios.patch(
+        `https://yachu.baliyoventures.com/api/registrations/${id}/`,
+        {
           status: newStatus,
-        })
-        .then(async (res) => {
-          if (newStatus === "Confirmed") {
-            try {
-              const emailResponse = await fetch("/api/training-registration", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(res.data),
-              });
-              if (!emailResponse.ok) {
-                console.error("Failed to send confirmation email");
-              }
-            } catch (emailError) {
-              console.error("Error sending confirmation email:", emailError);
-            }
-          }
-        });
+        }
+      );
 
-      mutate("https://yachu.baliyoventures.com/api/registrations/");
+      // Optimistically update the local data
+      mutate(
+        "https://yachu.baliyoventures.com/api/registrations/",
+        (currentData: Participant[] | undefined) => {
+          if (!currentData) return currentData;
+
+          return currentData.map((participant) =>
+            participant.id === id
+              ? { ...participant, status: newStatus }
+              : participant
+          );
+        },
+        { revalidate: false }
+      );
     } catch (error) {
       console.error("Error updating status:", error);
+      // Optionally show an error toast or notification
     } finally {
       setLoadingStallId(null);
     }
