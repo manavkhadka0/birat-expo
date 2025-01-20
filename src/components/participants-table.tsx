@@ -139,23 +139,6 @@ const ParticipantsTable: React.FC = () => {
         })
         .then((res) => res.data);
 
-      // After successful registration, send confirmation email
-      try {
-        const emailResponse = await fetch("/api/training-registration", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (!emailResponse.ok) {
-          console.error("Failed to send confirmation email");
-        }
-      } catch (emailError) {
-        console.error("Error sending confirmation email:", emailError);
-      }
-
       // Optimistically update the local data
       mutate(
         "https://yachu.baliyoventures.com/api/registrations/",
