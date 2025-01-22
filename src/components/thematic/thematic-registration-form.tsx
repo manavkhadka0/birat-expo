@@ -122,14 +122,14 @@ export default function ThematicRegistrationForm() {
     departure_date: string;
     participant: string;
     food: string;
-    hotel?: string;
-    hotel_accomodation?: string;
-    check_in_date?: string;
-    return_flight_no?: string;
-    return_flight_time?: string;
-    airline?: string;
-    flight_no?: string;
-    flight_time?: string;
+    hotel?: string | null;
+    hotel_accomodation?: string | null;
+    check_in_date?: string | null;
+    return_flight_no?: string | null;
+    return_flight_time?: string | null;
+    airline?: string | null;
+    flight_no?: string | null;
+    flight_time?: string | null;
   }) => {
     setLoading(true);
 
@@ -146,9 +146,9 @@ export default function ThematicRegistrationForm() {
       participant: data.participant,
 
       food: data.food,
-      return_flight_no: data.return_flight_no || "",
-      return_flight_time: data.return_flight_time || "",
-      hotel_accomodation: data.hotel_accomodation || "",
+      return_flight_no: data.return_flight_no || null,
+      return_flight_time: data.return_flight_time || null,
+      hotel_accomodation: data.hotel_accomodation || null,
       ...(data.participant === "Speaker" && {
         check_in_date: formatDate(data.check_in_date || "", "yyyy-MM-dd"),
         airline: data.airline || "",

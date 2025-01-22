@@ -37,15 +37,15 @@ export interface ThematicRegistration {
   departure_date: string;
   participant: string;
   checked_in?: boolean;
-  check_in_date?: string;
-  hotel?: string;
-  flight_no?: string;
-  flight_time?: string;
+  check_in_date?: string | null;
+  hotel?: string | null;
+  flight_no?: string | null;
+  flight_time?: string | null;
   food: string;
-  hotel_accomodation?: string;
-  return_flight_no?: string;
-  return_flight_time?: string;
-  airline?: string;
+  hotel_accomodation?: string | null;
+  return_flight_no?: string | null;
+  return_flight_time?: string | null;
+  airline?: string | null;
 }
 
 export interface ThematicRegistrationResponse {
@@ -62,15 +62,15 @@ export interface ThematicRegistrationResponse {
   departure_date: string;
   participant: string;
   checked_in?: boolean;
-  check_in_date?: string;
-  hotel?: string;
-  flight_no?: string;
-  flight_time?: string;
-  return_flight_no?: string;
-  return_flight_time?: string;
+  check_in_date?: string | null;
+  hotel?: string | null;
+  flight_no?: string | null;
+  flight_time?: string | null;
+  return_flight_no?: string | null;
+  return_flight_time?: string | null;
   food: string;
-  hotel_accomodation?: string;
-  airline?: string;
+  hotel_accomodation?: string | null;
+  airline?: string | null;
 }
 
 export async function fetchThematicSessions(): Promise<ThematicSession[]> {
