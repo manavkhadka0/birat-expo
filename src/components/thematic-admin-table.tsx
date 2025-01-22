@@ -252,12 +252,12 @@ const ThematicParticipationTable: React.FC = () => {
       Contact: registration.contact,
       Organization: registration.organization,
       Participant: registration.participant,
-      HotelAccommodation: registration.hotel_accomodation,
-      Food: registration.food,
-      ArrivalDate: registration.arrival_date,
-      DepartureDate: registration.departure_date,
-      Designation: registration.designation,
-      Status: registration.status,
+      HotelAccommodation: registration.hotel_accomodation || "N/A",
+      Food: registration.food || "N/A",
+      ArrivalDate: registration.arrival_date || "N/A",
+      DepartureDate: registration.departure_date || "N/A",
+      Designation: registration.designation || "N/A",
+      Status: registration.status || "N/A",
       Sessions: registration.sessions
         .map((session) => session.title)
         .join(", "),
@@ -270,9 +270,11 @@ const ThematicParticipationTable: React.FC = () => {
       EndTimes: registration.sessions
         .map((session) => session.end_time)
         .join(", "),
-      Description: registration.sessions
-        .map((session) => session.description)
-        .join(" | "),
+      ArrivalFlightNo: registration.flight_no || "N/A",
+      ArrivalFlightTime: registration.flight_time || "N/A",
+      ArrivalAirline: registration.airline || "N/A",
+      ReturnFlightNo: registration.return_flight_no || "N/A",
+      ReturnFlightTime: registration.return_flight_time || "N/A",
     })) || [];
 
   const downloadCSV = () => {
@@ -293,7 +295,6 @@ const ThematicParticipationTable: React.FC = () => {
       "SessionDates",
       "StartTimes",
       "EndTimes",
-      "Description",
     ];
 
     const rows = csvData.map((registration) => [
@@ -313,7 +314,6 @@ const ThematicParticipationTable: React.FC = () => {
       registration.SessionDates,
       registration.StartTimes,
       registration.EndTimes,
-      registration.Description,
     ]);
 
     const csvContent = [

@@ -43,6 +43,8 @@ export interface ThematicRegistration {
   flight_time?: string;
   food: string;
   hotel_accomodation?: string;
+  return_flight_no?: string;
+  return_flight_time?: string;
   airline?: string;
 }
 
@@ -64,6 +66,8 @@ export interface ThematicRegistrationResponse {
   hotel?: string;
   flight_no?: string;
   flight_time?: string;
+  return_flight_no?: string;
+  return_flight_time?: string;
   food: string;
   hotel_accomodation?: string;
   airline?: string;

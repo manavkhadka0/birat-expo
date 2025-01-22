@@ -39,6 +39,8 @@ const schema = yup.object().shape({
   airline: yup.string().optional(),
   flight_no: yup.string().optional(),
   flight_time: yup.string().optional(),
+  return_flight_no: yup.string().optional(),
+  return_flight_time: yup.string().optional(),
   check_in_date: yup.string().optional(),
   hotel: yup.string().optional(),
 });
@@ -76,6 +78,8 @@ export default function ThematicRegistrationForm() {
       hotel_accomodation: "Self",
       airline: "",
       check_in_date: new Date().toISOString(),
+      return_flight_no: "",
+      return_flight_time: "",
     },
   });
 
@@ -121,6 +125,8 @@ export default function ThematicRegistrationForm() {
     hotel?: string;
     hotel_accomodation?: string;
     check_in_date?: string;
+    return_flight_no?: string;
+    return_flight_time?: string;
     airline?: string;
     flight_no?: string;
     flight_time?: string;
@@ -140,6 +146,8 @@ export default function ThematicRegistrationForm() {
       participant: data.participant,
 
       food: data.food,
+      return_flight_no: data.return_flight_no || "",
+      return_flight_time: data.return_flight_time || "",
       hotel_accomodation: data.hotel_accomodation || "",
       ...(data.participant === "Speaker" && {
         check_in_date: formatDate(data.check_in_date || "", "yyyy-MM-dd"),
@@ -378,7 +386,7 @@ export default function ThematicRegistrationForm() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Flight Number
+                    Arrival Flight Number
                   </label>
                   <input
                     type="text"
@@ -389,7 +397,7 @@ export default function ThematicRegistrationForm() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Flight Time
+                    Arrival Flight Time
                   </label>
                   <input
                     type="time"
@@ -400,7 +408,29 @@ export default function ThematicRegistrationForm() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Airline
+                    Return Flight Number
+                  </label>
+                  <input
+                    type="text"
+                    {...register("return_flight_no")}
+                    className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Return Flight Time
+                  </label>
+                  <input
+                    type="time"
+                    {...register("return_flight_time")}
+                    className="w-full p-2 border rounded-md border-gray-800 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Arrival Airline
                   </label>
                   <select
                     {...register("airline")}
