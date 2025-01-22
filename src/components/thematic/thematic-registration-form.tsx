@@ -151,10 +151,10 @@ export default function ThematicRegistrationForm() {
       hotel_accomodation: data.hotel_accomodation || null,
       ...(data.participant === "Speaker" && {
         check_in_date: formatDate(data.check_in_date || "", "yyyy-MM-dd"),
-        airline: data.airline || "",
-        flight_no: data.flight_no || "",
-        flight_time: data.flight_time || "",
-        hotel: data.hotel || "",
+        airline: data.airline || null,
+        flight_no: data.flight_no || null,
+        flight_time: data.flight_time || null,
+        hotel: data.hotel || null,
       }),
     };
 
