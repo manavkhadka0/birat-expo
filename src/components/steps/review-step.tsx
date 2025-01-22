@@ -22,7 +22,6 @@ export function ReviewStep({
   onBack,
 }: ReviewStepProps) {
   const [showPDF, setShowPDF] = useState(false);
-  const [hasPDFDownloaded, setHasPDFDownloaded] = useState(false);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -80,7 +79,6 @@ export function ReviewStep({
                   }
                   fileName={`training-registration-${data.first_name}-${data.last_name}.pdf`}
                   className="text-sm sm:text-base text-blue-600 hover:text-blue-700 font-medium"
-                  onClick={() => setHasPDFDownloaded(true)}
                 >
                   {/* @ts-ignore */}
                   {({ loading }: { loading: boolean }) =>
@@ -108,23 +106,15 @@ export function ReviewStep({
               Quick Actions
             </h3>
             <div className="space-y-4">
-              {!hasPDFDownloaded && (
-                <div className="text-amber-600 bg-amber-50 p-3 rounded-lg text-sm">
-                  Please download the registration document before completing
-                  registration
-                </div>
-              )}
-
               <button
                 type="button"
                 onClick={onSubmit}
-                disabled={isSubmitting || !hasPDFDownloaded}
+                disabled={isSubmitting}
                 className={`w-full px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white font-medium text-sm sm:text-base ${
-                  isSubmitting || !hasPDFDownloaded
+                  isSubmitting
                     ? "bg-blue-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
-                title={!hasPDFDownloaded ? "Please download the PDF first" : ""}
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center gap-2">

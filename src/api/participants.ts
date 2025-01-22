@@ -1,5 +1,4 @@
 import { fetcher } from "@/lib/axios";
-import { TimeSlot } from "@/types/training";
 import { useMemo } from "react";
 import useSWR from "swr";
 
@@ -31,6 +30,7 @@ export type Participant = {
   payment_method: string;
   payment_screenshot: string;
   agreed_to_no_refund: boolean;
+  is_attended: boolean;
   is_early_bird: boolean;
   is_expo_access: boolean;
   is_free_entry: boolean;
@@ -55,6 +55,27 @@ export function useGetParticipants() {
       participantsError: error,
       participantsValidating: isValidating,
       participantsEmpty: !isLoading && !data,
+    }),
+    [data, error, isLoading, isValidating]
+  );
+
+  return memoizedValue;
+}
+
+export function useGetEachParticipant(id: number) {
+  const URL = `https://yachu.baliyoventures.com/api/registrations/${id}`;
+
+  const { data, error, isLoading, isValidating } = useSWR<Participant>(
+    URL,
+    fetcher
+  );
+
+  const memoizedValue = useMemo(
+    () => ({
+      participant: data,
+      participantLoading: isLoading,
+      participantError: error,
+      participantValidating: isValidating,
     }),
     [data, error, isLoading, isValidating]
   );

@@ -35,44 +35,12 @@ const schema = yup.object().shape({
     .string()
     .oneOf(["Veg", "Non Veg"])
     .required("Food preference is required"),
-  hotel_accomodation: yup
-    .string()
-    .oneOf(["Self", "CIM"])
-    .when("participant", {
-      is: "Speaker",
-      then: (schema) => schema.required("Hotel accommodation is required"),
-      otherwise: (schema) => schema.optional(),
-    }),
-  airline: yup.string().when("participant", {
-    is: "Speaker",
-    then: (schema) => schema.required("Airline is required"),
-    otherwise: (schema) => schema.optional(),
-  }),
-  flight_no: yup.string().when("participant", {
-    is: "Speaker",
-    then: (schema) => schema.required("Flight number is required"),
-    otherwise: (schema) => schema.optional(),
-  }),
-  flight_time: yup.string().when("participant", {
-    is: "Speaker",
-    then: (schema) => schema.required("Flight time is required"),
-    otherwise: (schema) => schema.optional(),
-  }),
-  check_in_date: yup.string().when("participant", {
-    is: "Speaker",
-    then: (schema) =>
-      schema
-        .required("Check-in date is required")
-        .typeError(
-          "Date has wrong format. Use one of these formats instead: YYYY-MM-DD."
-        ),
-    otherwise: (schema) => schema.optional(),
-  }),
-  hotel: yup.string().when("participant", {
-    is: "Speaker",
-    then: (schema) => schema.required("Hotel is required"),
-    otherwise: (schema) => schema.optional(),
-  }),
+  hotel_accomodation: yup.string().oneOf(["Self", "CIM"]).optional(),
+  airline: yup.string().optional(),
+  flight_no: yup.string().optional(),
+  flight_time: yup.string().optional(),
+  check_in_date: yup.string().optional(),
+  hotel: yup.string().optional(),
 });
 
 export default function ThematicRegistrationForm() {
