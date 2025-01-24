@@ -162,31 +162,32 @@ function SubSessionCard({ subSession }: { subSession: SubSession }) {
 }
 function ThematicPanelists({ thematicpanelists }: { thematicpanelists: Thematicpanelists[] }) {
   return (
-    <div className="grid gap-6">
+      <div className="grid gap-6 flex">
       {thematicpanelists.map((panelist, index) => (
-        <div key={index} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 relative overflow-hidden">
+        <div
+          key={index}
+          className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 relative overflow-hidden h-[160px]"
+        >
           <div className="absolute top-4 right-4">
-            <span className="px-4 py-1 bg-purple-100 text-purple-600 rounded-full text-sm font-medium">
+            <span className="px-4 py-1 bg-purple-100 text-purple-600 rounded-full text-sm font-medium whitespace-nowrap">
               {panelist.role}
             </span>
           </div>
 
-          <div className="flex items-start gap-6">
-            <div className="shrink-0">
+          <div className="flex items-start gap-6 h-full">
+            <div className="relative shrink-0 w-[108px] h-[108px]">
               <Image
-                src={ panelist.profile_image || "/placeholder.svg"}
-                alt={panelist.name}
-                width={108}
-                height={108}
+                src={panelist.profile_image || "/placeholder.svg"}
+                alt=""
+                fill
                 className="rounded-full object-cover"
+                sizes="108px"
               />
             </div>
 
-            <div className="flex-1 min-w-0">
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">{panelist.name}</h3>
-              {panelist.company && <p className="text-gray-600 text-lg">{panelist.company}</p>}
-              {panelist.location && <p className="text-gray-500 mt-1">{panelist.location}</p>}
-              {panelist.biodata && <p className="text-gray-600 mt-4 line-clamp-3">{panelist.biodata}</p>}
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <h3 className="text-2xl font-bold text-gray-900 mb-1 truncate">{panelist.name}</h3>
+              {panelist.company && <p className="text-gray-600 text-lg line-clamp-2">{panelist.company}</p>}
             </div>
           </div>
         </div>
@@ -235,9 +236,10 @@ function PanelistCard({ panelist }: { panelist: Panelist }) {
             <p className="text-sm text-gray-600 mt-1">{panelist.company}</p>
           )}
           {panelist.biodata && (
-            <p className="text-sm text-gray-500 mt-2 line-clamp-2">
-              {panelist.biodata}
-            </p>
+            <div
+              className="text-sm text-gray-500 mt-2 line-clamp-2"
+              dangerouslySetInnerHTML={{ __html: panelist.biodata }}
+            />
           )}
         </div>
       </div>
