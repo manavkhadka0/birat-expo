@@ -2,8 +2,9 @@
 
 import { useGetThematicSessions } from "@/api/thematic";
 import ThematicSessions from "@/components/thematic/thematic-sessions";
-import { Panelist, SubSession } from "@/types/thematic";
+import { Panelist, SubSession, Thematicpanelists } from "@/types/thematic";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 
 export default function ThematicSessionDetails() {
   const { id } = useParams();
@@ -42,6 +43,7 @@ export default function ThematicSessionDetails() {
               <ClockIcon className="w-6 h-6" />
               <span>{`${session.start_time} - ${session.end_time}`}</span>
             </div>
+            {}
           </div>
 
           {/* Registration Button */}
@@ -92,7 +94,7 @@ export default function ThematicSessionDetails() {
                 distinguished speakers
               </div>
             </div>
-
+            <ThematicPanelists thematicpanelists={session.thematicpanelists} />
             <div className="grid gap-12 lg:gap-16">
               {session.sub_sessions.map((subSession) => (
                 <SubSessionCard key={subSession.id} subSession={subSession} />
@@ -109,6 +111,7 @@ export default function ThematicSessionDetails() {
             Other Sessions
           </h2>
           <ThematicSessions />
+          
         </div>
       </div>
     </div>
@@ -117,6 +120,7 @@ export default function ThematicSessionDetails() {
 
 function SubSessionCard({ subSession }: { subSession: SubSession }) {
   return (
+
     <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-8 shadow-lg border border-gray-100">
       {/* Title Section with decorative elements */}
       <div className="relative mb-8">
@@ -153,6 +157,40 @@ function SubSessionCard({ subSession }: { subSession: SubSession }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+function ThematicPanelists({ thematicpanelists }: { thematicpanelists: Thematicpanelists[] }) {
+  return (
+    <div className="grid gap-6">
+      {thematicpanelists.map((panelist, index) => (
+        <div key={index} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 relative overflow-hidden">
+          <div className="absolute top-4 right-4">
+            <span className="px-4 py-1 bg-purple-100 text-purple-600 rounded-full text-sm font-medium">
+              {panelist.role}
+            </span>
+          </div>
+
+          <div className="flex items-start gap-6">
+            <div className="shrink-0">
+              <Image
+                src={ panelist.profile_image || "/placeholder.svg"}
+                alt={panelist.name}
+                width={108}
+                height={108}
+                className="rounded-full object-cover"
+              />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <h3 className="text-2xl font-bold text-gray-900 mb-1">{panelist.name}</h3>
+              {panelist.company && <p className="text-gray-600 text-lg">{panelist.company}</p>}
+              {panelist.location && <p className="text-gray-500 mt-1">{panelist.location}</p>}
+              {panelist.biodata && <p className="text-gray-600 mt-4 line-clamp-3">{panelist.biodata}</p>}
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

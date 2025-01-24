@@ -5,16 +5,27 @@ export interface Panelist {
   company: string | null;
   location: string | null;
   biodata: string;
+  thematicpanelists: Thematicpanelists[];
+}
+export interface Thematicpanelists {
+  role: string;
+  name: string;
+  profile_image: string | null;
+  company: string | null;
+  location: string | null;
+  biodata: string;
 }
 
 export interface SubSession {
   id: number;
   title: string;
   description: string;
-  panelists: Panelist[];
+  panelists: Panelist[]
+  thematicpanelists: Thematicpanelists[]
 }
 
 export interface ThematicSession {
+  thematicpanelists: Thematicpanelists[];
   id: number;
   title: string;
   date: string;
