@@ -1,5 +1,6 @@
 import ThreeDVideos from "@/components/3d-videos";
 import AboutEvent from "@/components/about-event";
+import Animation from "@/components/animation";
 import {
   AttractionsSection,
   IntroSection,
@@ -70,8 +71,8 @@ export default function Home() {
         </div>
       </div>
 
+      <Animation />
       <ThreeDVideos />
-
       <section className="mb-16">
         <h2 className="text-4xl font-black text-start mb-8 border-l-[5px] ps-2 border-blue-800 text-gray-800">
           Latest Updates
